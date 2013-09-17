@@ -1,0 +1,257 @@
+/**
+ * @file
+ * Positioning for responsive layout .
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+/*
+ * Containers for grid items and flow items.
+ */
+/* line 52, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:before, .panel:after {
+  content: "";
+  display: table;
+}
+/* line 56, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:after {
+  clear: both;
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+/* line 55, ../../../sass/layouts/responsive-search/responsive-search.scss */
+.panel-head,
+.panel-column,
+.panel-sidebar-search,
+.panel-content,
+.panel-sidebar-second {
+  padding-left: 10px;
+  padding-right: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* line 60, ../../../sass/layouts/responsive-search/responsive-search.scss */
+.panel-head {
+  float: left;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: -100%;
+}
+
+/* line 64, ../../../sass/layouts/responsive-search/responsive-search.scss */
+.panel-column {
+  clear: both;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/*
+ * The layout when there are no sidebars
+ */
+/* line 74, ../../../sass/layouts/responsive-search/responsive-search.scss */
+.no-sidebars .panel-column {
+  /* is a nested grid container */
+  float: left;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: -100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+/* line 80, ../../../sass/layouts/responsive-search/responsive-search.scss */
+.no-sidebars .panel-content {
+  float: left;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: -100%;
+  padding-top: 1em;
+}
+
+/* 
+ * ZEN GRID ITEM:
+ * zen-grid-item( $column-span, $column-position )
+ * zen-grid-item( $column-span, $column-position, $float-direction )
+ */
+@media all and (min-width: 480px) and (max-width: 959px) {
+  /*
+   * Use 3 grid columns for smaller screens.
+   */
+  /*
+   * The layout when there is only one sidebar, the first one.
+   */
+  /* line 102, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-column {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 106, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-sidebar-search {
+    float: left;
+    width: 33.33333%;
+    margin-left: 0%;
+    margin-right: -33.33333%;
+  }
+  /* line 110, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-content {
+    float: left;
+    width: 66.66667%;
+    margin-left: 33.33333%;
+    margin-right: -100%;
+  }
+
+  /*
+   * The layout when there is only one sidebar, the second one.
+   */
+  /* line 119, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-column {
+    /* is a nested grid container */
+    float: left;
+    width: 66.66667%;
+    margin-left: 0%;
+    margin-right: -66.66667%;
+  }
+  /* line 123, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 126, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-sidebar-second {
+    float: left;
+    width: 33.33333%;
+    margin-left: 66.66667%;
+    margin-right: -100%;
+  }
+
+  /*
+   * The layout when there are two sidebars: the serch is on the left, the second is on the bottom of the page
+   */
+  /* line 135, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-column {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 139, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-sidebar-search {
+    float: left;
+    width: 33.33333%;
+    margin-left: 0%;
+    margin-right: -33.33333%;
+  }
+  /* line 143, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-content {
+    float: left;
+    width: 66.66667%;
+    margin-left: 33.33333%;
+    margin-right: -100%;
+  }
+  /* line 147, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-sidebar-second {
+    clear: left;
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+}
+@media all and (min-width: 960px) {
+  /*
+   * The layout when there is only one sidebar, the left one.
+   */
+  /* line 160, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-column {
+    /* is a nested grid container */
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 164, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-sidebar-search {
+    float: left;
+    width: 25%;
+    margin-left: 0%;
+    margin-right: -25%;
+  }
+  /* line 167, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-search .panel-content {
+    float: left;
+    width: 75%;
+    margin-left: 25%;
+    margin-right: -100%;
+  }
+
+  /*
+   * The layout when there is only one sidebar, the right one.
+   */
+  /* line 176, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-column {
+    /* is a nested grid container */
+    float: left;
+    width: 50%;
+    margin-left: 0%;
+    margin-right: -50%;
+  }
+  /* line 180, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-content {
+    float: left;
+    width: 75%;
+    margin-left: 0%;
+    margin-right: -75%;
+  }
+  /* line 183, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .sidebar-second .panel-sidebar-second {
+    float: left;
+    width: 25%;
+    margin-left: 50%;
+    margin-right: -75%;
+  }
+
+  /*
+   * The layout when there are two sidebars. The search is on the left, the second is on the right
+   */
+  /* line 193, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-column {
+    /* is a nested grid container */
+    float: left;
+    width: 80%;
+    margin-left: 0%;
+    margin-right: -80%;
+  }
+  /* line 197, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-sidebar-search {
+    float: left;
+    width: 40%;
+    margin-left: 0%;
+    margin-right: -40%;
+  }
+  /* line 201, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-content {
+    float: left;
+    width: 60%;
+    margin-left: 40%;
+    margin-right: -100%;
+  }
+  /* line 205, ../../../sass/layouts/responsive-search/responsive-search.scss */
+  .two-sidebars .panel-sidebar-second {
+    float: left;
+    width: 20%;
+    margin-left: 80%;
+    margin-right: -100%;
+  }
+}

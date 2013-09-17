@@ -1,0 +1,137 @@
+<?php
+
+function rubricapa_menu() {  
+  $items['rubricapa/autocomplete'] = array( 
+    'page callback' => 'rubricapa_autocomplete_callback', 
+    'page arguments' => array(2,3,'qs'), 
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK, 
+  );
+  $items['admin/config/content/rubricapa'] = array(
+    'title' => 'Configurazione RubricaPA',
+    'description' => 'Configurazione collegamento con RubricaPA',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rubricapa_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+
+/**
+ * Page callback
+ *
+ * @see report_questionari_menu()
+ */
+function rubricapa_form($form, &$form_state) {
+
+  $form=array();
+
+  $default_value="http://www.lineaamica.gov.it/rubricapa/api/v1.php";
+
+  $form['rubricapa_api_search_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Url del callback in RubricaPA'),
+    '#default_value' => variable_get('rubricapa_api_search_url', $default_value),
+    '#size' => 120,
+    '#maxlength' => 255,
+    '#description' => t('Url del link alla libreria API di RubricaPA '),
+    '#required' => TRUE,
+  );
+
+  $form['rubricapa_api_field_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Campo con autocomplete'),
+    '#default_value' => variable_get('rubricapa_api_field_name', ''),
+    '#size' => 60,
+    '#maxlength' => 255,
+    '#description' => t('Machine name del campo su cui si vuole applicare l\'autocomplete, ad es <em>field_dovelavoro</em>'),
+    '#required' => TRUE,
+  );
+
+  $form['rubricapa_api_search_output_type'] = array(
+    '#type' => 'select', 
+    '#title' => t('Tipo di output'), 
+    '#default_value' => variable_get('rubricapa_api_search_output_type', 'json'), 
+    '#options' => array(
+      'json' => 'JSON', 
+      'xml' => 'XML', 
+    ), 
+    '#description' => t('Tipo di output, di default JSON'),
+  );
+
+
+  $form['rubricapa_api_search_variabile_query_string'] = array(
+    '#type' => 'select', 
+    '#title' => t('Funzione di ricerca preferita'), 
+    '#default_value' => variable_get('rubricapa_api_search_variabile_query_string', 'qs'), 
+    '#options' => array(
+      'qs' => 'Ricerca fulltext di RubricaPA', 
+      'q' => 'Ricerca in LIKE sui nome degli enti', 
+    ), 
+    '#description' => t('Funzione di ricerca preferita'),
+  );
+
+  return system_settings_form($form);
+}
+
+
+function rubricapa_autocomplete_callback($qs=''){
+
+  //$default_value="http://www.lineaamica.gov.it/rubricapa/api/v1.php?dett=1&type=json&q=";
+
+  // prendi variabili
+  $API_URL=variable_get('rubricapa_api_search_url', '');
+  $OUTPUT_TYPE=variable_get('rubricapa_api_search_output_type', 'json');
+  $QUERY_STRING_PAR=variable_get('rubricapa_api_search_variabile_query_string', 'q');
+
+  $URL=$API_URL."?dett=2&type=".$OUTPUT_TYPE."&".$QUERY_STRING_PAR."=".urlencode($qs);
+
+  $json=json_decode(file_get_contents($URL));
+  $res=array();
+
+  if(isset($json->returnCode) && $json->returnCode=='OK'){
+
+    if(isset($json->results->row)){
+
+      foreach($json->results->row as $row){
+
+          $res[$row->nome]=$row->nome." <small> - (".$row->indirizzo." - ".$row->nome_comune.")</small>";
+      }
+    }
+  }
+
+  return drupal_json_output($res);
+}
+
+/**
+  * Implement hook_form_alter()
+  */
+/*function rubricapa_form_alter(&$form, &$form_state, $form_id) {
+  if (!($form_id == 'user_register_form' || $form_id == 'user_profile_form')) {
+    return;
+  }
+
+  $FIELD_NAME=variable_get('rubricapa_api_field_name', 'field_profile_ente');
+  //var_dump(profile2_get_types()); die;
+  $form['profile_main'][$FIELD_NAME][LANGUAGE_NONE][0]['value']['#autocomplete_path']='rubricapa/autocomplete';
+  $form['profile_main'][$FIELD_NAME][LANGUAGE_NONE][0]['#suffix']='<input type="hidden" disabled="disabled" value="" id="edit-private-city-autocomplete" class="autocomplete">';  
+}
+*/
+
+/**
+ * Implements hook_field_widget_form_alter()
+ */
+function rubricapa_field_widget_form_alter(&$element, &$form_state, $context) {
+  // reduce call to variable_get to just 1
+  $field_name = &drupal_static(__FUNCTION__, false);
+  if (!$field_name) {
+    $field_name = variable_get('rubricapa_api_field_name', 'field_profile_ente');
+  }
+
+  if ($context['field']['field_name'] == $field_name) {
+    $element['value']['#autocomplete_path']='rubricapa/autocomplete';
+    //$element['#suffix']='<input type="hidden" disabled="disabled" value="" id="edit-private-city-autocomplete" class="autocomplete">';  
+  }
+}

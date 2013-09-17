@@ -1,0 +1,329 @@
+<?php
+
+/**
+ * @file
+ * Code for the InnovatoriPA user feature.
+ */
+
+include_once 'innovatoripa_user.features.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function innovatoripa_user_theme($existing, $type, $theme, $path) {
+  return array(
+    'innovatoripa_user_eventipa_list' => array(
+      'variables' => array('items' => array(), 'type' => ''),
+      'template' => 'theme/innovatoripa_user_eventipa_list'
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function innovatoripa_user_menu() {
+  $items['redirect/user/facet/%taxonomy_term'] = array(
+    'page callback' => 'innovatoripa_user_redirect_to_facet',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Custom hack function to redirect "field_profilo_topics" facet field
+ * issue #1815
+ */
+function innovatoripa_user_redirect_to_facet($term) {
+  // make some basic validation
+  if ($term->vocabulary_machine_name == 'user_topics') {
+    $url  = base_path() . 'persone?f[0]=profile_main%253Afield_profile_topics:' . $term->tid;
+    header('Location: ' . $url, TRUE, 301);
+    drupal_exit($url);
+  }
+}
+
+/**
+ * Implements hook_preprocess_innovatoripa_user_eventipa_list()
+ */
+function template_preprocess_innovatoripa_user_eventipa_list(&$vars) {  
+  $items = &$vars['items'];
+  foreach ($items as $key => $evento) {
+    if (isset($evento['titolo'])) {
+      $items[$key]['title'] = $evento['titolo'];
+    }
+    $items[$key]['title'] = trim($items[$key]['title']);
+    $items[$key]['data_inizio_timestamp'] = strtotime($evento['data_inizio_iso']); 
+  }
+}
+
+/**
+ * Implementation of hook_entity_info_alter().
+ *
+ * Redirect any links to program taxonomy terms to their corresponding node page.
+ */
+function innovatoripa_user_entity_info_alter(&$entity_info) {
+  $entity_info['taxonomy_term']['uri callback'] = 'innovatoripa_user_taxonomy_term_uri';
+}
+
+/**
+ * Entity uri callback for taxonomy terms. 
+ * Add special exception to redirect user_topics vocab to user search page. 
+ * Override standard term_path for "user_topics" vocab 
+ * issue #1819 (handle also og_vocab)
+ */
+function innovatoripa_user_taxonomy_term_uri($term) {
+  // check if this term belongs to an organic group
+  $gid = innovatoripa_og_get_gid_by_vid($term->vid);
+  if ($gid) {
+    return innovatoripa_og_taxonomy_term_uri($term, $gid);
+  }
+  if ('user_topics' == $term->vocabulary_machine_name) {
+    // we have to use a custom callback, faceted url are quite impossible to autogenerate using standard drupal functions.
+    return array(
+      'path' => 'redirect/user/facet/' . $term->tid,
+    );
+  }
+  else {
+    // standard callback
+    return taxonomy_term_uri($term);
+  }
+}
+
+/**
+ * Implements hook_block_info()
+ * Issue: #1849
+ */
+function innovatoripa_user_block_info() {
+  // This example comes from node.module.
+  $blocks['eventipa_partecipazioni'] = array(
+    'info' => t('Innovatori: Lista partecipazioni eventi di EventiPA'),
+  );
+  $blocks['eventipa_docenze'] = array(
+    'info' => t('Innovatori: Lista docenze eventi di EventiPA'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_info()
+ * Issue: #1849
+ */
+function innovatoripa_user_block_configure($delta = '') {
+  if ((strpos($delta, 'eventipa') !== false)) {
+    $name = 'eventipa_items_count_' . $delta;
+    $form[$name] = array(
+      '#type' => 'select',
+      '#title' => t('Numero di eventi da mostrare'),
+      '#default_value' => variable_get($name, 5),
+      '#options' => drupal_map_assoc(array(5, 10, 15, 20)),
+    );
+    return $form;
+  }
+}
+
+/**
+ * Implements hook_block_save()
+ * Issue: #1849
+ */
+function innovatoripa_user_block_save($delta = '', $edit = array()) {
+  if ((strpos($delta, 'eventipa') !== false)) {
+    $name = 'eventipa_items_count_' . $delta;
+    variable_set($name, $edit[$name]);
+  }
+}
+
+
+/**
+ * Internal _user_block_view implementation
+ */
+function _innovatoripa_user_block_view($type, $title, $delta) {
+  $account = menu_get_object('user');               
+  $output = innovatori_user_get_eventipa_data($account, $type, $delta);
+  $block['subject'] = t($title);
+  $block['content'] = $output;
+  return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ * Issue: #1849
+ */
+function innovatoripa_user_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'eventipa_partecipazioni':
+      if (arg(0) == 'user') {
+        $type = 'partecipazioni2';
+        $title = 'Eventi a cui partecipo';
+        $block = _innovatoripa_user_block_view($type, $title, $delta);
+        return $block;
+      }
+    case 'eventipa_docenze':
+      if (arg(0) == 'user') {
+        $type = 'docenze2';
+        $title = 'Eventi di cui sono docente';
+        $block = _innovatoripa_user_block_view($type, $title, $delta);
+        return $block;
+      }
+    break;
+  }
+  return $block;
+}
+
+/**
+ * Transform raw query data into simple items array
+ */
+function _innovatori_user_get_eventipa_data($data, $slice) {
+  if (!$data->data) {
+    return false;
+  }
+  $items = array();
+  $decode = drupal_json_decode($data->data);
+  if (isset($decode['eventi']) && ($decode['eventi'])) {
+    $eventi = $decode['eventi'];
+    foreach ($eventi as $evento) {
+      $items[] = $evento['evento'];
+    }
+    $items = array_slice($items, 0, $slice);
+    return $items;
+  } 
+  return false;
+}
+
+/**
+ * Get eventipa ws data
+ */
+function innovatori_user_get_eventipa_data($account, $type, $delta) {
+  // force test mail address
+  $mail = $account->mail;
+  //$mail = "smarras@formez.it"; //debug
+  $ws = "http://eventipa.formez.it/user/{$mail}/{$type}";
+
+  // lower timeout, we don't want hang user page loading
+  $res = drupal_http_request($ws);
+
+  // slice final items
+  $slice = variable_get('eventipa_items_count_' . $delta, 5);
+
+  // get data
+  $data = _innovatori_user_get_eventipa_data($res, $slice);
+
+  if (!$data) {
+    return false;
+  }
+  $output = theme('innovatoripa_user_eventipa_list', array('items' => $data, 'type' => $delta));
+  return $output;
+}
+
+/**
+ * Alter profile2 forms.
+ * Issue #1851
+ */
+function innovatoripa_user_form_profile2_form_alter(&$form, &$form_state) {
+  $profile_type = profile2_get_types();
+  foreach ($profile_type as $type) {
+    $profile_name = 'profile_' . $type->type; 
+
+    // Ente di appartenenza
+    if (isset($form[$profile_name]['field_profile_ente'])) {
+      $field = &$form[$profile_name]['field_profile_ente'][LANGUAGE_NONE][0]['value'];
+      $state = array('visible' => array(
+        ':input[name="profile_main[field_profile_pa_check][und]"]' => array('value' => 1),
+      ));
+      $field['#states'] = $state;
+    }
+
+    // Se PA che tipo
+    if (isset($form[$profile_name]['field_profile_pa_type'])) {
+      $field = &$form[$profile_name]['field_profile_pa_type'][LANGUAGE_NONE];
+      $state = array('visible' => array(
+        ':input[name="profile_main[field_profile_pa_check][und]"]' => array('value' => 1),
+      ));
+      $field['#states'] = $state;
+    }
+
+    // Dove lavoro
+    if (isset($form[$profile_name]['field_profile_job_specify'])) {
+      $field = &$form[$profile_name]['field_profile_job_specify'][LANGUAGE_NONE][0]['value'];
+      $state = array('visible' => array(
+        ':input[name="profile_main[field_profile_pa_check][und]"]' => array('value' => 0),
+      ));
+      $field['#states'] = $state;
+    }
+  }
+}
+
+/**
+ * Implements of hook_menu_alter()
+ */
+function innovatoripa_user_menu_alter(&$items) {
+  $items['innovatoripa/user'] = $items['user'];
+  $items['innovatoripa/user']['type'] = MENU_CALLBACK;
+  $callback_orig = $items['user/login']['page callback'];
+  $items['user/login']['page callback'] = 'innovatoripa_user_redirect_to_formezauth';
+  $items['user/login']['page arguments'] = array($callback_orig);
+}
+
+function innovatoripa_user_redirect_to_formezauth($callback_orig) {
+  $provider = oauthconnector_provider_load("formezauth");
+  if (!$provider) {
+    return $callback_orig();
+  }
+  // this can hit some strange loops behaviours
+  unset($_GET['destination']);
+  drupal_goto("connect/oauthconnector_formezauth");
+  exit(); 
+}
+
+
+/**
+ * Implements hook_field_access().
+ * Issue: #2178
+ * La data di nascita dovrebbe essere visibile a:
+    - utente che l'ha inserita
+    - utente con ruolo amministratore
+    - utente con ruolo monitoraggio utenti
+*/
+function innovatoripa_user_field_access($op, $field, $entity_type, $entity, $account) {
+  $field_name = $field['field_name'];  
+  
+  if ($field_name == 'field_profile_birthdate' && $entity_type == 'profile2') {
+      //utente che l'ha inserita
+      if ($entity->uid == $account->uid) {
+          return TRUE;
+      }
+      
+      //utente con ruolo monitoraggio utenti
+      if (in_array('Monitoraggio Utenti', $account->roles)) {
+          return TRUE;
+      }
+      
+      // utente con ruolo amministratore
+      if (in_array('amministratore', $account->roles)) {
+          return TRUE;
+      }
+      
+      // uid 1
+      if ($account->uid == '1') {
+          return TRUE;
+      }
+      //var_dump('false');
+      return FALSE;
+      
+  }
+}
+
+
+function innovatoripa_user_views_pre_render(&$view) {
+  if ($view->name == 'user_blocks' && $view->current_display == 'block') {
+      $user_count = db_query("SELECT count(uid) FROM {users} WHERE status = 1")->fetchField();
+      $view->footer['result']->options['content'] = 
+                      '<div class="total-count">' .
+                      l(t('<span>!user_count</span> utenti',array('!user_count' => $user_count)), 'persone', array('html' => TRUE)).
+                      ' iscritti</div>';
+  }
+  
+} 

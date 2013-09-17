@@ -1,0 +1,42 @@
+diff --git a/imagecache_token.module b/imagecache_token.module
+index 2b13d74..3d542bc 100644
+--- a/imagecache_token.module
++++ b/imagecache_token.module
+@@ -43,9 +43,14 @@ function imagecache_token_token_info_alter(&$data) {
+ 
+   foreach ($fields as $field) {
+     if ($field['type'] == 'image') {
+-      $data['tokens']['node'][$field['field_name']]['type'] = 'image-field';
++      foreach ($field['bundles'] as $entity_type => $bundles) {
++        $token_type = token_get_entity_mapping('entity', $entity_type);
++        if (!empty($data['tokens'][$token_type][$field['field_name']])) {
++          $data['tokens'][$token_type][$field['field_name']]['type'] = 'image-field';
++        }
++      }
+     }
+-  } 
++  }
+ }
+ 
+ 
+@@ -54,17 +59,16 @@ function imagecache_token_token_info_alter(&$data) {
+  */
+ function imagecache_token_tokens($type, $tokens, array $data = array(), array $options = array()) {
+   $replacements = array();
+-
+-  if ($type == 'node' && !empty($data['node'])) {
++  if ($type == 'entity' && !empty($data['entity'])) {
+     $fields = field_info_fields();
+ 
+     foreach ($fields as $field) {
+       if ($field['type'] == 'image') {
+-        if (($image_field_tokens = token_find_with_prefix($tokens, $field['field_name'])) && $field_object = field_get_items('node', $data['node'], $field['field_name'])) {
++        if (($image_field_tokens = token_find_with_prefix($tokens, $field['field_name'])) && $field_object = field_get_items($data['entity_type'], $data['entity'], $field['field_name'])) {
+           $replacements += token_generate('image-field', $image_field_tokens, array('image-field' => $field_object), $options);
+         }
+       }
+-    } 
++    }
+   }
+ 
+   if ($type == 'image-field' && !empty($data['image-field'])) {

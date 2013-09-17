@@ -1,0 +1,67 @@
+/**
+ * @file
+ * Positioning for panel container responsive layout.
+ *
+ * This is a 1 colum layout that will have a responsive panel in it
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+/*
+ * Center the page.
+ */
+/* line 42, ../../sass/layouts/responsive-panels.scss */
+#page,
+.region-bottom {
+  /* For screen sizes larger than 1200px, prevent excessively long lines of text
+     by setting a max-width. */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+/* line 57, ../../sass/layouts/responsive-panels.scss */
+#header,
+#navigation,
+#footer {
+  padding-left: 10px;
+  padding-right: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  position: relative;
+}
+
+/*
+ * Containers for grid items and flow items.
+ */
+/* line 68, ../../sass/layouts/responsive-panels.scss */
+#header,
+#main,
+#footer {
+  position: relative;
+}
+/* line 52, ../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+#header:before, #header:after,
+#main:before,
+#main:after,
+#footer:before,
+#footer:after {
+  content: "";
+  display: table;
+}
+/* line 56, ../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+#header:after,
+#main:after,
+#footer:after {
+  clear: both;
+}
+
+/* line 73, ../../sass/layouts/responsive-panels.scss */
+#navigation {
+  width: 100%;
+}

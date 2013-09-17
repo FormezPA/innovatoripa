@@ -1,0 +1,20 @@
+commit c85c3d53a445303f49538069abe2f451eec3a057
+Author: Giuseppe Rota <rota.giuseppe@gmail.com>
+Date:   Mon Jun 17 09:41:31 2013 +0200
+
+    patch smtp to use Message-ID when set (mailcomment sets it)
+
+diff --git a/sites/all/modules/contrib/smtp/smtp.mail.inc b/sites/all/modules/contrib/smtp/smtp.mail.inc
+index 2cf0841..fd14ee2 100644
+--- a/sites/all/modules/contrib/smtp/smtp.mail.inc
++++ b/sites/all/modules/contrib/smtp/smtp.mail.inc
+@@ -270,6 +270,9 @@ class SmtpMailSystem implements MailSystemInterface {
+             $mailer->AddBCC($bccaddr, $bccname);
+           }
+           break;
++        case 'message-id':
++          $mailer->MessageID = $value;
++          break;
+ 
+         default:
+           // The header key is not special - add it as is.

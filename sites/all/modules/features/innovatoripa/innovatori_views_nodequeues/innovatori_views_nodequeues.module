@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Innovatori Views + Nodequeues feature.
+ */
+
+include_once 'innovatori_views_nodequeues.features.inc';

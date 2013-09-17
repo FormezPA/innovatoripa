@@ -1,0 +1,274 @@
+/**
+ * @file
+ * Positioning for responsive layout .
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+/* line 50, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+.panel-head,
+.panel-column,
+.panel-content,
+.panel-content-secondary,
+.panel-content-sidebar,
+.panel-sidebar-first {
+  padding-left: 10px;
+  padding-right: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/*
+ * Containers for grid items and flow items.
+ */
+/* line 52, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:before, .panel:after {
+  content: "";
+  display: table;
+}
+/* line 56, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:after {
+  clear: both;
+}
+
+/* line 61, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+.panel-head {
+  float: left;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: -100%;
+}
+
+/* line 65, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+.panel-column {
+  clear: left;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* 
+ * ZEN GRID ITEM:
+ * zen-grid-item( $column-span, $column-position )
+ * zen-grid-item( $column-span, $column-position, $float-direction )
+ */
+@media all and (min-width: 480px) and (max-width: 959px) {
+  /*
+   * The layout when there is only one sidebar, the first one.
+   */
+  /* line 83, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-column {
+    float: left;
+    width: 66.66667%;
+    margin-left: 0%;
+    margin-right: -66.66667%;
+  }
+  /* line 86, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 89, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-content-secondary {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 92, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-sidebar-first {
+    float: left;
+    width: 33.33333%;
+    margin-left: 66.66667%;
+    margin-right: -100%;
+  }
+
+  /*
+   * The layout when there is only one sidebar, the content one.
+   */
+  /* line 101, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-column {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 104, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 107, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content-secondary {
+    float: left;
+    width: 66.66667%;
+    margin-left: 33.33333%;
+    margin-right: -100%;
+  }
+  /* line 110, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content-sidebar {
+    float: left;
+    width: 33.33333%;
+    margin-left: 0%;
+    margin-right: -33.33333%;
+  }
+
+  /*
+   * The layout when there are two sidebars: the sidebar content is on the bottom of secondary content, the first one is on the right of the page
+   */
+  /* line 119, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-column {
+    float: left;
+    width: 66.66667%;
+    margin-left: 0%;
+    margin-right: -66.66667%;
+  }
+  /* line 122, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 125, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content-secondary {
+    clear: left;
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 129, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content-sidebar {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 133, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-sidebar-first {
+    float: left;
+    width: 33.33333%;
+    margin-left: 66.66667%;
+    margin-right: -100%;
+  }
+}
+@media all and (min-width: 960px) {
+  /*
+   * The layout when there is only one sidebar, the first one.
+   */
+  /* line 147, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-column {
+    float: left;
+    width: 75%;
+    margin-left: 0%;
+    margin-right: -75%;
+  }
+  /* line 150, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 153, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-content-secondary {
+    clear: left;
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 157, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .sidebar-first .panel-sidebar-first {
+    float: left;
+    width: 25%;
+    margin-left: 75%;
+    margin-right: -100%;
+  }
+
+  /*
+   * The layout when there is only one sidebar, the content one.
+   */
+  /* line 167, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-column {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 170, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 173, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content-secondary {
+    clear: left;
+    float: left;
+    width: 66.66667%;
+    margin-left: 33.33333%;
+    margin-right: -100%;
+  }
+  /* line 177, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .content-sidebar .panel-content-sidebar {
+    float: left;
+    width: 33.33333%;
+    margin-left: 0%;
+    margin-right: -33.33333%;
+  }
+
+  /*
+   * The layout when there are two sidebars: the sidebar content is on the left of secondary content, the first one is on the right of the page
+   */
+  /* line 187, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-column {
+    float: left;
+    width: 75%;
+    margin-left: 0%;
+    margin-right: -75%;
+  }
+  /* line 190, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content {
+    float: left;
+    width: 100%;
+    margin-left: 0%;
+    margin-right: -100%;
+  }
+  /* line 194, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content-secondary {
+    clear: left;
+    float: left;
+    width: 66.66667%;
+    margin-left: 33.33333%;
+    margin-right: -100%;
+  }
+  /* line 198, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-content-sidebar {
+    float: right;
+    width: 33.33333%;
+    margin-right: 66.66667%;
+    margin-left: -100%;
+  }
+  /* line 202, ../../../sass/layouts/responsive-profile/responsive-profile.scss */
+  .two-sidebars .panel-sidebar-first {
+    float: left;
+    width: 25%;
+    margin-left: 75%;
+    margin-right: -100%;
+  }
+}

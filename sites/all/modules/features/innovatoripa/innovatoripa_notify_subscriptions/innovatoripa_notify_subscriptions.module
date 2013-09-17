@@ -1,0 +1,444 @@
+<?php
+/**
+ * @file
+ * Code for the Innovatoripa notify subscriptions feature.
+ */
+
+include_once 'innovatoripa_notify_subscriptions.features.inc';
+
+/**
+ * Implements hook_menu_alter().
+ */
+function innovatoripa_notify_subscriptions_menu_alter(&$items) {
+  // Override the default Message Subscribe UI and replace it with a similar
+  // Quicktabs-based one.
+  $paths = array(
+    'user/%user/message-subscribe',
+    'user/%user/message-subscribe/innovatoripa_follow_node',
+    'user/%user/message-subscribe/innovatoripa_follow_og',
+    'user/%user/message-subscribe/innovatoripa_follow_term',
+    'user/%user/message-subscribe/innovatoripa_follow_gruppo',
+  );
+  foreach ($paths as $path) {
+    if (isset($items[$path])) {
+      $items[$path]['access callback'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function innovatoripa_notify_subscriptions_menu() {
+  $items = array();
+  $items['user/%user/notification-settings'] = array(
+    'title' => 'Impostazioni notifiche',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('innovatoripa_notify_subscriptions_notification_settings_form', 1),
+    'access callback' => 'message_subscribe_ui_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+
+function innovatoripa_notify_subscriptions_notification_settings_form($form, &$form_state, $account) {
+  if (empty($account)) {
+    global $user;
+    $account = $user;
+  }
+  drupal_set_title(t('Impostazioni notifiche'));
+
+  $form['#submit'][] = 'commons_follow_message_subscribe_email_setting_submit';
+
+  $form['uid'] = array(
+    '#type' => 'value',
+    '#value' => $account->uid,
+  );
+
+  $form['explanation'] = array(
+    '#markup' => '<div class="notification-help"><p>' . t("STUB TEXT - Da qui puoi gestire le notifiche che ti verranno inviate. Quando ti iscrivi ad una comunità, sei automaticamente iscritto alle notifiche, puoi disabilitare l'iscrizione da questo pannello di configurazione. - STUB TEXT") . '</p></div>',
+    '#weight' => 0,
+  );
+
+  
+  $form['message_subscribe_auto_follow'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Iscriviti automaticamente ai contenuti commentati'),
+    '#description' => t("Se selezionato, verrai automaticamente iscritto ai contenuti che commenti."),
+    '#ajax' => array(
+      'callback' => 'innovatoripa_notify_subscription_message_subscribe_email_setting_submit',
+    ),
+    '#submit' => array('innovatoripa_notify_subscription_message_subscribe_email_setting_submit'),
+    '#default_value' => isset($account->field_message_auto_follow[LANGUAGE_NONE][0]['value']) ? $account->field_message_auto_follow[LANGUAGE_NONE][0]['value'] : FALSE,
+    '#weight' => 1,
+  );
+  
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save email notification settings'),
+    '#attributes' => array(
+      'class' => array('js-hide'),
+    ),
+    '#weight' => 2,
+  );
+
+  $tabs = innovatoripa_notify_subscriptions_generate_tabs();
+  $form['tabs'] = array(
+    '#markup' => drupal_render($tabs),
+    '#weight' => 3,
+  );
+
+  return $form;
+}
+
+
+function innovatoripa_notify_subscription_message_subscribe_email_setting_submit($form, &$form_state) {
+  // If the user has changed the value for this checkbox,
+  // save her account in order to save the change.  
+  $account = user_load($form_state['values']['uid']);
+  $account->field_message_auto_follow[LANGUAGE_NONE][0]['value'] = $form_state['values']['message_subscribe_auto_follow'];
+  user_save($account);
+} 
+
+/**
+ * Generates the QuickTab title for the subscription UI.
+ * Replaces message_subscribe_tab_title().
+ */
+function innovatoripa_notify_subscriptions_tab_title($account, $flag_name = NULL) {
+  global $user;
+
+  if (!$flag_name) {
+    // We are inside /message-subscribe so get the first flag.
+    $flag_name = key(message_subscribe_flag_get_flags());
+  }
+
+  $flag = flag_get_flag($flag_name);
+  $flaggings = flag_get_user_flags($flag->content_type, NULL, $account->uid);
+
+  $count = !empty($flaggings[$flag_name]) ? count($flaggings[$flag_name]) : 0;
+  $params = array(
+    '@flag' => $flag->title,
+    '@count' => $count,
+    '@name' => format_username($account),
+  );
+  return $account->uid == $user->uid ? t('@flag che stai seguendo <span class="user-follow-count">@count</span>', $params) : t('@flag @name follows <span class="user-follow-count">@count</span>', $params);
+}
+
+function innovatoripa_notify_subscriptions_generate_tabs() {
+  global $user;
+  $account = $user;
+  $tabs = array();
+  $flags = message_subscribe_flag_get_flags();
+  foreach ($flags as $flag_name => $flag) {
+    $content = message_subscribe_ui_tab($account, $flag_name);
+    $tabs[$flag_name] = array(
+      'title' => innovatoripa_notify_subscriptions_tab_title($account, $flag_name),
+      'contents' => array('#markup' => $content),
+    );
+  }
+
+  $settings = array('style' => 'none', 'ajax' => FALSE, 'html' => TRUE, 'title' => 'test', 'default_tab' => 'innovatoripa_follow_og', 'sorted' => true);
+  $built_tabs = quicktabs_build_quicktabs('innovatoripa_follow_ui', $settings, $tabs);
+  return $built_tabs;
+}
+
+/**
+ * Implements hook_node_insert().
+ * 
+ * Follow my groups
+ * Autofollow my contents (issue #1980)
+ */
+function innovatoripa_notify_subscriptions_node_insert($node) {
+  if (!og_is_group_type('node', $node->type)) {
+    // autofollow issue #1980
+    $author = user_load($node->uid);
+    $wrapper = entity_metadata_wrapper('user', $author);
+    // if user have "autofollow" flag them to this node
+    if ($wrapper->field_message_auto_follow->value()) {
+      $flag = flag_get_flag('innovatoripa_follow_node');
+      if (in_array($node->type, $flag->types)) {
+        flag('flag', 'innovatoripa_follow_node', $node->nid, $author);
+      }
+    }
+    return;
+  }
+  // The owner of the content automatically follows entire og
+  $account = user_load($node->uid);
+  if ($node->type == 'comunita') {
+    flag('flag', 'innovatoripa_follow_og', $node->nid, $account);
+  }
+  else {
+    flag('flag', 'innovatoripa_follow_gruppo', $node->nid, $account);
+  }
+}
+
+/**
+ * Implements hook_comment_insert().
+ * Autofollow my contents (issue #1980)
+ */
+function innovatoripa_notify_subscriptions_comment_insert($comment) {
+  $author  = user_load($comment->uid);
+  $wrapper = entity_metadata_wrapper('user', $author);
+  if ($wrapper->field_message_auto_follow->value()) {
+    $node = node_load($comment->nid);
+    $flag = flag_get_flag('innovatoripa_follow_node');
+    if (in_array($node->type, $flag->types)) {
+      flag('flag', 'innovatoripa_follow_node', $node->nid, $author);
+    }
+  } 
+}
+
+
+/**
+* Implements of hook_og_membership_insert()
+* 
+* Users subscribed to groups automatically follows the group
+* Issue: #1915
+* 
+* @param OgMembership $og_membership
+*   The OG membership that is being inserted or updated.
+*
+* */
+function innovatoripa_notify_subscriptions_og_membership_insert(OgMembership $og_membership) {
+  if ($og_membership->entity_type == 'user') {
+    $entity = node_load($og_membership->gid);
+     if (og_is_group_type('node', $entity->type)) {
+      $account = user_load($og_membership->etid);
+      if ($entity->type == 'comunita') {
+        flag('flag', 'innovatoripa_follow_og', $entity->nid, $account);
+      }
+      else {
+        flag('flag', 'innovatoripa_follow_gruppo', $entity->nid, $account);
+      }
+    }
+  }
+}
+
+/**
+* 
+* Implements of hook_og_membership_delete()
+* Users are subscribed to groups automatically, unflag them when leave the group
+* Issue: #1915
+*
+* @param OgMembership $og_membership
+*   The OG membership that is being deleted.
+*
+* @see hook_entity_delete()
+*/
+function innovatoripa_notify_subscriptions_og_membership_delete(OgMembership $og_membership) {
+  if ($og_membership->entity_type == 'user') {
+    $entity = node_load($og_membership->gid);
+    if (og_is_group_type('node', $entity->type)) {
+      $account = user_load($og_membership->etid);
+      if ($entity->type == 'comunita') {
+        flag('unflag', 'innovatoripa_follow_og', $entity->nid, $account);
+      }
+      if ($entity->type == 'gruppo') {
+        flag('unflag', 'innovatoripa_follow_gruppo', $entity->nid, $account);
+      }
+    }
+  }
+}
+
+
+/**
+* Implements hook_form_alter().
+*/
+function innovatoripa_notify_subscriptions_form_alter(&$form, &$form_state, $form_id) {
+  // We have a dedicated form for the "Send email by default" checkbox.
+  // Hide it from the user profile edit form.
+  // issue http://projects.twinbitlabs.com/issues/1873#note-8
+  if ($form_id == 'user_profile_form') {
+    $form['message_subscribe_email']['#access'] = false;
+    $form['field_message_auto_follow']['#access'] = false;
+  }
+}
+
+/**
+ * Implements of hook_user_presave()
+ * Default email follow
+ */
+function innovatoripa_notify_subscriptions_user_presave(&$edit, $account, $category) {
+  $edit['message_subscribe_email'][LANGUAGE_NONE][0]['value'] = 1;
+}
+
+
+/**
+ * Get context from entity type.
+ *
+ * This is a naive implementation, which extracts context from an entity.
+ * For example, given a node we extract the node author and related
+ * taxonomy terms.
+ *
+ * @param $entity_type
+ *   The entity type.
+ * @param $entity
+ *   The entity object.
+ * @param $subscribe_options
+ *   Optional; The options array to pass to
+ *   message_subscribe_get_basic_context().
+ * @param $context
+ *   Optional; The context array.
+ *
+ * @return
+ *   Array keyed with the entity type and array of entity IDs as the
+ *   value.
+ */
+function innovatoripa_notify_subscriptions_message_subscribe_get_context($entity_type, $entity, $subscribe_options = array(), $context = array()) {
+  if (!$context) {
+    list($id) = entity_extract_ids($entity_type, $entity);
+    $context[$entity_type][$id] = $id;
+  }
+
+  if (!empty($subscribe_options['skip context'])) {
+    return $context;
+  }
+
+  $context += array(
+    'node' => array(),
+    'user' => array(),
+    'taxonomy_term' => array(),
+  );
+
+  // Default context for comments.
+  if ($entity_type == 'comment') {
+    $context['node'][$entity->nid] = $entity->nid;
+    $context['user'][$entity->uid] = $entity->uid;
+  }
+
+  if (empty($context['node'])) {
+    return $context;
+  }
+
+  $nodes = node_load_multiple($context['node']);
+  
+  if (module_exists('og')) {
+    // Iterate over existing nodes to extract the related groups.
+    foreach ($nodes as $node) {
+      
+      // se il nodo è di tipo gruppo non invio notifiche
+      // forse sarebbe meglio non inviare solo in caso il gruppo fosse privato
+      if ($node->type == 'gruppo') continue; 
+      
+      foreach (og_get_entity_groups('node', $node) as $group_type => $gids) {
+        foreach ($gids as $gid) {
+          $context[$group_type][$gid] = $gid;
+          $group = node_load($gid);
+          $members = og_get_group_members_properties($group, array(), 'members__1', 'node');
+          foreach ($members as $member) {
+            $context['user'][$member] = $member;
+          }
+        }
+      }
+    }
+  }
+
+  $nodes = node_load_multiple($context['node']);
+  
+  foreach ($nodes as $node) {
+      
+    // se il nodo è di tipo gruppo non invio notifiche
+    // forse sarebbe meglio non inviare solo in caso il gruppo fosse privato
+    
+    if ($node->type == 'gruppo') continue; 
+    
+    $context['user'][$node->uid] = $node->uid;
+
+    if (module_exists('taxonomy')) {
+      $context['taxonomy_term'] = !empty($context['taxonomy_term']) ? $context['taxonomy_term'] : array();
+
+      // Iterate over all taxonomy term reference fields, or entity-reference
+      // fields that reference terms.
+      foreach (array_keys(field_info_instances('node', $node->type)) as $field_name) {
+        $field = field_info_field($field_name);
+
+        if ($field['type'] == 'taxonomy_term_reference' || ($field['type'] == 'entityreference' && $field['settings']['target_type'] == 'taxonomy_term')) {
+          $wrapper = entity_metadata_wrapper('node', $node);
+          if ($tids = $wrapper->{$field_name}->value(array('identifier' => TRUE))) {
+            $tids = $field['cardinality'] == 1 ? array($tids) : $tids;
+            foreach ($tids as $tid) {
+              $context['taxonomy_term'][$tid] = $tid;
+            }
+          }
+        }
+      }
+    }
+  }
+  return $context;
+}
+
+/**
+ * Implements of hook_message_subscribe_get_subscribers()
+ * I don't want to be notified for my own node (this is valid just for nodes, because if i'm subscribed to my own node i want to receive comments notifications)
+ * 
+ * 
+ */
+function innovatoripa_notify_subscriptions_message_subscribe_get_subscribers_alter(&$uids, $values) {
+    
+  $active_users = $values['context']['user'];
+  
+  foreach ($uids as $uid => $detail) {
+      if (!in_array($uid, $active_users)) {
+          unset($uids[$uid]);
+      }
+      
+      // gli utenti disabilitati non devono ricevere notifiche
+      $uid_status = db_select('users')->fields('users', array('status'))->condition('uid', $uid, '=')->execute()->fetchObject();
+      
+      if(empty($uid_status) || $uid_status->status != 1) {
+          unset($uids[$uid]);
+      }
+      
+  }
+ 
+  
+  // remove node author from uids
+  if (isset($values['entity']) && (isset($values['entity']->uid)) && ($values['entity_type'] == 'node')) { 
+    $entity = $values['entity'];
+
+    // For content type "gruppo" i can reply by email to posts, and if i have the notification of my post i can continue the discussion just replying to notifications....
+    if ($entity->type == 'discussione') {
+      $wrapper = entity_metadata_wrapper('node', $entity);
+      $og = $wrapper->og_group_ref->value();
+      if ($og) {
+        $og = array_pop($og);
+        if ($og->type == 'gruppo') {
+          return;
+        }
+      } 
+    }
+    // check if entity author is in the uids notification list
+    if (isset($uids[$entity->uid])) {
+      $author = entity_load('user', array($entity->uid));
+      if ($author) {
+        $author = array_pop($author);
+        unset($uids[$author->uid]);
+      }
+    } 
+  }
+  
+  if (isset($values['entity']) && (isset($values['entity']->uid)) && ($values['entity_type'] == 'comment')) { 
+    $entity = $values['entity'];
+    $node = node_load($entity->nid);
+    if ($node->type == 'discussione') {
+      $wrapper_node = entity_metadata_wrapper('node', $node);
+      $og = $wrapper_node->og_group_ref->value();
+      if ($og) {
+        $og = array_pop($og);
+        // Issue #2116
+        // I don't want receive notifications of my own comments (this because when i'm inside a "gruppo" i'll receive mail notifications)
+        if ($og->type == 'gruppo') {
+          if (isset($uids[$entity->uid])) {
+            unset($uids[$entity->uid]);         
+          }
+        }
+      } 
+    }
+  }
+}
+
+
+

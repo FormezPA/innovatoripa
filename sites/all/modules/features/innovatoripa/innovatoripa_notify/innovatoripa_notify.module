@@ -1,0 +1,247 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA Notify feature.
+ */
+
+include_once 'innovatoripa_notify.features.inc';
+
+
+/**
+ * Implements hook_node_insert().
+ */
+function innovatoripa_notify_node_insert($node) {
+  if (!$node->status) {
+    return;
+  }
+  if (arg(0) == 'home' || arg(0) == 'admin') return;
+
+  // Create a message when a user creates a new node.
+  // Borrowed from message_example.module:
+  // Save the message and assign it to the user realm. Since another user,
+  // usually an admin might create the node, but populate the author field
+  // with another user, we make sure the user realm is populated with the
+  // node's author, instead of the acting user (although in most cases it
+  // would be the same user).
+  // The following example demonstrates that we don't need to explicitly set
+  // the realm to the user, since if no realms are provided then the message
+  // is automatically assigned to the user passed in the function, or if no
+  // user object is provided, then to the acting user.
+  $message_type = 'innovatoripa_notify_nodo_inserito';
+  if (!isset($node->og_group_ref[LANGUAGE_NONE][0]['target_id'])) {
+    $message_type = 'innovatoripa_notify_node_no_group';
+  }
+  else {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $groups = $wrapper->og_group_ref->value();
+
+    // make sure that we select group notitication just when the content is inserted in 1 group only.
+    if (count($groups) == 1) {
+      foreach ($groups as $group) {
+        if ($group->type == 'gruppo') {
+          $message_type = 'innovatoripa_notify_nodo_inserito_gruppo_mail';
+        }
+        // break on first element, that's what we need
+        break;
+      }
+    }
+  }
+
+  // We need to clear the static loading cache so that the node body will be
+  // ready in time for token replacement for the  message.
+  entity_get_controller('node')->resetCache(array($node->nid));
+
+  // Allow other modules to specify an alternative messagge type to use.
+  $hook = 'node_insert';
+  //drupal_alter('commons_notify_message_selection', $message_type, $hook, $node);
+  $account = user_load($node->uid);
+  $message = message_create($message_type, array('uid' => $account->uid, 'timestamp' => $node->created));
+  // Save reference to the node in the node reference field.
+  $wrapper = entity_metadata_wrapper('message', $message);
+  // We use a multiple value field in case we wish to use the same
+  // field for grouping messages in the future
+  // (eg http://drupal.org/node/1757060).
+  $wrapper->field_target_nodes[] = $node;
+  $wrapper->save();
+  $options = array(
+    'rendered fields' => array(
+      'message_notify_email_subject' => 'field_message_rendered_subject',
+      'message_notify_email_body' => 'field_message_rendered_body',
+    ),
+  );
+
+  // create message context
+  $context = innovatoripa_notify_subscriptions_message_subscribe_get_context('node', $node, array(), array());
+  message_subscribe_send_message('node', $node, $message, array('email' => $options), array('entity access' => FALSE), $context);
+}
+
+
+/**
+ * Implements hook_comment_insert().
+ */
+function innovatoripa_notify_comment_insert($comment) {
+  // skip unpublisherd comments
+  if (!$comment->status) {
+    return;
+  }
+  // @tb: using this broke comment notification by mail!!!!
+  //if (arg(0) == 'home' || arg(0) == 'admin') return;
+
+  $account = user_load($comment->uid);
+  $node = node_load($comment->nid);
+  $message_type = 'innovatoripa_notify_commento_inserito';
+  $hook = 'comment_insert';
+  if (!isset($node->og_group_ref[LANGUAGE_NONE][0]['target_id'])) {
+    $message_type = 'innovatoripa_notify_commento_inserito_fuori_da_un_gruppo';
+  }
+  else {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $groups = $wrapper->og_group_ref->value();
+    // set "innovatoripa_notify_commento_inserito_gruppo_mail"
+    foreach ($groups as $group) {
+      if ($group->type == 'gruppo') {
+        $message_type = 'innovatoripa_notify_commento_inserito_gruppo_mail';
+      }
+      // break on first element, that's what we need
+      break;
+    }
+  }
+
+  //drupal_alter('commons_notify_message_selection', $message_type, $hook, $comment);
+  $message = message_create($message_type, array('uid' => $account->uid, 'timestamp' => $comment->created));
+  // Save reference to the node in the node reference field, and the
+  // "publish" state (i.e. if the node is published or unpublished).
+  $wrapper = entity_metadata_wrapper('message', $message);
+  $wrapper->field_target_nodes[] = $node;
+  $wrapper->field_target_comments[] = $comment;
+  $wrapper->save();
+  $options = array(
+    'rendered fields' => array(
+      'message_notify_email_subject' => 'field_message_rendered_subject',
+      'message_notify_email_body' => 'field_message_rendered_body',
+    ),
+  );
+
+  // create message context
+  $context = innovatoripa_notify_subscriptions_message_subscribe_get_context('comment', $comment, array(), array());
+  message_subscribe_send_message('comment', $comment, $message, array('email' => $options), array('entity access' => FALSE), $context);
+}
+
+/**
+ * Implements hook_mailcomment_prepare_message_alter
+ *
+ * @param $message
+ *   The message array as passed into hook_mail_alter
+ *
+ * @param $messageid_params
+ *  This array is used to create the signature of mailcomment
+ *  The array has the following keys:
+ *    "nid"  (the nid the comment is referring to)
+ *    "uid"  (the uid the comment is referring to)
+ *    "cid"  (if this is a message specific for a comment set the cid here, otherwise set this to 0)
+ *    "time" (a timestamp used for expiring purposes, use either the new entity (node or comment) timestamp)
+ *
+ * @param $from_alter
+ * An array that tells the mailcomment whether to proceed of not to alter the outgoing message
+ * The array has a key "proceed" with value TRUE or FALSE
+ */
+function innovatoripa_notify_mailcomment_prepare_message_alter(&$message, &$messageid_params, &$from_alter) {
+  $enabled_messages = array(
+    'innovatoripa_notify_nodo_inserito_gruppo_mail',
+    'innovatoripa_notify_commento_inserito_gruppo_mail',
+  );
+  if (!in_array($message['key'], $enabled_messages)) {
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+  if (empty($message['params']['message_entity']->field_target_nodes[LANGUAGE_NONE][0]['target_id'])) {
+    $message_log = t('Received a notification email for a message without a node owner');
+    watchdog('mailcomment', $message_log, array(), WATCHDOG_WARNING);
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+  $node_of_message_nid = $message['params']['message_entity']->field_target_nodes[LANGUAGE_NONE][0]['target_id'];
+  $node_of_message = node_load($node_of_message_nid);
+  /*if ($node_of_message->comment != 2) {
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+  */
+
+  // only "discussione" node can go further.
+  if ($node_of_message->type !== 'discussione') {
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+
+  if (empty($node_of_message->og_group_ref[LANGUAGE_NONE][0]['target_id'])) {
+    $message_log = t('Received a notification email for a message belonging to a node which is not in any group');
+    watchdog('mailcomment', $message_log, array(), WATCHDOG_WARNING);
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+  $og_of_node_nid = $node_of_message->og_group_ref[LANGUAGE_NONE][0]['target_id'];
+  $og_of_node = node_load($og_of_node_nid);
+  if ($og_of_node->type == 'comunita') {
+    $from_alter['proceed'] = FALSE;
+    return;
+  }
+  $recipient_uid = $message['params']['message_entity']->uid;
+  $recipient = user_load($recipient_uid);
+  switch ($message['key']) {
+    case 'innovatoripa_notify_nodo_inserito_gruppo_mail':
+      $messageid_params['uid'] = $recipient->uid;
+      $messageid_params['nid'] = $node_of_message->nid;
+      $messageid_params['cid'] = 0;
+      $messageid_params['time'] = $node_of_message->created;
+      if (variable_get('mailcomment_alter_subjects', 1)) {
+        $subject = $message['subject'];
+        $subject = variable_get('site_name', '') ? '[' . variable_get('site_name', '') . '] ' . t('[Gruppo]') . ' ' . $node_of_message->title : $subject;
+        $message['subject'] = $subject;
+      }
+      break;
+    case 'innovatoripa_notify_commento_inserito_gruppo_mail':
+      $cid = $message['params']['message_entity']->field_target_comments['und'][0]['target_id'];
+      $comment = comment_load($cid);
+      $messageid_params['uid'] = $comment->uid;
+      $messageid_params['cid'] = $comment->cid;
+      $messageid_params['nid'] = $comment->nid;
+      $ancestor_msg_id = mailcomment_mail_comment_ancestor_message_id($messageid_params['nid'], $messageid_params['cid']);
+      $messageid_params['time'] = $comment->created;
+
+      if (variable_get('mailcomment_alter_subjects', 1)) {
+        $subject = $message['subject'];
+        $subject = t('Re:') . ' ' . $subject;
+        $message['subject'] = $subject;
+      }
+      break;
+    default:
+      return;
+  }
+  if (isset($ancestor_msg_id)) {
+    $message['headers']['In-Reply-To'] = $ancestor_msg_id;
+  }
+}
+
+function innovatoripa_notify_feeds_presave(FeedsSource $source, $entity, $item) {
+  if ($entity->feeds_item->entity_type == 'comment') {
+    $entity->subject = substr($entity->subject, 0, 63);
+  }
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function innovatoripa_notify_theme_registry_alter(&$theme_registry) {
+  $theme_registry['swiftmailer']['path'] = drupal_get_path('theme', 'innovatoripa') . '/templates';
+}
+
+
+/**
+ * Implements of hook_preprocess_swiftmailer()
+ * Here we have the raw email message ready to be sent as HTML, newlines needs to be converted to html counterparts.
+ */
+function innovatoripa_notify_preprocess_swiftmailer(&$vars) {
+  $body = &$vars['body'];
+  $body = _filter_autop($body);
+}

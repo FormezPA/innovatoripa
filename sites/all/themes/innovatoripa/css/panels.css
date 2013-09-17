@@ -1,0 +1,442 @@
+/*PANELS
+Tutte le impostazioni di panels (sostituisce il file CSS distribuito con panels)
+*/
+/*+clearfix {*/
+.userinfo_user:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	font-size: 0;
+}
+.userinfo_user
+{
+	display: inline-block;
+}
+.userinfo_user
+{
+	/*\*/
+	display: block;
+	/**/
+	-height: 1px;
+}
+/*+}*/
+.panel-head
+{
+	/*necessario per il posizionamento del menu di navigazione elenco / mappa*/
+	position: relative;
+}
+/*TITOLI PANNELLI*/
+H2.pane-title
+{
+	font-size: 1.3em;
+}
+.panel-content .pane-title
+{
+	margin: 0.5em 0;
+	font-size: 1.2em;
+}
+/*
+### ADMIN*/
+.panel-pane DIV.admin-links
+{
+	font-size: xx-small;
+	margin-right: 1em;
+}
+.panel-pane DIV.admin-links LI A
+{
+	color: #CCC;
+}
+.panel-pane DIV.admin-links LI
+{
+	padding-bottom: 2px;
+	background: #FFFFFF;
+	z-index: 201;
+}
+.panel-pane DIV.admin-links:hover A, .panel-pane DIV.admin-links-hover A
+{
+	color: #000;
+}
+.panel-pane DIV.admin-links A:before
+{
+	content: "[";
+}
+.panel-pane DIV.admin-links A:after
+{
+	content: "]";
+}
+/*PANNELLI NASCOSTI*/
+.panel-pane DIV.panel-hide
+{
+	display: none;
+}
+/** For IE we add the class via js; for other browsers we rely on :hover **/
+.panel-pane DIV.panel-hide-hover, .panel-pane:hover DIV.panel-hide
+{
+	display: block;
+	position: absolute;
+	z-index: 200;
+	margin-top: -1.5em;
+}
+/*
+PAGINA PERSONE - SWITCH MENU*/
+.people-switch-menu
+{
+	width: 200px;
+	position: absolute;
+	bottom: 30px;
+	left: 25%;
+	margin: 0 0 0 5px;
+	padding: 0;
+	list-style: none none;
+}
+.people-switch-menu LI
+{
+	margin: 0;
+	font-weight: bold;
+	padding: 0;
+	list-style: none none;
+	float: left;
+}
+.people-switch-menu .icon
+{
+	margin-top: 2px;
+	margin-right: 4px;
+}
+.people-switch-menu LI.is-active
+{
+	background-color: #D2DDE0;
+}
+.people-switch-menu LI A
+{
+	float: left;
+	height: 20px;
+	padding: 0.2em 1em 0.2em 0.5em;
+	border-width: 0;
+}
+/*
+PAGINA MAPPA PERSONE*/
+.page-persone-map .panel-head
+{
+	height: 140px;
+	margin-bottom: 10px;
+}
+.page-persone-map .people-switch-menu
+{
+	position: absolute;
+	width: auto;
+	left: 25%;
+	right: 0;
+	bottom: 0px;
+	margin-right: 10px;
+	margin-left: 10px;
+	height: 30px;
+	background-color: #D2DDE0;
+}
+.page-persone-map .people-switch-menu LI
+{
+	top: -25px;
+	left: 0;
+	margin: 0;
+	position: absolute;
+}
+.page-persone-map .people-switch-menu LI + LI
+{
+	left: 85px;
+}
+/*
+PAGINA PROFILO UTENTE PUBBLICO*/
+.user-profile-top-main .privatemsg-send-link-profile
+{
+	display: inline !important;
+}
+.user-profile-top-main .privatemsg-send-link-profile IMG
+{
+	display: inline;
+	width: 32px;
+	margin: 0 0 -3px 12px;
+}
+.page-user_public-profile #content .panel-content
+{
+	position: relative;
+}
+.page-user_public-profile #content .panel-content .privatemsg-send-link
+{
+	display: none;
+}
+.page-user_public-profile #content .panel-content H1 .privatemsg-send-link
+{
+	display: block;
+}
+/*
+QUICKTABS ACCORDION (PAGINE PROFILO UTENTE)
+quicktabs*/
+DIV[class^=pane-quicktabs-]
+{
+	margin: 1em 0;
+}
+DIV[class*=pane-quicktabs-] .ui-corner-top, DIV[class*=pane-quicktabs-] .ui-corner-bottom
+{
+	/*+border-radius:0;*/
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-khtml-border-radius: 0;
+	border-radius: 0;
+	border-color: #C3C3AE;
+}
+DIV[class*=pane-quicktabs-] .pane-title, .pane-quicktabs-attivit-public-profile .pane-title
+{
+	display: none;
+}
+/*accordion header*/
+DIV[class*=pane-quicktabs-] .ui-accordion-header
+{
+	background: #E6E6DD;
+	/*+border-radius:0;*/
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-khtml-border-radius: 0;
+	border-radius: 0;
+}
+DIV[class*=pane-quicktabs-] .ui-accordion-header.ui-state-hover
+{
+	border-color: #BFBFB3;
+}
+DIV[class*=pane-quicktabs-] .ui-accordion-header A
+{
+	font-weight: normal;
+	font-family: Abel, sans-serif;
+}
+/*accordion content*/
+DIV[class*=pane-quicktabs-] .ui-accordion-content
+{
+	font-size: 0.8em;
+}
+DIV[class*=pane-quicktabs-] .ui-accordion-content .block-list
+{
+	margin: 0;
+	line-height: 1.4em;
+}
+DIV[class*=pane-quicktabs-] .ui-accordion-content .block-list-item A
+{
+	text-decoration: none;
+	color: #007893;
+}
+DIV[class*=pane-quicktabs-] .ui-accordion-content .block-list-item A:hover
+{
+	color: #3F3F3B;
+}
+DIV[class*=pane-quicktabs-] .block-list
+{
+}
+DIV[class*=pane-quicktabs-] .block-list-item
+{
+	margin: 1em 0;
+}
+DIV[class*=pane-quicktabs-] .block-list-item-description
+{
+	font-size: 1.1em;
+}
+DIV[class*=pane-quicktabs-] .view-display-id-panel_pane_2, #quickset-my_private_profile .view-display-id-panel_pane_1
+{
+	color: #7C7C7C;
+	font-size: 1.1em;
+}
+DIV[class*=pane-quicktabs-] .timestamp
+{
+	margin-right: 0.6em;
+	font-style: italic;
+	font-size: 0.9em;
+}
+DIV[class*=pane-quicktabs-] .block-list .entity-message, DIV[class*=pane-quicktabs-] .block-list .entity-message P, .block-list .entity-message DIV
+{
+	display: inline;
+	line-height: 1.5;
+}
+DIV[class*=pane-quicktabs-] .block-list A + A
+{
+	font-weight: bold;
+}
+/*
+PAGINA FOLLOWING / FOLLOWERS*/
+.page-users-followers H1.title, .page-users-following H1.title
+{
+	font-size: 1.5em;
+}
+/*
+ATTIVITA' SUI MIEI CONTENUTI*/
+.pane-up-attivit-sui-miei-contenuti .pane-title
+{
+	background: #E6E6DD;
+	padding: 0.6em 1em;
+	font-size: 1.1em;
+	font-weight: normal;
+	font-family: Abel, sans-serif;
+	margin-bottom: 0;
+	border: 1px solid #C3C3AE;
+}
+.pane-up-attivit-sui-miei-contenuti .view-up-attivit-sui-miei-contenuti
+{
+	padding: 1em;
+	border: 1px solid #C3C3AE;
+	border-top-width: 0;
+}
+.pane-up-attivit-sui-miei-contenuti .block-list-item A
+{
+	text-decoration: none;
+	color: #007893;
+}
+.pane-up-attivit-sui-miei-contenuti .block-list-item A:hover
+{
+	color: #3F3F3B;
+}
+/*
+CONTENUTI PUBBLICATI DALL'UTENTE*/
+.pane-node-social-blocks-panel-pane-1 .pane-title
+{
+	border-bottom: 1px solid #828282;
+}
+/*
+BLOCCHI EVENTI PA*/
+.pane-innovatoripa-user-eventipa-docenze, .pane-innovatoripa-user-eventipa-partecipazioni
+{
+	margin-bottom: 1em;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid #CCCCBF;
+}
+.pane-innovatoripa-user-eventipa-docenze .pane-content, .pane-innovatoripa-user-eventipa-partecipazioni .pane-content
+{
+	font-size: 0.9em;
+}
+.pane-innovatoripa-user-eventipa-docenze .pane-content UL, .pane-innovatoripa-user-eventipa-partecipazioni .pane-content UL
+{
+	padding-left: 1.5em;
+	margin: 0.5em 0;
+}
+.pane-innovatoripa-user-eventipa-docenze .pane-content SMALL, .pane-innovatoripa-user-eventipa-partecipazioni .pane-content SMALL
+{
+	display: block;
+	text-align: right;
+}
+/*
+SIDEBAR SEARCH*/
+.panel-search .panel-sidebar-search .panel-pane
+{
+	/*+border-radius:5px;*/
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	border-radius: 5px 5px 5px 5px;
+	margin-bottom: 1em;
+	border: 1px solid #EFEFE7;
+	background-color: #EBEFE9;
+}
+.panel-search .panel-sidebar-search .panel-pane .pane-title
+{
+	background-color: #D5DED1;
+	margin: 0 0 0.5em;
+	padding: 0.4em;
+}
+.panel-search .panel-sidebar-search .panel-pane .pane-content
+{
+	padding: 0 5px;
+}
+/*-- current search blocks*/
+.pane-current-search-node-search
+{
+}
+.current-search-item
+{
+}
+.current-search-item + .current-search-item
+{
+	text-align: right;
+	font-size: 0.9em;
+	font-family: Abel, sans-serif;
+	color: #850505;
+}
+.current-search-item.current-search-item-active
+{
+	font-weight: bold;
+}
+.current-search-item.current-search-item-active A
+{
+	border-bottom-width: 0;
+}
+.current-search-item .item-list UL
+{
+	margin: 1em 0;
+	padding: 0;
+	list-style-type: none;
+}
+.current-search-item .item-list LI
+{
+}
+/*
+PAGINA BLOG PERSONALE
+-- contenuti in sidebar*/
+.userinfo_user-title
+{
+	margin-bottom: 0.5em;
+}
+.section-users .userinfo_user-title
+{
+	font-size: 1.1em;
+}
+/*[clearfix]*/.userinfo_user
+{
+	margin: 0.5em 0 1.5em;
+	border: 1px solid #C9C9C9;
+	background-color: #E6E6DD;
+	padding: 1em;
+	font-size: 0.9em;
+}
+.userinfo_user-avatar
+{
+	line-height: 0;
+	float: left;
+	width: 25%;
+	min-width: 50px;
+	height: auto;
+	position: relative;
+	margin-left: -1em;
+	margin-right: 0.7em;
+}
+.userinfo_user-avatar A
+{
+	border-width: 0;
+	float: left;
+	width: 100%;
+}
+.userinfo_user-avatar IMG
+{
+	width: 100%;
+	border: 1px solid #C9C9C9;
+	border-left-width: 0;
+}
+.userinfo_user-summary
+{
+}
+.userinfo_user-summary P
+{
+	display: inline;
+}
+.userinfo_user-summary .read-more, .userinfo_user-summary .read-less
+{
+	display: inline;
+	margin-left: 5px;
+}
+.userinfo_user-url
+{
+	margin-top: 5px;
+}
+.userinfo_user-flag
+{
+	text-align: right;
+	margin: 0;
+	padding: 1em;
+	font-family: Abel, sans-serif;
+}

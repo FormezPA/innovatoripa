@@ -1,0 +1,160 @@
+diff --git i/mailcomment.info w/mailcomment.info
+index b4b21c1..699b880 100644
+--- i/mailcomment.info
++++ w/mailcomment.info
+@@ -1,7 +1,6 @@
+ name = Mail Comment
+ description = Gateway module for responding to posts via mail
+ package = "Mailhandler"
+-dependencies[] = notifications
+ dependencies[] = mailhandler (>1.99)
+ core = 7.x
+ 
+diff --git i/mailcomment.install w/mailcomment.install
+index 341651b..6200574 100644
+--- i/mailcomment.install
++++ w/mailcomment.install
+@@ -5,6 +5,33 @@
+  */
+ 
+ /**
++ * Implements hook_requirements().
++ *
++ * Check that either notifications or message_notify exist
++ */
++function mailcomment_requirements($phase) {
++  // Ensure translations don't break at install time
++  $t = get_t();
++  $notification_exists   = module_exists('notifications');
++  $message_notify_exists = module_exists('message_notify');
++  $value = 'No Notification or Message Notify module has been found';
++  if ($notification_exists) {
++    $value = 'Notification found';
++  }
++  if ($message_notify_exists) {
++    $value = 'Message Notify found';
++  }
++
++  $requirements['mailcomment_runtime_dependency'] = array(
++    'title'       => $t('Mailcomment'),
++    'description' => $t("Mailcomment requires that either Notifications or Message notify are enabled in order to function properly.", array()),
++    'value'       => $value,
++    'severity'    => ($notification_exists || $message_notify_exists) ? REQUIREMENT_OK : REQUIREMENT_ERROR,
++  );
++  return $requirements;
++}
++
++/**
+  * Set the new mailcomment_mailboxes variable with the mailcomment_mailbox variable by default.
+  */
+ function mailcomment_update_6001() {
+diff --git i/mailcomment.module w/mailcomment.module
+index f72050c..ab80dd6 100644
+--- i/mailcomment.module
++++ w/mailcomment.module
+@@ -29,7 +29,7 @@ function mailcomment_menu() {
+     'description' => 'Configure automatic mail responses.',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('mailcomment_admin_settings'),
+-    'access arguments' => array('administer notifications'),
++    'access callback' => 'mailcomment_access_admin_page',
+   );
+   $items['mailcomment/redirect'] = array(
+     'title' => 'Mail Comment',
+@@ -42,6 +42,20 @@ function mailcomment_menu() {
+   return $items;
+ }
+ 
++function mailcomment_access_admin_page() {
++  $notification_exists   = module_exists('notifications');
++  $message_notify_exists = module_exists('message_notify');
++
++  global $user;
++  if ($notification_exists) {
++    return user_access('administer message subscribe', $user);
++  }
++  if ($message_notify_exists) {
++    return user_access('administer notifications', $user);
++  }
++  return FALSE;
++}
++
+ /**
+  * Admin settings form
+  */
+@@ -123,6 +137,43 @@ function mailcomment_admin_settings() {
+ }
+ 
+ /**
++ * Implements hook_mail_alter().
++ */
++function mailcomment_mail_alter(&$message) {
++  if ($message['module'] != 'message_notify') {
++    return;
++  }
++  $recipient_uid = $message['params']['message_entity']->uid;
++  $recipient = user_load($recipient_uid);
++  if (!user_access('post comments', $recipient)) {
++    return;
++  }
++
++  $messageid_params = array();
++  $from_alter = array('proceed' => TRUE);
++  drupal_alter('mailcomment_prepare_message', $message, $messageid_params, $from_alter);
++  if (!$from_alter['proceed']) {
++    return;
++  }
++
++  $reply = variable_get('mailcomment_mailbox', variable_get('site_mail', ''));
++  $message['headers']['Reply-To'] = $reply;
++
++  $message['headers']['Message-ID'] = mailcomment_build_messageid($messageid_params);
++  // Add marker text into the message header part taking care of already existing text
++  $insert_reply_text = variable_get('mailcomment_insert_reply_text', 1);
++  $text = variable_get('mailcomment_reply_text', t('((( Reply ABOVE this LINE to POST a COMMENT )))'));
++  if ($text && $insert_reply_text) {
++    $prefix = array($text);
++    $prefix[] = $message['body'][0];
++    $body = implode("\n", $prefix);
++    $message['body'][0] = $body;
++  }
++  $messageid_params['uid'] = $recipient->uid;
++  $message['body'][0] .=  'View original post: ' . url('mailcomment/redirect/' . mailcomment_build_messageid($messageid_params), array('absolute' => TRUE));
++}
++
++/**
+  * Implements hook_notifications_message_alter().
+  *
+  * Adds message headers into outgoing emails for notifications
+@@ -381,8 +432,8 @@ function mailcomment_mail_comment_ancestor_message_id($nid, $cid) {
+  * Implements hook_ctools_plugin_directory().
+  */
+ function mailcomment_ctools_plugin_directory($module, $plugin) {
+-  if ($module == 'mailhandler') {
+-    return 'plugins/' . $plugin;
++  if ($module == 'mailhandler' && $plugin == 'authenticate') {
++    return 'plugins/' . $plugin . '_plugin';
+   }
+ }
+ 
+diff --git i/plugins/authenticate_plugin/MailcommentAuthenticate.class.php w/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
+index 0f1480d..c289a65 100644
+--- i/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
++++ w/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
+@@ -44,5 +44,6 @@ class MailcommentAuthenticate extends MailhandlerAuthenticate {
+     else {
+       $message['authenticated_uid'] = 0;
+     }
++    return $message['authenticated_uid'];
+   }
+ }
+diff --git i/plugins/authenticate_plugin/MailcommentAuthenticate.inc w/plugins/authenticate_plugin/MailcommentAuthenticate.inc
+index 7880d73..a9c60c5 100644
+--- i/plugins/authenticate_plugin/MailcommentAuthenticate.inc
++++ w/plugins/authenticate_plugin/MailcommentAuthenticate.inc
+@@ -11,4 +11,5 @@ $plugin = array(
+     'class' => 'MailcommentAuthenticate',
+     'parent' => 'MailhandlerAuthenticate',
+   ),
++  'file' => 'MailcommentAuthenticate.class.php',
+ );

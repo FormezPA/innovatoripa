@@ -1,0 +1,27 @@
+diff --git a/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc b/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
+index affe4e8..ad4bd94 100644
+--- a/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
++++ b/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
+@@ -137,6 +137,9 @@ class SWIFTMailSystem implements MailSystemInterface {
+ 
+           // Get header type.
+           $header_type = swiftmailer_get_headertype($header_key, $header_value);
++          if ($header_key == 'Message-ID') {
++            $header_type = 'message_id_text_header';
++          }
+ 
+           // Add the current header to the e-mail message.
+           switch ($header_type) {
+@@ -275,12 +278,7 @@ class SWIFTMailSystem implements MailSystemInterface {
+             break;
+         }
+       }
+-      
+-      // Send the message.
+       return $mailer->send($m);
+-
+-
+-
+     }
+     catch (Exception $e) {
+ 

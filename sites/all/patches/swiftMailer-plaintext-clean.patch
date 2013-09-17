@@ -1,0 +1,17 @@
+diff --git a/includes/classes/SWIFTMailSystem.inc b/includes/classes/SWIFTMailSystem.inc
+index a609288..20ca3aa 100644
+--- a/includes/classes/SWIFTMailSystem.inc
++++ b/includes/classes/SWIFTMailSystem.inc
+@@ -49,6 +49,12 @@ class SWIFTMailSystem implements MailSystemInterface {
+           $message['plain'] = drupal_html_to_text($body);
+         }
+       }
++      else {
++        // Convert any HTML to plain-text.
++        $message['body'] = drupal_html_to_text($message['body']);
++        // Wrap the mail body for sending.
++        $message['body'] = drupal_wrap_mail($message['body']);
++      }
+ 
+       // Process any images specified by 'image:' which are to be added later
+       // in the process. All we do here is to alter the message so that image

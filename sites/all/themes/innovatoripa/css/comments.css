@@ -1,0 +1,339 @@
+/**
+* @file
+* Comment Styling
+ */
+.comments
+{
+	/*Wrapper for the list of comments and its title*/
+	margin: 1.5em 0;
+}
+.comments H2.title
+{
+	/*Heading for the list of comments*/
+	font-size: 1.3em;
+}
+.comments H2.comment-form
+{
+	/*Heading for the comment form*/
+}
+/*
+SINGOLO COMMENTO*/
+.comment
+{
+	/*Wrapper for a single comment*/
+	margin: 1em 0;
+}
+.comment.comment-preview
+{
+	/*Preview of the comment before submitting new or updated comment*/
+	background-color: #FFFFEA;
+	/*Drupal core will use a #ffffea background. See #1110842*/
+}
+.comment.new
+{
+	/*A new comment since the user last viewed the page.*/
+}
+.comment.first
+{
+	/*The first comment in the list of comments*/
+}
+.comment.last
+{
+	/*The last comment in the list of comments*/
+}
+.comment.odd
+{
+	/*An odd-numbered comment in the list of comments*/
+}
+.comment.even
+{
+	/*An even-numbered comment in the list of comments*/
+}
+.comment.comment-by-anonymous
+{
+	/*A comment created by an anonymous user*/
+}
+.comment.comment-by-node-author
+{
+	/*A comment created by the node's author*/
+}
+.comment.comment-by-viewer
+{
+	/*A comment created by the current user*/
+}
+/*- marker*/
+MARK.new
+{
+	float: left;
+	margin-right: 0.5em;
+	font-family: Abel;
+	padding: 0 0.2em;
+	background-color: #3A9500;
+	color: #FFFFFF;
+	border-radius: 3px;
+}
+/*- avatar*/
+.comment-user-avatar
+{
+	border-width: 0;
+	float: left;
+	width: 60px;
+	height: 60px;
+	margin-top: 0.4em;
+}
+.comment-user-avatar IMG
+{
+	max-width: 100%;
+	height: auto;
+}
+/*- contenuto commento*/
+.comment-content-wr
+{
+	margin-left: 70px;
+}
+.comment-pub-info
+{
+	color: #797972;
+	font-size: 0.85em;
+}
+.comment-pub-info A
+{
+	color: #797972;
+	border-width: 0;
+}
+.comment H3.comment-title
+{
+	/*Comment title*/
+	margin: 0.2em 0;
+	font-size: 1.2em;
+}
+.comment-content P
+{
+	margin: 0.2em 0 0.5em;
+}
+.comment-is-new
+{
+	color: #991515;
+}
+.comment .submitted
+{
+	/*The "posted by" information*/
+}
+.comment .permalink
+{
+	/*Comment's permalink wrapper*/
+	text-transform: uppercase;
+	font-size: 75%;
+}
+.comment .user-signature
+{
+	/*The user's signature*/
+}
+/*- links*/
+.comment UL.links
+{
+	font-family: Abel, sans-serif;
+	/*Comment links. See also the ul.links declaration in the pages.css.*/
+	text-align: right;
+	display: block;
+	margin: 0;
+}
+.comment UL.links LI A
+{
+	padding-left: 20px;
+	background: transparent url(../images/icons/comment_delete.png) no-repeat left center;
+}
+.comment UL.links .comment-delete A
+{
+}
+.comment UL.links .comment-edit A
+{
+	background-image: url(../images/icons/comment_edit.png);
+}
+.comment UL.links .comment-reply A
+{
+	background-image: url(../images/icons/comment_add.png);
+}
+.indented
+{
+	/*Nested comments are indented*/
+	margin-left: 30px;
+	/*Drupal core uses a 25px left margin*/
+}
+.comment-unpublished
+{
+	/*Unpublished comments
+background-color: #fff4f4;
+Drupal core uses a #fff4f4 background*/
+}
+.comment-unpublished P.unpublished
+{
+	/*The word "Unpublished" displayed underneath the content.*/
+	height: 0;
+	overflow: visible;
+	color: #D8D8D8;
+	font-size: 75px;
+	line-height: 1;
+	font-family: Impact, "Arial Narrow", Helvetica, sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	word-wrap: break-word;
+}
+/*- allegati*/
+.comments .field-name-field-allegato
+{
+}
+.comments .field-name-field-allegato .field-label
+{
+	font-weight: bold;
+	font-variant: small-caps;
+}
+/*
+COMMENT FORM*/
+.title.comment-form
+{
+	margin-bottom: 0.2em;
+}
+#comment-form
+{
+	padding: 1em;
+	background-color: #EFEFE7;
+	/*+box-shadow:inset 0px 0px 2px rgba(0, 0, 0, 0.5);*/
+	-moz-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	-o-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+#comment-form #edit-author--2
+{
+	font-weight: bold;
+}
+#comment-form LABEL
+{
+	font-family: Abel, sans-serif;
+}
+#comment-form #edit-author--2 LABEL
+{
+	display: inline;
+	margin-right: 5px;
+}
+#comment-form #edit-author--2 .username
+{
+}
+#comment-form INPUT.form-file
+{
+	margin-right: 1em;
+}
+/*
+COMMENTI IN TEASER*/
+.teaser__comments
+{
+	position: relative;
+	margin-left: 90px;
+	margin-top: 1em;
+	padding-top: 4.6em;
+	font-size: 0.8em;
+	height: 4em;
+	overflow: hidden;
+}
+.teaser__comments-item-avatar
+{
+	margin-right: 8px;
+	cursor: pointer;
+	float: left;
+	width: 30px;
+	height: 30px;
+	padding-top: 10px;
+}
+.teaser__comments-item-avatar IMG
+{
+	border: 2px solid transparent;
+	max-width: 100%;
+	max-height: 100%;
+	height: auto;
+}
+.teaser__comments-item-text
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	line-height: 1.4em;
+	height: 4.2em;
+	border: 1px solid #E3E3D5;
+	background-color: #E3E3D5;
+	padding: 0.2em;
+	width: 100%;
+}
+.teaser__comments-item + .teaser__comments-item .teaser__comments-item-text
+{
+	/*mostro di default solo il primo commento, non uso display non per renderlo maggiormente accessibile*/
+	margin-left: -999em;
+}
+.teaser__comments-item.is-hidden .teaser__comments-item-text
+{
+	display: none;
+}
+.teaser__comments-item.is-active .teaser__comments-item-text
+{
+	display: block;
+	margin-left: 0;
+}
+.teaser__comments-item.is-active .teaser__comments-item-avatar
+{
+	background: transparent url(../images/arrow_comments_teaser.png) no-repeat 12px 2px;
+}
+.teaser__comments-item.is-active .teaser__comments-item-avatar IMG
+{
+	border-color: #E3E3D5;
+}
+/*-- commenti in teaser_simplified (manca l'avatar)*/
+.view-mode-teaser_simplified .teaser__comments
+{
+	margin-left: 0;
+}
+/*
+RISPOSTE (COMMENTI ALLE DOMANDE)
+- i commenti alle domande sono riscritti come risposte. Vi è un widget aggiuntivo per il voto
+TEASER*/
+.teaser__comments-item-text .info
+{
+	font-family: "Droid Sans", Helvetica, Arial, Verdana, sans-serif;
+	font-style: italic;
+}
+.teaser__comments-item-text .average-vote
+{
+	float: left;
+	margin: 0 5px 0 0;
+}
+.teaser__comments-item-text .average-vote DIV
+{
+	margin: 0;
+	padding: 0;
+}
+.teaser__comments-item-text .average-vote .rate-button
+{
+	display: none;
+}
+.teaser__comments-item-text .average-vote .rate-number-up-down-rating
+{
+	width: 38px;
+	background-color: #F2F2EB;
+	border-color: #C7C7B9;
+	font-weight: bold;
+	color: #7A7A61;
+        text-align: center;
+}
+/*FULL NODE*/
+.answers .comment, .page-comment .comment
+{
+	min-height: 145px;
+}
+.answers .form-type-textarea LABEL
+{
+	display: none;
+}
+
+.teaser__comments-item-avatar .field.field-name-field-profile-avatar {
+    margin: 0px;
+}

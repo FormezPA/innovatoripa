@@ -1,0 +1,286 @@
+/*MOBILE - SMALL SCREENS
+Commenti in teaser*/
+@media all and (max-width: 360px)
+{
+    /* login region */
+    .region-login-form {
+        font-size: 0.9em;
+    }
+    #block-formezauth-formezauth-login {
+        right: auto;
+        margin-right: 0;
+        left: 3px;
+    }
+    #login-form-button a {
+        padding: 0.3em 1em;
+    }
+    /* flexslider */
+    .flexslider {
+        height: 390px !important;
+    }
+	.user-info
+	{
+		width: 50px;
+		font-size: 0.8em;
+	}
+	.user-info A
+	{
+		width: 50px;
+		height: 50px;
+		min-height: 50px;
+	}
+	.node .content
+	{
+		margin-left: 60px;
+	}
+}
+@media all and (max-width: 479px)
+{
+    /* site header */
+    #site-name
+    {
+        font-family: "Days One", Helvetica, Arial, Verdana, sans-serif;
+        font-size: 2.2em;
+    }
+    #site-slogan
+    {
+        font-family: Abel, sans-serif;
+        font-size: 12px;
+        margin-top: -0.5em;
+    }
+    #block-search-form INPUT.form-search
+    {
+        max-width: 110px;
+    }
+    /* global forms */
+    INPUT.form-submit
+    {
+        padding: 0.5em 1em;
+    }
+    /* main */
+    #main {
+        padding-top: 40px;
+    }
+    /* flexslider */
+    .flexslider {
+        height: 290px;
+    }
+    /* comments teasers */
+	.teaser__comments-item-text
+	{
+		height: 7em;
+	}
+	.teaser__comments
+	{
+		padding-top: 7.4em;
+	}
+	/*Pagina di ricerca - span in titolo*/
+	.page-title SPAN
+	{
+		font-size: 70%;
+	}
+	/*Campo ricerca testo libero*/
+	.panel .views-exposed-form [class*="views_fulltext"] INPUT
+	{
+		width: 38% !important;
+	}
+	/*Search results - persone*/
+	.search-results-item
+	{
+		width: 100%;
+	}
+	.search-results-item.views-row-odd, .search-results-item.views-row-even
+	{
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+}
+@media all and (max-width: 700px)
+{
+	/* flexslider */
+    .flexslider {
+        height: 300px;
+        line-height: 1.6em;
+    }
+    .flexslider .featured-pubinfo {
+        line-height: 1.2em; 
+    }
+    /* COMMUNITY AND GROUP subscribe button */
+    #block-ds-extras-ds-block-community-full .community-subscribe, #block-ds-extras-ds-block-group-full .group-subscribe
+    {
+        /*+box-sizing:border-box;*/
+        position: static;
+        border-width: 0;
+        margin-left: -4px;
+        margin-bottom: 1em;
+        padding-right: 0px;
+    }
+    #block-ds-extras-ds-block-community-full SPAN[class^="read-"], 
+    #block-ds-extras-ds-block-group-full .read-more, 
+    #block-ds-extras-ds-block-community-full .read-less, 
+    #block-ds-extras-ds-block-group-full SPAN[class^="read-"]
+    {
+        width: 100%;
+        border-top: 1px solid #CCCCBC;
+        height: 34px;
+    }
+    #block-ds-extras-ds-block-community-full .flag-wrapper, #block-ds-extras-ds-block-group-full .flag-wrapper
+    {
+        position: relative;
+        left: 0;
+        bottom: 0;
+        margin-left: -4px;
+        margin-bottom: 1em;
+    }
+    #block-ds-extras-ds-block-community-full .flag-message, #block-ds-extras-ds-block-group-full .flag-message
+    {
+        margin-top: -27px;
+    }
+}
+@media all and (min-width: 480px) and (max-width: 700px)
+{
+    .teaser__comments-item-text
+	{
+		height: 7em;
+	}
+	.teaser__comments
+	{
+		padding-top: 7.4em;
+		margin-left: 60px;
+	}
+	.user-info
+	{
+		width: 50px;
+		font-size: 0.8em;
+	}
+	.user-info A
+	{
+		width: 50px;
+		height: 50px;
+		min-height: 50px;
+	}
+	.node .content
+	{
+		margin-left: 60px;
+	}
+}
+/*MOBILE AND TABLET - SMALL AND MEDIUM SCREENS
+Use a smaller font for user infos*/
+@media all and (max-width: 959px)
+{
+	.user-info
+	{
+		font-family: Abel, sans-serif;
+	}
+	/*Node teaser content-text*/
+	.node .content-text
+	{
+		font-size: 1em;
+		line-height: 1.4em;
+	}
+	/*Nascondo le opzioni di ricerca nella searchbox*/
+	#edit-custom-search-paths
+	{
+		display: none;
+	}
+	/*Nascondo l'immagine dai contenuti nello slider*/
+	.featured-image
+	{
+		display: none;
+	}
+    /*-------------------------
+    Pagine di ricerca
+    -------------------------
+    Riduzione dimensione font in sidebar*/
+	.sidebar-search .panel-sidebar-search
+	{
+		font-size: 0.9em;
+		padding-top: 0.5em;
+	}
+	/*-- ricerca libera tutto testo*/
+	.panel .views-exposed-form [class*=views_fulltext]
+	{
+		width: auto;
+		float: none;
+		margin: 0;
+		padding: 0;
+	}
+	.panel .views-exposed-form
+	{
+		margin-top: 1em;
+	}
+	.panel .views-exposed-form [class*=views_fulltext] LABEL
+	{
+		font-family: Abel, sans-serif;
+		position: static;
+		float: left;
+		width: 23%;
+		height: 28px;
+		line-height: 28px;
+		font-size: 1em;
+	}
+	.panel .views-exposed-form [class*=views_fulltext] INPUT
+	{
+		position: static;
+		float: left;
+		clear: none;
+		height: 30px;
+		width: 42%;
+		margin-right: 2%;
+	}
+	/*-- filtri di ordinamento dei risultati*/
+	.panel .views-exposed-form .views-widget-sort-by
+	{
+		width: 100%;
+	}
+	/*-- submit button*/
+	.panel .views-exposed-form .views-submit-button, .panel .views-exposed-form .views-reset-button
+	{
+		position: static;
+		float: left;
+	}
+	.panel .views-exposed-form .views-reset-button
+	{
+		margin-left: 2%;
+	}
+	.panel .views-exposed-form .views-submit-button INPUT, .panel .views-exposed-form .views-reset-button INPUT
+	{
+		padding-left: 10%;
+		padding-right: 10%;
+	}
+	/*- PAGINA PERSONE - SWITCH MENU*/
+	.people-switch-menu
+	{
+		left: 10px;
+		margin: 0;
+		padding: 0;
+	}
+	/*Risultati di ricerca*/
+	.search-results-item-text
+	{
+		height: 6em;
+		line-height: 1.2em;
+		font-size: 0.8em;
+	}
+	/*-------------------------
+    PAGINE PROFILO UTENTE
+    -------------------------*/
+	.user-profile-top-main H1
+	{
+		font-size: 1.6em;
+	}
+	.user-profile-top-main H3
+	{
+		font-size: 1.1em;
+	}
+}
+@media all and (min-width: 900px)
+{
+    #block-ds-extras-ds-block-community-full .field-name-community-linked-institutional-logo {
+        width: auto;
+        max-width: 700px;
+        float: right;
+        margin: 0 -1em 10px 0;
+    }
+}

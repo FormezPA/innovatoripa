@@ -1,0 +1,1051 @@
+<?php
+/**
+ * @file
+ * Code for the Base Frontend feature.
+ */
+
+include_once 'base_frontend.features.inc';
+
+/*
+ * Add panels layouts and plugins
+ */
+function base_frontend_ctools_plugin_directory($module, $plugin) {
+  return 'plugins/' . $plugin;
+}
+
+/*
+ * Implementation of hook_library ()
+ * 
+ * Define sitewide libraries
+ * 
+ */
+function base_frontend_library() {
+  
+  // jQuery Formalize library
+  $libraries['formalize'] = array (
+    'title' => 'jQuery Formalize',
+    'website' => 'https://github.com/nathansmith/formalize',
+    'version' => '1.2',
+    'js' => array (
+      drupal_get_path('module', 'base_frontend').'/libraries/formalize/jquery.formalize.js' => array(
+        'group' => JS_THEME,
+        'weight' => 1,
+      ),
+    ),
+    'css' => array(
+      drupal_get_path('module', 'base_frontend').'/libraries/formalize/formalize.css' => array(
+        'group' => CSS_THEME,
+        'weight' => -10,
+      ),
+    ),
+    'dependencies' => array(
+      // Nessuna dipendenza
+    ),
+  );
+
+  return $libraries;
+}
+
+
+function base_frontend_theme($existing, $type, $theme, $path) {
+  return array(
+    'anteprima_commenti_in_teaser' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'theme/extra-field--anteprima-commenti-in-teaser',
+    ),
+    'anteprima_commento_piu_votato' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'theme/extra-field--anteprima-commento-piu-votato',
+    ),
+  );
+}
+
+
+
+/**
+ * Define fields. These fields are not overridable through the interface.
+ * If you want those, look at hook_ds_custom_fields_info().
+ *
+ * @param $entity_type
+ *   The name of the entity which we are requesting fields for, e.g. 'node'.
+ *
+ * @return $fields
+ *   A collection of fields which keys are the entity type name and values
+ *   a collection fields.
+ *
+ * @see ds_get_fields()
+ */
+function base_frontend_ds_fields_info($entity_type) {
+  
+  $fields = array();
+
+  $fields['debug_entity'] = array(
+    // title: title of the field
+    'title' => t('MODULO: DEBUG ENTITY'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('*|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php dsm($entity, "DEBUG ENTITY"); ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+
+$fields['user_avatar'] = array(
+    // title: title of the field
+    'title' => t('MODULO: Avatar e nome utente'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'function' => '_user_avatar',
+    'ui_limit' => array('*|*'),
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+    )
+  );
+
+  $fields['iconized_title_linked'] = array(
+    // title: title of the field
+    'title' => t('MODULO: icona del CT + testo del titolo linkato'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('*|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<i class="icon content-type-[node:content-type:machine-name]" title="[node:content-type:name]"></i><a href="[node:url]" title="Visualizza [node:title]">[node:title]</a>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+  
+  $fields['iconized_title'] = array(
+    // title: title of the field
+    'title' => t('MODULO: icona del CT + testo del titolo'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('*|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<i class="icon content-type-[node:content-type:machine-name]" title="[node:content-type:name]"></i>[node:title]',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+  
+  $fields['publishing_information'] = array(
+    // title: title of the field
+    'title' => t('MODULO: informazioni di pubblicazione'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'function' => '_publishing_information',
+    'ui_limit' => array('*|*'),
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+    )
+  );
+/*
+  $fields['statistics_info'] = array(
+    // title: title of the field
+    'title' => t('MODULO: statistiche'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('*|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<div class="content-stats">letto [node:total-count] volte</div>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+*/
+  
+  $fields['statistics_info'] = array(
+    // title: title of the field
+    'title' => t('MODULO: statistiche'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'function' => '_statistics_info',
+    'ui_limit' => array('*|*'),
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+    )
+  );
+  
+  $fields['social_share_buttons'] = array(
+    // title: title of the field
+    'title' => t('MODULO: social share links'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'function' => '_social_share_buttons',
+    'ui_limit' => array('*|*'),
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+    )
+  );
+  
+  // ----------------------------------
+  // FIELD SPECIFICI PER IL CT gruppo
+  // ----------------------------------
+  $fields['group_flag_follow_link'] = array(
+    // title: title of the field
+    'title' => t('MODULO: flag attiva/disattiva notifiche'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    'ui_limit' => array('gruppo|full'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php print _og_check_group_notification_link($entity) ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+  
+  // ----------------------------------
+  // FIELD SPECIFICI PER IL CT comunita
+  // ----------------------------------
+  
+  $fields['community_linked_institutional_logo'] = array(
+    // title: title of the field
+    'title' => t('MODULO: loghi istituzionali linkati'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    'ui_limit' => array('comunita|full'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php if(isset($entity->field_institutional_logo[LANGUAGE_NONE])) : ?><a href="[node:field-institutional-link:url]" title="[node:field-institutional-link:title]"><img src="[node:field_institutional_logo]" /></a><?php endif; ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+
+  $fields['community_flag_follow_link'] = array(
+    // title: title of the field
+    'title' => t('MODULO: flag attiva/disattiva notifiche'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    'ui_limit' => array('comunita|full'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php print _og_check_community_notification_link($entity) ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+
+  $fields['community_linked_credits'] = array(
+    // title: title of the field
+    'title' => t('MODULO: profilo e crediti linkato'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('comunita|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php print _og_community_linked_credits($entity) ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+
+  $fields['community_social_links'] = array(
+    // title: title of the field
+    'title' => t('MODULO: social links'),
+    'field_type' => DS_FIELD_TYPE_CODE,
+    // ui_limit : only used for the manage display screen so
+    // you can limit fields to show based on bundles or view modes
+    // the values are always in the form of $bundle|$view_mode
+    // You may use * to select all.
+    // Make sure you use the machine name.
+    'ui_limit' => array('comunita|*'),
+    // properties: can have different keys.
+    'properties' => array(
+      'formatters' => array(
+        'text_default' => t('Default')
+      ),
+      // use_token: optional, only for code field.
+      'use_token' => TRUE, // or FALSE,
+      // code: optional, only for code field.
+      'code' => array(
+        'value' => '<?php print _og_community_social_links($entity) ?>',
+        'format' => 'ds_code',
+      ),
+    )
+  );
+  
+  return array('node' => $fields);
+}
+
+function _og_community_linked_credits($entity) {
+  if (isset($entity->field_comunita_profilo_e_crediti[LANGUAGE_NONE]) && 
+      strlen(trim($entity->field_comunita_profilo_e_crediti[LANGUAGE_NONE][0]["safe_value"]))) {
+        return '<a href="[node:field_comunita_profilo_e_crediti]" title="Vai alla pagina profilo e crediti">[node:field_comunita_profilo_e_crediti]</a>';
+  }
+}
+
+function _og_community_social_links($entity) {
+  $html = '';
+  if (isset($entity->field_og_flickr[LANGUAGE_NONE]) || isset($entity->field_og_youtube[LANGUAGE_NONE])) {
+    $html  = '<ul class="social-links_list clearfix">';
+    if (isset($entity->field_og_youtube[LANGUAGE_NONE])) {
+      $html .= '<li class="social-links_item-youtube"><a href="[node:field_og_youtube]" title="Vai al canale di Youtube della comunità"><img src="' . base_path() . drupal_get_path('theme', 'innovatoripa') . '/images/social_flat/youtube-128.png" alt="Youtube logo" /></a></li>';
+    }
+    if (isset($entity->field_og_flickr[LANGUAGE_NONE])) {
+      $html .= '<li class="social-links_item-flickr"><a href="[node:field_og_flickr]" title="Vai alla pagina della comunità su Flickr"><img src="' . base_path() . drupal_get_path('theme', 'innovatoripa') . '/images/social_flat/flickr-128.png" alt="Flickr logo" /></a></li>';
+    }
+    $html .= '</ul>';
+  }
+  return $html;
+}
+
+function _og_check_group_notification_link($entity) {
+  if (og_is_member('node', $entity->nid)) {
+    return '[node:flag-innovatoripa-follow-gruppo-link]';
+  }
+}
+
+function _og_check_community_notification_link($entity) {
+  if (og_is_member('node', $entity->nid)) {
+    return '[node:flag-innovatoripa-follow-og-link]';
+  }
+}
+
+function _social_share_buttons($field) {
+  drupal_add_js('//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51d1983c58c1f351', 'external');
+  drupal_add_js('var addthis_config = addthis_config||{}; addthis_config.ui_language = "it";', 'inline');
+  $html  = '<!-- AddThis Button BEGIN --><div class="addthis_toolbox addthis_default_style ">';
+  // Add facebook like
+  $html .= '<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>';
+  // Add facebook send
+  // $html .= '<a class="addthis_button_facebook_send"></a>';
+  // Add tweet button
+  $html .= '<a class="addthis_button_tweet"></a>';
+  // Addthis linkedin button
+  $html .= '<a class="addthis_button_linkedin_counter"></a>';
+  // Addthis google+ button
+  $html .= '<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>';
+  // Addthis share button
+  $html .= '<a class="addthis_counter addthis_pill_style"></a>';
+  $html .= '</div><!-- AddThis Button END -->';
+  // $html .= '';
+  return $html;
+}
+
+
+function _user_avatar($field) {
+  $entity = $field['entity'];
+  
+  $user_id = $entity->uid;
+  // Carico l'utente (mi serve per il ruolo)
+  $user = user_load($user_id);
+  // dsm($user, 'USER');
+  $user_realname = $user->realname;
+  // dsm($user->roles, $user_realname);
+  
+  // Controllo in ordine crescente di ruolo, in caso contrario l'utente non è un innovatore.
+  $user_role_class = 'undefined';
+  $user_role = false;
+  if (in_array('Innovatore', $user->roles)) {
+    $user_role_class = 'innovatore';
+    $user_role = 'Innovatore';
+  }
+  if (in_array('Innovatore attivo', $user->roles)) {
+    $user_role_class = 'innovatore-attivo';
+    $user_role = 'Innovatore attivo';
+  }
+  if (in_array('Innovatore esperto', $user->roles)) {
+    $user_role_class = 'innovatore-esperto';
+    $user_role = 'Innovatore esperto';
+  }
+  
+  // Carico il profilo utente (mi serve per l'avatar)
+  $user_profile = profile2_load_by_user($user_id);
+  
+  // dsm($user_profile, 'USER PROFILE');
+  if (isset($user_profile['main'])) {
+    $avatar = field_view_field('profile2', $user_profile['main'], 'field_profile_avatar', array(
+        'type' => 'image',
+        'settings' => array('image_style' => 'user_preview'),
+      ));
+    $user_avatar_url = image_style_url('user_preview', $avatar['#items'][0]['uri']);
+  } 
+  else {
+    $user_avatar_url = '';
+  }
+  
+  // Genero l'output HTML
+  $html  = '<div class="user-info">';
+  $html .= '<a href="' . base_path() . 'user/' . $user_id . '" title="Visualizza il profilo di ' . $user_realname . '"><img src="' . $user_avatar_url . '" /></a>';
+  if ($user_role) {
+    $html .= '<i class="icon role-' . $user_role_class . '" title="' . $user_role . '"></i>';
+  }
+  $html .= '<span class="user-info-name">' . $user_realname . '</span>';
+  // $html .= '<a class="user-info-follow" href="" title="fake">segui</a>';
+  $html .= '</div>';
+  
+  return $html;
+
+}
+
+// Genero il markup con le informazioni di accesso al nodo
+function _publishing_information($field) {
+  $entity = $field['entity'];
+  $ct_type = $entity->type;
+
+  // Statistiche di lettura
+  $statistics = statistics_get($entity->nid);
+  
+  if (is_array($statistics)) {
+    $total_count = $statistics['totalcount'];
+    if ($total_count === 1) {
+      $statistics_text = 'letto ' . $total_count . ' volta';
+    } else {
+      $statistics_text = 'letto ' . $total_count . ' volte';
+    }
+  } else {
+    $statistics_text = 'nessuna lettura';
+  }
+
+  // Data di pubblicazione
+  $publication_date = format_date($entity->created, 'short');
+
+  // Carico l'utente (mi serve per il nome)
+  $user_id = $field['entity']->uid;
+  $user = user_load($user_id);
+
+  // dsm($user, 'USER');
+  $user_realname = $user->realname;
+  
+  // Tipo di contenuto
+  switch ($ct_type) {
+    case 'discussione':
+      if (isset($entity->og_vocabulary)) {
+        if (isset($entity->og_vocabulary[LANGUAGE_NONE][0]['entity'])) {
+          $term = $entity->og_vocabulary[LANGUAGE_NONE][0]['entity'];
+        } else {
+          $term = taxonomy_term_load($entity->og_vocabulary[LANGUAGE_NONE][0]['target_id']);
+        }
+
+        if ($term) {
+          // dsm($term, "TERM_LOAD");
+          $term_name = $term->name;
+          $uri = entity_uri('taxonomy_term', $term);
+          $url = url($uri['path']);
+          $where = ' nel forum ' . '<a href="' . $url . '" title="Vai al forum">' . $term_name . '</a>';
+        }
+      }
+      break;
+    case 'blog':
+      $where = ' nel <a href="' . base_path() . 'blog/' . $user_id . '" title="Vai al blog di ' . $user_realname . '">blog di ' . $user_realname . '</a>';
+      break;
+    default:
+      $where = '';
+      break;
+  }
+  
+  // Comunità in cui è pubblicato
+  $community_html = '';
+ 
+  if (isset($entity->og_group_ref[LANGUAGE_NONE])) {
+    $communities = $entity->og_group_ref[LANGUAGE_NONE];
+    $community_count = count($communities);
+    
+    $community_html .= '<span class="content__pub-info-community">';
+    // Plurale e singolare
+    /*
+     * Tolgo questa opzione in favore di un più generico "in" 
+     * poichè alcune discussioni sono postate all'interno di più
+     * comunità ed anche all'interno della comunità e del gruppo
+     * 
+    if ($community_count > 1) {
+      $community_html .= 'nelle comunità ';
+    } else {
+      $community_html .= 'nella comunità ';
+    }
+     * 
+     */
+    $community_html .= 'in ';
+    foreach ($communities as $key => $community) {
+      $wrapper = entity_metadata_wrapper('node', $community['target_id']);
+      $community_name = $wrapper->label();
+      $community_html .= '<a href="' . base_path() . 'node/' . $community['target_id'] . '">' . $community_name . '</a>';
+      // Aggiungo una virgola ed uno spazio dopo ogni nome di comunità ad esclusione dell'ultima
+      if (($key + 1) < $community_count) {
+        $community_html .= ', ';
+      }
+    }
+    $community_html .= '</span>';
+  }
+
+  $separator = ' &bull; ';
+  
+  // Genero l'output HTML
+  $html  = '<div class="content__pub-info">';
+  // Nel caso di un CT di tipo domanda, l'output cambia
+    $html .= '<span class="content__pub-info-statistics">' . $statistics_text . '</span>';
+    $html .= $separator;
+  if ($ct_type === 'domanda') {
+    $html .= '<span class="content__pub-info-date">domanda inserita il ' . $publication_date . '</span>';
+  } else {
+    $html .= '<span class="content__pub-info-date">pubblicato il ' . $publication_date . '</span>';
+    $html .= '<span class="content__pub-info-where">' . $where . '</span>';
+  }
+  
+  if ($community_html) {
+    $html .= ', ' . $community_html;
+  }
+  $html .= '</div>';
+  
+  return $html;
+}
+
+// Recupero le statistiche di accesso al nodo
+// 
+// Il token [node:total-count] nel caso di 0 letture non ritorna
+// niente, quindi si rende necessario l'utilizzo della funzione
+function _statistics_info($field) {
+  $entity = $field['entity'];
+  
+  $html = '';
+  
+  // dsm($entity, 'ENTITY');
+  $statistics = statistics_get($entity->nid);
+  
+  // Restituisco del markup solo se il numero di visite è diverso da 0
+  if (is_array($statistics)) {
+    $total_count = $statistics['totalcount'];
+    $html .= '<div class="content-stats">letto ' . $total_count . ' volte</div>';
+  } else {
+    $html .= '<div class="content-stats">nessuna lettura</div>';
+  }
+  
+  return $html;
+}
+
+
+/**
+ * Define custom fields which can be overridden through the UI and which
+ * are exportable. The keys are almost the same as in hook_ds_fields_info()
+ * except that field_type is limited and you need an entities key.
+ *
+ * This hook is called by CTools. For this hook to work, you need
+ * hook_ctools_plugin_api(). The values of this hook can be overridden
+ * and reverted through the UI.
+ */
+/*
+function base_frontend_ds_custom_fields_info() {
+  $ds_fields = array();
+
+  $ds_field = new stdClass;
+  $ds_field->api_version = 1;
+  $ds_field->field = 'iconized_title';
+  $ds_field->label = 'Title with content type icon';
+
+  // Field type: either block or code
+  // DS_FIELD_TYPE_CODE: 5
+  // DS_FIELD_TYPE_BLOCK: 6
+  $ds_field->field_type = 5;
+
+  // Collection of entities on which this custom field can work on.
+  $ds_field->entities = array(
+    'node' => 'node',
+  );
+  
+  $ds_field->properties = array(
+    'code' => array(
+      'value' => '<i class="icon content-type"></i>[node:title]',
+      'format' => 'ds_code',
+    ),
+    'use_token' => 1,
+  );
+  $ds_fields['custom_field'] = $ds_field;
+
+  return $ds_fields;
+}
+ * 
+ */
+
+
+/**
+ * Register a style guide element for display.
+ *
+ * hook_styleguide() defines an array of items to render for theme
+ * testing. Each item is rendered as an element on the style guide page.
+ *
+ * Each item should be keyed with a unique identifier. This value will be
+ * used to create a named anchor link on the Style Guide page.
+ *
+ * Options:
+ *   -- 'title' (required). A string indicating the element name. 
+ *   -- 'description' (optional). A short description of the item. 
+ *   -- 'theme' (optional). A string indicating the theme function to invoke.
+ *    If used, you must return a 'variables' array element. Otherwise, you
+ *    must return a 'content' string.
+ *   -- 'variables' (optional). An array of named vairables to pass to the
+ *    theme function. This structure is designed to let you test your theme
+ *    functions for syntax.
+ *   -- 'content' (optional). A string or renderable array of content to
+ *    present. May be used in conjunction with a 'tag' element, or used instead
+ *    of a theme callback.
+ *   -- 'tag' (optional). A string indicating a valid HTML tag (wihout <>).
+ *    This tag will be wrapped around the content. In Drupal 7, this element is
+ *    deprecated in favor of theme_html_tag().
+ *   -- 'attributes' (optional). An array of attributes to apply to a tag element.
+ *   -- 'group' (optional). A string indicating the context of this element.
+ *    Groups are organized within the preview interface. If no group is
+ *    provided, the item will be assigned to the 'Common' group.
+ *
+ * @return $items
+ *   An array of items to render.
+ */
+function base_frontend_styleguide() {
+  $items['buttons'] = array(
+    'title' => t('Buttons'),
+    'description' => t('Button styles.'),
+    'group' => 'Buttons',
+    'content' => '
+      <div class="button" style="margin: 0.5em"><a href="">Button</a></div>
+      <div class="button button-a" style="margin: 0.5em"><a href="">Button A</a></div>
+      <div class="button button-b" style="margin: 0.5em"><a href="">Button B</a></div>
+      <div class="button button-c" style="margin: 0.5em"><a href="">Button C</a></div>
+      <div class="button button-d" style="margin: 0.5em"><a href="">Button D</a></div>
+      <div class="button flat" style="margin: 0.5em"><a href="">Button flat</a></div>
+    '
+  );
+  $items['component-teaser'] = array(
+    'title' => t('Post Teaser'),
+    'description' => t('The compleate teaser for blog post and forum.'),
+    'group' => 'Components',
+    'content' => '<article class="teaser">
+    <div class="user-info">
+        <a href=""><img src="http://placehold.it/80x80" /></a>
+        <i class="icon innovatore"></i>
+        <span class="user-info-name">Armando Coriandolo</span>
+        <a class="user-info-follow" href="">segui</a>
+    </div>
+    <div class="content">
+        <header>
+            <hgroup class="content-title">
+                <i class="icon content-type"></i>
+                <h3><a href="">I webinar di Dati.gov, Introduzione ai dati aperti: materiali e registrazioni</a></h3>
+            </hgroup>
+            <div class="content__pub-info">
+                <span class="content__pub-info-date">pubblicato il 07/03/2013 - 16:35</span>
+                <span class="content__pub-info-blog">nel <a href="">blog di Armando Coriandolo</a></span>
+                <span class="content__pub-info-community">nelle comunità <a href="">Comunità di pratiche e reti sociali</a>, <a href="">Cloud4PA</a>, <a href="">Competenze In Rete per Capacity SUD</a></span>
+            </div>
+        </header>
+        <div class="content-text"><p>A conclusione del webinar Introduzione ai dati aperti  del 7 marzo 2013 –  promosso da FormezPA e dalla redazione di Dati.gov.it - pubblichiamo una scheda di approfondimento che raccoglie tutti i materiali e le registrazioni... <a href="">Continua</a></p></div>
+        <div class="content-stats">letto 500 volte</div>
+    </div>
+    <footer class="teaser__comments">
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Mario Rossi</a> <span>07/03/2013 - 18:35</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Armando Coriandolo</a> <span>07/03/2013 - 17:30</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Pinco Pallino</a> <span>07/03/2013 - 16:40</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+    </footer>
+</article>
+<article class="teaser">
+    <div class="user-info">
+        <a href=""><img src="http://placehold.it/80x80" /></a>
+        <i class="icon innovatore"></i>
+        <span class="user-info-name">Armando Coriandolo</span>
+        <a class="user-info-follow" href="">segui</a>
+    </div>
+    <div class="content">
+        <header>
+            <hgroup class="content-title">
+                <i class="icon content-type"></i>
+                <h3><a href="">I webinar di Dati.gov, Introduzione ai dati aperti: materiali e registrazioni</a></h3>
+            </hgroup>
+            <div class="content__pub-info">
+                <span class="content__pub-info-date">pubblicato il 07/03/2013 - 16:35</span>
+                <span class="content__pub-info-blog">nel <a href="">blog di Armando Coriandolo</a></span>
+                <span class="content__pub-info-community">nelle comunità <a href="">Comunità di pratiche e reti sociali</a>, <a href="">Cloud4PA</a>, <a href="">Competenze In Rete per Capacity SUD</a></span>
+            </div>
+        </header>
+        <div class="content-text"><p>A conclusione del webinar Introduzione ai dati aperti  del 7 marzo 2013 –  promosso da FormezPA e dalla redazione di Dati.gov.it - pubblichiamo una scheda di approfondimento che raccoglie tutti i materiali e le registrazioni... <a href="">Continua</a></p></div>
+        <div class="content-stats">letto 500 volte</div>
+    </div>
+    <footer class="teaser__comments">
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Mario Rossi</a> <span>07/03/2013 - 18:35</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Armando Coriandolo</a> <span>07/03/2013 - 17:30</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+        <div class="teaser__comments-item">
+            <div class="teaser__comments-item-avatar"><img src="http://placehold.it/30x30" /></div>
+            <div class="teaser__comments-item-text"><a href="">Pinco Pallino</a> <span>07/03/2013 - 16:40</span> - Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua... <a href="">leggi</a></div>
+        </div>
+    </footer>
+</article>',
+  );
+  return $items;
+}
+
+/**
+ * Alter styleguide elements.
+ *
+ * @param &$items
+ *   An array of items to be displayed.
+ *
+ * @return
+ *   No return value. Modify $items by reference.
+ *
+ * @see hook_styleguide()
+ */
+function base_frontend_styleguide_alter(&$items) {
+  // Remove unecessary elements
+  unset($items['form-vertical-tabs']);
+  
+}
+
+/*
+ * Implements hook_admin_paths()
+ * 
+ * Force some paths to be considered as admin paths.
+ * This enable overlay usage for those paths
+ * 
+ */
+
+function base_frontend_admin_paths() {
+  $paths = array(
+    'messages/new' => TRUE,
+    'messages/new/*' => TRUE,
+  );
+  return $paths;
+}
+
+
+/**
+ * Adds edit link and modify link.
+ * Implements hook_field_extra_fields().
+ */
+function base_frontend_field_extra_fields() {
+  
+  $extras = array();
+  
+  $allowed_bundles = array('blog','evento', 'discussione');  
+  
+  foreach ($allowed_bundles as $bundle) {
+    $extras['node'][$bundle]['display']['anteprima_commenti_in_teaser'] = array(
+        'label' => 'Extra field: commenti in teaser',
+        'description' => 'Fast EVA comment attachment replacement, commenti in tease',
+        'weight' => 10,
+    );      
+  }
+  
+  $extras['node']['domanda']['display']['anteprima_commento_piu_votato'] = array(
+        'label' => 'Extra field: commento più votato',
+        'description' => 'Fast EVA comment attachment replacement, commento più votato',
+        'weight' => 10,
+  );      
+  return $extras;
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ */
+function base_frontend_entity_view_alter(&$build, $type) {
+  // Condition if it is entityform and if the right bundle etc.
+    
+  $view_mode = $build['#view_mode'];
+  $language = $build['#language'];
+
+  $entity_data = entity_get_info($type);
+  $entity = _eva_extract_entity_from_build($build);
+
+  $entity_ids = entity_extract_ids($type, $entity);
+  $settings = field_view_mode_settings($type, $entity_ids[2]);
+  $fields = field_extra_fields_get_display($type, $entity_ids[2], $view_mode);
+  
+  
+  if ((isset($entity->nid)) && (isset($fields['anteprima_commenti_in_teaser'])) && $view_mode == 'teaser') {
+    $anteprima_commenti_in_teaser = _base_frontend_anteprima_commenti_in_teaser($entity, 3);
+    if (!empty($anteprima_commenti_in_teaser)) {
+        $build['anteprima_commenti_in_teaser'] = array(
+            '#markup' => theme('anteprima_commenti_in_teaser', array('items' => $anteprima_commenti_in_teaser)),
+            '#weight' => $fields['anteprima_commenti_in_teaser']['weight']
+        );
+    }
+  }
+  
+  
+  if ((isset($entity->nid)) && (isset($fields['anteprima_commento_piu_votato'])) && $view_mode == 'teaser') {
+    $anteprima_commento_piu_votato = _base_frontend_anteprima_commento_piu_votato($entity, 3);
+    
+    if (!empty($anteprima_commento_piu_votato)) {
+        $build['anteprima_commento_piu_votato'] = array(
+            '#markup' => theme('anteprima_commento_piu_votato', array('items' => $anteprima_commento_piu_votato)),
+            '#weight' => $fields['anteprima_commento_piu_votato']['weight']
+        );
+    }
+  }
+}
+
+
+function _base_frontend_anteprima_commenti_in_teaser($entity, $num_elements) {
+    
+    $sql = "
+    SELECT 
+    comment.nid AS comment_nid, 
+    profile_users.pid AS profile_users_pid, 
+    users_comment.uid AS users_comment_uid,
+    realname as user_realname,
+    comment.cid AS cid, 
+    comment.created AS comment_created, 
+    comment AS field_data_comment_body_comment_entity_type
+    FROM 
+    {comment} comment
+    INNER JOIN {node}    node_comment ON comment.nid = node_comment.nid
+    LEFT  JOIN {users}   users_comment ON comment.uid = users_comment.uid
+    LEFT  JOIN {realname}   users_realname ON users_comment.uid = users_realname.uid
+    LEFT  JOIN {profile} profile_users ON users_comment.uid = profile_users.uid
+    WHERE (( (node_comment.nid = :nid )) AND (( (comment.status <> '0') AND (node_comment.status = '1'))))
+    ORDER BY comment_created DESC
+    ";
+    
+    $results = db_query_range($sql, 0, $num_elements, array(
+        ':nid'          => $entity->nid,
+    ));  
+    
+    /* 
+         * mi serve:
+         * - immagine profilo (avatar) in user_thumb style
+         * - link all'utente con nome e cognome (<a href="/users/admininnovatoripa">Admin InnovatoriPA</a>)
+         * - la data di pubblicazione del commento (24/07/2013 - 18:06)
+         * - il link al commento (/comment/24463#comment-24463)
+         * - il testo del commento tagliato wb a 120 caratteri + ellipsis
+     */
+    
+    $r = array();
+    foreach ($results as $result) {
+        
+        if ($result->cid) {
+            $comment = comment_load($result->cid);
+            // data di pubblicazione del commento (24/07/2013 - 18:06)
+            $comment_date = format_date($comment->changed, 'short');
+        
+            // il link al commento (/comment/24463#comment-24463)
+            $comment_link = l(t('leggi'), 'comment/' . $comment->cid);
+        
+            // il testo del commento tagliato wb a 120 caratteri + ellipsis
+            $comment_body = truncate_utf8(filter_xss($comment->comment_body[LANGUAGE_NONE][0]['safe_value']), 120, TRUE, TRUE);
+            
+        }
+        
+        if ($result->profile_users_pid) {
+            $profile = profile2_load($result->profile_users_pid);
+            // immagine profilo (avatar) in user_thumb style
+            $avatar_field = field_view_field('profile2', $profile, 'field_profile_avatar', array(
+                'label' => 'hidden',
+                'type' => 'image',
+                'settings' => array(
+                    'image_style' => 'user_thumb'
+                ),
+            ));
+            $avatar = drupal_render($avatar_field);
+        }
+        // link all'utente con nome e cognome (<a href="/users/admininnovatoripa">Admin InnovatoriPA</a>)
+        $user_name = l($result->user_realname, 'user/' . $result->users_comment_uid);
+        
+        $r[] = array(
+            'comment_date' => $comment_date, 
+            'comment_link' => $comment_link,
+            'comment_body' => $comment_body,
+            'user_avatar' => $avatar,
+            'user_name' => $user_name,
+        );
+        
+        
+        
+    }
+    
+    return $r;
+}
+
+function _base_frontend_anteprima_commento_piu_votato($entity, $num_elements) {
+    
+    
+   $sql = " 
+    SELECT 
+    node_comment.nid AS node_comment_nid, 
+    comment.nid AS comment_nid, 
+    profile_users.pid AS profile_users_pid, 
+    realname as user_realname,
+    votingapi_cache_comment_points_vote_sum.value AS votingapi_cache_comment_points_vote_sum_value, 
+    comment.subject AS comment_subject, 
+    comment.cid AS cid, 
+    users_comment.uid AS users_comment_uid, 
+    comment.changed AS comment_changed, 
+    'comment' AS field_data_comment_body_comment_entity_type, 
+    COALESCE(votingapi_cache_comment_points_vote_sum.value, 0) AS votingapi_cache_comment_points_vote_sum_value_coalesced
+    FROM {comment} comment
+    INNER JOIN {node} node_comment ON comment.nid = node_comment.nid
+    LEFT JOIN {users} users_comment ON comment.uid = users_comment.uid
+    LEFT  JOIN {realname}   users_realname ON users_comment.uid = users_realname.uid    
+    LEFT JOIN {profile} profile_users ON users_comment.uid = profile_users.uid
+    LEFT JOIN {votingapi_cache} votingapi_cache_comment_points_vote_sum ON comment.cid = votingapi_cache_comment_points_vote_sum.entity_id 
+    AND (votingapi_cache_comment_points_vote_sum.entity_type = 'comment' 
+    AND votingapi_cache_comment_points_vote_sum.value_type = 'points' 
+    AND votingapi_cache_comment_points_vote_sum.tag = 'vote' 
+    AND votingapi_cache_comment_points_vote_sum.function = 'sum')
+    WHERE (( (node_comment.nid = :nid ) )
+    AND(( (comment.status <> '0') AND (node_comment.status = '1') )))
+    ORDER BY votingapi_cache_comment_points_vote_sum_value_coalesced DESC
+    ";
+
+    $results = db_query_range($sql, 0, $num_elements, array(
+        ':nid'          => $entity->nid,
+    ));
+    
+    $r = array();
+    foreach ($results as $result) {
+        if ($result->cid) {
+            $comment = comment_load($result->cid);
+            // data di pubblicazione del commento (24/07/2013 - 18:06)
+            $comment_date = format_date($comment->changed, 'short');
+        
+            // il link al commento (/comment/24463#comment-24463)
+            $comment_link = l(t('leggi'), 'node/' . $result->comment_nid, 
+                    array(
+                        'attributes' => array(
+                            'title' => t('Leggi la risposta'),
+                        ),
+                        'fragment' => 'comment-' . $result->cid
+                    )
+            );
+        
+            // il testo del commento tagliato wb a 120 caratteri + ellipsis
+            $comment_body = truncate_utf8(filter_xss($comment->comment_body[LANGUAGE_NONE][0]['safe_value']), 120, TRUE, TRUE);
+            
+            //votingapi_cache_comment_points_vote_sum_value_coalesced
+            $comment_rating = $result->votingapi_cache_comment_points_vote_sum_value;
+            if (empty($comment_rating)) {
+                $comment_rating = 0;
+                $comment_rating_class = 'neutral';
+            }
+            elseif ($comment_rating > 0) {
+                $comment_rating = '+' . $comment_rating;
+                $comment_rating_class = 'positive';
+            }
+            else {
+                $comment_rating = '-' . $comment_rating;
+                $comment_rating_class = 'negative';
+            }
+        }
+        
+        if ($result->profile_users_pid) {
+            $profile = profile2_load($result->profile_users_pid);
+            // immagine profilo (avatar) in user_thumb style
+            $avatar_field = field_view_field('profile2', $profile, 'field_profile_avatar', array(
+                'label' => 'hidden',
+                'type' => 'image',
+                'settings' => array(
+                    'image_style' => 'user_thumb'
+                ),
+            ));
+            $avatar = drupal_render($avatar_field);
+        }
+        // link all'utente con nome e cognome (<a href="/users/admininnovatoripa">Admin InnovatoriPA</a>)
+        $user_name = l($result->user_realname, 'user/' . $result->users_comment_uid);
+        
+        $r[] = array(
+            'comment_date' => $comment_date, 
+            'comment_link' => $comment_link,
+            'comment_body' => $comment_body,
+            'comment_rating' => $comment_rating,
+            'user_avatar' => $avatar,
+            'user_name' => $user_name,
+        );
+        
+
+    }
+    
+    return $r;
+
+}

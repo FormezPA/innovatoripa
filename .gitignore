@@ -1,0 +1,26 @@
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+INSTALL.*
+CHANGELOG.txt
+*.tar
+*.sql
+*.bz2
+*.tar.gz
+*.log
+robots.txt
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
+sites/*/tmp
+innovatoripa_d2d_migrate
+Capfile
+sites/all/modules/custom/formezauth
+
+.DS_Store
+sites.php
+# Ignore netbeans
+nbproject
+.sass-cache
+/.ctags
+/tags
+.htaccess

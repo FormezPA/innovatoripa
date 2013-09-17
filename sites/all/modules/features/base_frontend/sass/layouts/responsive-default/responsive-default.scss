@@ -1,0 +1,170 @@
+/**
+ * @file
+ * Positioning for responsive layout .
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+
+@import "zen";
+
+
+// We are going to create a 980px wide, 5 column grid with 20px gutters between
+// columns (applied as 10px of left/right padding on each column).
+$zen-column-count:  5;
+$zen-gutter-width:  20px;
+
+
+// IE6-7 don't support box-sizing: border-box. We can fix this in 1 of 3 ways:
+// - Drop support for IE 6/7. :-) In the _base.scss, set $legacy-support-for-ie6
+//   and $legacy-support-for-ie7 to false.
+// - (Preferred) Install the box-sizing polyfill and set the variable below to
+//   the absolute path URL to the boxsizing.htc file.
+//   @see https://github.com/Schepp/box-sizing-polyfill
+//   $box-sizing-polyfill-path: "/path/to/boxsizing.htc";
+// - Use the same CSS unit for grid width and gutter width (use px for both or
+//   use % for both, etc.) and set the box-sizing variable to content-box.
+//   $zen-box-sizing: content-box;
+
+
+// You can generate more efficient CSS if you manually apply the
+// zen-grid-item-base mixin to all grid items from within a single ruleset.
+$zen-auto-include-item-base: false;
+// $zen-auto-include-flow-item-base: false;
+
+
+
+/*
+ * Containers for grid items and flow items.
+ */
+.panel {
+  @include zen-nested-container();
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+// See the note about $zen-auto-include-item-base above.
+
+.panel-head,
+.panel-column,
+.panel-sidebar-first,
+.panel-sidebar-second {
+  @include zen-grid-item-base();
+}
+
+.panel-head {
+    @include zen-grid-item($zen-column-count, 1);
+}
+
+.panel-highlighted,
+.panel-content,
+.panel-sidebar-first,
+.panel-sidebar-second {
+//  margin-bottom: $zen-gutter-width;
+}
+
+.panel-column {
+    @include zen-clear(left);
+}
+
+/* 
+ * ZEN GRID ITEM:
+ * zen-grid-item( $column-span, $column-position )
+ * zen-grid-item( $column-span, $column-position, $float-direction )
+ */
+@media all and (min-width: 480px) and (max-width: 959px) {
+  /*
+   * Use 3 grid columns for smaller screens.
+   */
+  $zen-column-count: 3;
+
+    /*
+     * The layout when there is only one sidebar, the first one.
+     */
+    .sidebar-first {
+        .panel-column {
+          @include zen-grid-item(2, 2);
+        }
+        .panel-sidebar-first {
+            @include zen-grid-item(1, 1);
+        }
+    }
+
+    /*
+     * The layout when there is only one sidebar, the second one.
+     */
+    .sidebar-second {
+        .panel-column {
+            @include zen-grid-item(2, 1);
+        }
+
+        .panel-sidebar-second {
+            @include zen-grid-item(1, 3);
+        }
+    }
+
+    /*
+     * The layout when there are two sidebars: both sidebars are to the right side.
+     */
+    .two-sidebars {
+        .panel-column {
+            @include zen-grid-item(2, 1);
+        }
+        .panel-sidebar-first {
+            @include zen-grid-item(1, 1, right);
+        }
+        .panel-sidebar-second {
+            @include zen-clear(right);
+            @include zen-grid-item(1, 1, right);
+        }
+    }
+}
+
+@media all and (min-width: 960px) {
+    /*
+     * The layout when there is only one sidebar, the left one.
+     */
+    .sidebar-first {
+        $zen-column-count: 4;
+        .panel-column {
+            @include zen-grid-item(3, 2);
+        }
+
+        .panel-sidebar-first {
+            @include zen-grid-item(1, 1);
+        }
+    }
+
+    /*
+     * The layout when there is only one sidebar, the right one.
+     */
+    .sidebar-second {
+        $zen-column-count: 4;
+        .panel-column {
+            @include zen-grid-item(3, 2);
+        }
+        .panel-sidebar-second {
+            @include zen-grid-item(1, 4);
+        }
+    }
+
+    /*
+     * The layout when there are two sidebars.
+     */
+    .two-sidebars {
+        $zen-column-count: 5;
+        .panel-column {
+            @include zen-grid-item(3, 2);
+        }
+        .panel-sidebar-first {
+            @include zen-grid-item(1, 1);
+        }
+        .panel-sidebar-second {
+            @include zen-grid-item(1, 5);
+        }
+    }
+}

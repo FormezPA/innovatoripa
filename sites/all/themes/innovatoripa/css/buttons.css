@@ -1,0 +1,958 @@
+/*
+Full sassy button mixin with argument descriptions.
+@include sassy-button(gradient-style, border-radius, font-size, first-color, second-color, text-color, text-style, auto-states)
+@include sassy-button-structure(border-radius, font-size, padding);
+@include sassy-button-gradient(gradient-style, first-color, second-color, text-color, text-style, auto-states);
+*/
+/* BUTTONS STYLES */
+/* line 26, ../sass/buttons.scss */
+.button a {
+  font-size: 1em;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button a:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button a:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button a.disabled, .button a[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+.button a::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+
+/* line 29, ../sass/buttons.scss */
+.button-a a {
+  /* desatured yellow brown */
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFBFBF9B', endColorstr='#FF95955F');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddddca), color-stop(70%, #bfbf9b));
+  background: -webkit-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -moz-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -o-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: linear-gradient(#ddddca, #bfbf9b 70%);
+  -webkit-box-shadow: #fbfbf8 0 1px 0 inset;
+  -moz-box-shadow: #fbfbf8 0 1px 0 inset;
+  box-shadow: #fbfbf8 0 1px 0 inset;
+  border: 1px solid #b5b58b;
+  color: white;
+  text-shadow: #a8a877 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-a a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-a a:hover {
+  background-color: #b5b58b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #d3d3ba), color-stop(75%, #b5b58b));
+  background: -webkit-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -moz-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -o-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-a a:active {
+  -webkit-box-shadow: #afaf82 0 1px 2px inset;
+  -moz-box-shadow: #afaf82 0 1px 2px inset;
+  box-shadow: #afaf82 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-a a.disabled, .button-a a[disabled] {
+  opacity: 0.6;
+  background: #bfbf9b;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 32, ../sass/buttons.scss */
+.button-b a {
+  /* desatured bluish cyan */
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF94B0B7', endColorstr='#FF5C8089');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c2d2d6), color-stop(70%, #94b0b7));
+  background: -webkit-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: -moz-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: -o-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: linear-gradient(#c2d2d6, #94b0b7 70%);
+  -webkit-box-shadow: #eff4f5 0 1px 0 inset;
+  -moz-box-shadow: #eff4f5 0 1px 0 inset;
+  box-shadow: #eff4f5 0 1px 0 inset;
+  border: 1px solid #85a5ad;
+  color: white;
+  text-shadow: #71969f 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-b a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-b a:hover {
+  background-color: #85a5ad;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #b2c7cc), color-stop(75%, #85a5ad));
+  background: -webkit-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: -moz-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: -o-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-b a:active {
+  -webkit-box-shadow: #7c9ea7 0 1px 2px inset;
+  -moz-box-shadow: #7c9ea7 0 1px 2px inset;
+  box-shadow: #7c9ea7 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-b a.disabled, .button-b a[disabled] {
+  opacity: 0.6;
+  background: #94b0b7;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 35, ../sass/buttons.scss */
+.button-c a {
+  /* desatured blue violet */
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFA490B2', endColorstr='#FF725A82');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c9bdd1), color-stop(70%, #a490b2));
+  background: -webkit-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: -moz-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: -o-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: linear-gradient(#c9bdd1, #a490b2 70%);
+  -webkit-box-shadow: #eeeaf1 0 1px 0 inset;
+  -moz-box-shadow: #eeeaf1 0 1px 0 inset;
+  box-shadow: #eeeaf1 0 1px 0 inset;
+  border: 1px solid #9881a8;
+  color: white;
+  text-shadow: #886d9a 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-c a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-c a:hover {
+  background-color: #9881a8;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #bdaec7), color-stop(75%, #9881a8));
+  background: -webkit-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: -moz-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: -o-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: linear-gradient(#bdaec7 3%, #9881a8 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-c a:active {
+  -webkit-box-shadow: #9078a1 0 1px 2px inset;
+  -moz-box-shadow: #9078a1 0 1px 2px inset;
+  box-shadow: #9078a1 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-c a.disabled, .button-c a[disabled] {
+  opacity: 0.6;
+  background: #a490b2;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 38, ../sass/buttons.scss */
+.button-d a {
+  /* desatured brown */
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFBFA99B', endColorstr='#FF95745F');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddd1ca), color-stop(70%, #bfa99b));
+  background: -webkit-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: -moz-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: -o-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: linear-gradient(#ddd1ca, #bfa99b 70%);
+  -webkit-box-shadow: #fbf9f8 0 1px 0 inset;
+  -moz-box-shadow: #fbf9f8 0 1px 0 inset;
+  box-shadow: #fbf9f8 0 1px 0 inset;
+  border: 1px solid #b59c8b;
+  color: white;
+  text-shadow: #a88a77 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-d a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-d a:hover {
+  background-color: #b59c8b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #d3c4ba), color-stop(75%, #b59c8b));
+  background: -webkit-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: -moz-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: -o-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-d a:active {
+  -webkit-box-shadow: #af9482 0 1px 2px inset;
+  -moz-box-shadow: #af9482 0 1px 2px inset;
+  box-shadow: #af9482 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button-d a.disabled, .button-d a[disabled] {
+  opacity: 0.6;
+  background: #bfa99b;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 41, ../sass/buttons.scss */
+.button.flat a {
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background-color: #7f7d77;
+  border: 0;
+  color: white;
+  text-shadow: #3d3c39 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button.flat a:hover {
+  text-decoration: none;
+}
+/* line 42, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button.flat a:hover {
+  background-color: #72706b;
+}
+/* line 44, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button.flat a:active {
+  background-color: #6a6863;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.button.flat a.disabled, .button.flat a[disabled] {
+  opacity: 0.6;
+  background: false;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* RATE BUTTONS 
+.rate-button {
+    $sb-padding: 0.2em;
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+}
+.rate-button.rate-voted {
+    $sb-padding: 0.2em;
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+    @include sassy-button-style("inset", #7F7D77)
+}
+*/
+/* MENU BUTTON */
+/* Visibile solo a risoluzioni inferiori ai 480px */
+/* Vedi navigation.css */
+/* line 60, ../sass/buttons.scss */
+#mobile-menu-button {
+  margin: 0;
+}
+
+/* line 63, ../sass/buttons.scss */
+#mobile-menu-button a {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#mobile-menu-button a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#mobile-menu-button a:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#mobile-menu-button a:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#mobile-menu-button a.disabled, #mobile-menu-button a[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+#mobile-menu-button a::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+
+/* flag */
+/* line 70, ../sass/buttons.scss */
+.community-subscribe a,
+.group-subscribe a {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFA490B2', endColorstr='#FF725A82');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c9bdd1), color-stop(70%, #a490b2));
+  background: -webkit-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: -moz-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: -o-linear-gradient(#c9bdd1, #a490b2 70%);
+  background: linear-gradient(#c9bdd1, #a490b2 70%);
+  -webkit-box-shadow: #eeeaf1 0 1px 0 inset;
+  -moz-box-shadow: #eeeaf1 0 1px 0 inset;
+  box-shadow: #eeeaf1 0 1px 0 inset;
+  border: 1px solid #9881a8;
+  color: white;
+  text-shadow: #886d9a 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:hover,
+.group-subscribe a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:hover,
+.group-subscribe a:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:active,
+.group-subscribe a:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a.disabled, .community-subscribe a[disabled],
+.group-subscribe a.disabled,
+.group-subscribe a[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+.community-subscribe a::-moz-focus-inner,
+.group-subscribe a::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:hover,
+.group-subscribe a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:hover,
+.group-subscribe a:hover {
+  background-color: #9881a8;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #bdaec7), color-stop(75%, #9881a8));
+  background: -webkit-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: -moz-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: -o-linear-gradient(#bdaec7 3%, #9881a8 75%);
+  background: linear-gradient(#bdaec7 3%, #9881a8 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a:active,
+.group-subscribe a:active {
+  -webkit-box-shadow: #9078a1 0 1px 2px inset;
+  -moz-box-shadow: #9078a1 0 1px 2px inset;
+  box-shadow: #9078a1 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.community-subscribe a.disabled, .community-subscribe a[disabled],
+.group-subscribe a.disabled,
+.group-subscribe a[disabled] {
+  opacity: 0.6;
+  background: #a490b2;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 75, ../sass/buttons.scss */
+a.flag.flag-action {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF94B0B7', endColorstr='#FF5C8089');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c2d2d6), color-stop(70%, #94b0b7));
+  background: -webkit-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: -moz-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: -o-linear-gradient(#c2d2d6, #94b0b7 70%);
+  background: linear-gradient(#c2d2d6, #94b0b7 70%);
+  -webkit-box-shadow: #eff4f5 0 1px 0 inset;
+  -moz-box-shadow: #eff4f5 0 1px 0 inset;
+  box-shadow: #eff4f5 0 1px 0 inset;
+  border: 1px solid #85a5ad;
+  color: white;
+  text-shadow: #71969f 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action.disabled, a.flag.flag-action[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+a.flag.flag-action::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:hover {
+  background-color: #85a5ad;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #b2c7cc), color-stop(75%, #85a5ad));
+  background: -webkit-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: -moz-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: -o-linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+  background: linear-gradient(#b2c7cc 3%, #85a5ad 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action:active {
+  -webkit-box-shadow: #7c9ea7 0 1px 2px inset;
+  -moz-box-shadow: #7c9ea7 0 1px 2px inset;
+  box-shadow: #7c9ea7 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.flag-action.disabled, a.flag.flag-action[disabled] {
+  opacity: 0.6;
+  background: #94b0b7;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 80, ../sass/buttons.scss */
+a.flag.unflag-action {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFBFA99B', endColorstr='#FF95745F');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddd1ca), color-stop(70%, #bfa99b));
+  background: -webkit-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: -moz-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: -o-linear-gradient(#ddd1ca, #bfa99b 70%);
+  background: linear-gradient(#ddd1ca, #bfa99b 70%);
+  -webkit-box-shadow: #fbf9f8 0 1px 0 inset;
+  -moz-box-shadow: #fbf9f8 0 1px 0 inset;
+  box-shadow: #fbf9f8 0 1px 0 inset;
+  border: 1px solid #b59c8b;
+  color: white;
+  text-shadow: #a88a77 0 -1px 0;
+  /* @include sassy-button-style("inset"); */
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action.disabled, a.flag.unflag-action[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+a.flag.unflag-action::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:hover {
+  background-color: #b59c8b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #d3c4ba), color-stop(75%, #b59c8b));
+  background: -webkit-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: -moz-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: -o-linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+  background: linear-gradient(#d3c4ba 3%, #b59c8b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action:active {
+  -webkit-box-shadow: #af9482 0 1px 2px inset;
+  -moz-box-shadow: #af9482 0 1px 2px inset;
+  box-shadow: #af9482 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+a.flag.unflag-action.disabled, a.flag.unflag-action[disabled] {
+  opacity: 0.6;
+  background: #bfa99b;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 87, ../sass/buttons.scss */
+#block-innovatoripa-og-innovatori-og-create-content .block-title, #login-form-button a {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#block-innovatoripa-og-innovatori-og-create-content .block-title:hover, #login-form-button a:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#block-innovatoripa-og-innovatori-og-create-content .block-title:hover, #login-form-button a:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#block-innovatoripa-og-innovatori-og-create-content .block-title:active, #login-form-button a:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+#block-innovatoripa-og-innovatori-og-create-content .block-title.disabled, #block-innovatoripa-og-innovatori-og-create-content .block-title[disabled], #login-form-button a.disabled, #login-form-button a[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+#block-innovatoripa-og-innovatori-og-create-content .block-title::-moz-focus-inner, #login-form-button a::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+
+/* line 92, ../sass/buttons.scss */
+#login-form-button.is-pushed a {
+  -webkit-box-shadow: #6a6863 0 0.2em 0.4em inset;
+  -moz-box-shadow: #6a6863 0 0.2em 0.4em inset;
+  box-shadow: #6a6863 0 0.2em 0.4em inset;
+  border: solid 1px #585652;
+}
+/* line 13, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-styles.sass */
+#login-form-button.is-pushed a:active {
+  -webkit-box-shadow: #5f5e59 0 0.2em 0.4em inset;
+  -moz-box-shadow: #5f5e59 0 0.2em 0.4em inset;
+  box-shadow: #5f5e59 0 0.2em 0.4em inset;
+}
+
+/* PRIMARY TABS */
+/* line 99, ../sass/buttons.scss */
+.tabs.primary LI A {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 -1px 0;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFBFBF9B', endColorstr='#FF95955F');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddddca), color-stop(70%, #bfbf9b));
+  background: -webkit-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -moz-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -o-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: linear-gradient(#ddddca, #bfbf9b 70%);
+  -webkit-box-shadow: #fbfbf8 0 1px 0 inset;
+  -moz-box-shadow: #fbfbf8 0 1px 0 inset;
+  box-shadow: #fbfbf8 0 1px 0 inset;
+  border: 1px solid #b5b58b;
+  color: white;
+  text-shadow: #a8a877 0 -1px 0;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.disabled, .tabs.primary LI A[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+.tabs.primary LI A::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:hover {
+  background-color: #b5b58b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #d3d3ba), color-stop(75%, #b5b58b));
+  background: -webkit-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -moz-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -o-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A:active {
+  -webkit-box-shadow: #afaf82 0 1px 2px inset;
+  -moz-box-shadow: #afaf82 0 1px 2px inset;
+  box-shadow: #afaf82 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.disabled, .tabs.primary LI A[disabled] {
+  opacity: 0.6;
+  background: #bfbf9b;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 103, ../sass/buttons.scss */
+.tabs.primary LI A.active {
+  font-size: 1em;
+  padding: 0.3em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF7F7D77', endColorstr='#FF4A4946');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4a39e), color-stop(70%, #7f7d77));
+  background: -webkit-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -moz-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: -o-linear-gradient(#a4a39e, #7f7d77 70%);
+  background: linear-gradient(#a4a39e, #7f7d77 70%);
+  -webkit-box-shadow: #c9c8c6 0 1px 0 inset;
+  -moz-box-shadow: #c9c8c6 0 1px 0 inset;
+  box-shadow: #c9c8c6 0 1px 0 inset;
+  border: 1px solid #72706b;
+  color: white;
+  text-shadow: #615f5b 0 1px 0;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFBFBF9B', endColorstr='#FF95955F');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddddca), color-stop(70%, #bfbf9b));
+  background: -webkit-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -moz-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: -o-linear-gradient(#ddddca, #bfbf9b 70%);
+  background: linear-gradient(#ddddca, #bfbf9b 70%);
+  -webkit-box-shadow: #fbfbf8 0 1px 0 inset;
+  -moz-box-shadow: #fbfbf8 0 1px 0 inset;
+  box-shadow: #fbfbf8 0 1px 0 inset;
+  border: 1px solid #b5b58b;
+  color: white;
+  text-shadow: #a8a877 0 1px 0;
+  -webkit-box-shadow: #afaf82 0 0.2em 0.4em inset;
+  -moz-box-shadow: #afaf82 0 0.2em 0.4em inset;
+  box-shadow: #afaf82 0 0.2em 0.4em inset;
+  border: solid 1px #a1a16c;
+  font-weight: bold;
+  color: #3F3F3B;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:hover {
+  background-color: #72706b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #989691), color-stop(75%, #72706b));
+  background: -webkit-linear-gradient(#989691 3%, #72706b 75%);
+  background: -moz-linear-gradient(#989691 3%, #72706b 75%);
+  background: -o-linear-gradient(#989691 3%, #72706b 75%);
+  background: linear-gradient(#989691 3%, #72706b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:active {
+  -webkit-box-shadow: #6a6863 0 1px 2px inset;
+  -moz-box-shadow: #6a6863 0 1px 2px inset;
+  box-shadow: #6a6863 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active.disabled, .tabs.primary LI A.active[disabled] {
+  opacity: 0.6;
+  background: #7f7d77;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 73, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
+.tabs.primary LI A.active::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+/* line 15, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:hover {
+  text-decoration: none;
+}
+/* line 18, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:hover {
+  background-color: #b5b58b;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(3%, #d3d3ba), color-stop(75%, #b5b58b));
+  background: -webkit-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -moz-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: -o-linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+  background: linear-gradient(#d3d3ba 3%, #b5b58b 75%);
+}
+/* line 21, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active:active {
+  -webkit-box-shadow: #afaf82 0 1px 2px inset;
+  -moz-box-shadow: #afaf82 0 1px 2px inset;
+  box-shadow: #afaf82 0 1px 2px inset;
+}
+/* line 6, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
+.tabs.primary LI A.active.disabled, .tabs.primary LI A.active[disabled] {
+  opacity: 0.6;
+  background: #bfbf9b;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 13, ../../../../../../../lib/gems/1.8/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-styles.sass */
+.tabs.primary LI A.active:active {
+  -webkit-box-shadow: #a7a776 0 0.2em 0.4em inset;
+  -moz-box-shadow: #a7a776 0 0.2em 0.4em inset;
+  box-shadow: #a7a776 0 0.2em 0.4em inset;
+}

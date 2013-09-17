@@ -1,0 +1,618 @@
+/**
+* @file
+* Field Styling
+*
+* The Fences module allows site builders to pick the semeantic HTML5 element
+* for each field while editing the field's settings. There's no way a theme
+* can ever know which element to use for the fields on your site, so Zen
+* just uses lets Drupal core or Fences decide. Since you DO NOT want 3 wrapping
+* divs around every field (do you?), we highly recommend Fences.
+*
+* http://drupal.org/project/fences
+
+OVERRIDE DRUPAL DEFALTS
+Field display*/
+/*+clearfix {*/
+.poll .choices .form-type-radio:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	font-size: 0;
+}
+.poll .choices .form-type-radio
+{
+	display: inline-block;
+}
+.poll .choices .form-type-radio
+{
+	/*\*/
+	display: block;
+	/**/
+	-height: 1px;
+}
+/*+}*/
+.field .field-label
+{
+	font-weight: normal;
+}
+.field-label-inline .field-label, .field-label-inline .field-items
+{
+	float: none;
+	/*LTR*/
+}
+/*
+-- wrapper for any field.*/
+.field
+{
+	margin: 0.5em 0;
+}
+/*-- field with above label*/
+.field-label-above
+{
+	margin-bottom: 1em;
+}
+/*-- field with inline label*/
+.field-label-inline
+{
+}
+.field-label-above .field-items
+{
+	border-left: 4px solid #E3E3D5;
+	padding-left: 1em;
+}
+.user-profile-top .field-label-above .field-items
+{
+	border-left: 4px solid #CCCCB7;
+}
+/*
+Field labels*/
+DIV[class^='label'], SPAN[class^='label']
+{
+	font-family: Abel, sans-serif;
+	font-size: 0.9em;
+	color: #797972;
+}
+.label-inline
+{
+	margin-right: 0.5em;
+}
+/*
+* Field types (Core)*/
+.file
+{
+	font-family: Abel, sans-serif;
+	display: block;
+	line-height: 2em;
+}
+.file .file-icon
+{
+	float: left;
+	margin-top: 6px;
+	margin-right: 4px;
+}
+.file A
+{
+	border-bottom-width: 0;
+	display: block;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+.file A:hover
+{
+	background-color: #FFF;
+}
+/*
+
+* Field types (Contrib)
+ */
+.field-type-datetime
+{
+	/*Always use "datetime" when creating new CCK date fields. "date" and "datestamp" are legacy types.*/
+}
+/*
+AVATAR UTENTE*/
+.user-info
+{
+	float: left;
+	width: 80px;
+	font-size: 0.85em;
+	line-height: 1.2em;
+	text-align: center;
+	margin-right: 10px;
+	position: relative;
+}
+.user-info A
+{
+	width: 80px;
+	min-height: 80px;
+	border-width: 0;
+	display: block;
+}
+.user-info IMG
+{
+	max-width: 100%;
+	border: 1px solid #E9E9E2;
+}
+.user-info-follow
+{
+	margin-top: 0.4em;
+}
+.user-info .icon
+{
+	/*per il momento nascondo l'icona in attesa di definire meglio il ruolo di innovatore*/
+	display: none;
+}
+/*
+INFORMAZIONI DI PUBBLICAZIONE*/
+.content__pub-info
+{
+	font-size: 0.75em;
+	line-height: 1.4em;
+	color: #6F6F62;
+	font-family: "Droid Sans";
+	margin: 1em 0;
+}
+.content__pub-info-community
+{
+}
+/*-- nascondo dove è stato pubblicato per i gruppi (è sempre forum generale)*/
+.og-context-node-gruppo .content__pub-info-where
+{
+	display: none;
+}
+/*
+FIELD SPECIFICI PER CT EVENTO (APPUNTAMENTO)*/
+.content__event-date, .content__event-place
+{
+	border: 1px solid #D8D8C5;
+	background-color: #EEEEE6;
+	padding-left: 0.4em;
+}
+.content__event-date .field-items, .content__event-place SPAN
+{
+	font-family: Abel, sans-serif;
+}
+.view-mode-full .content__event-place, .view-mode-full .content__event-date
+{
+	padding: 0.5em;
+}
+.view-mode-full .content__event-date
+{
+	border-bottom-width: 0;
+	padding-bottom: 0;
+}
+.view-mode-full .content__event-place
+{
+	border-top-width: 0;
+}
+/*- date nel blocchetto in sidebar*/
+.date-display-start, .date-display-end
+{
+	color: #464643;
+	background-color: #ECECEC;
+	padding: 1px 5px;
+	/*+border-radius:0.4em;*/
+	-moz-border-radius: 0.4em;
+	-webkit-border-radius: 0.4em;
+	-khtml-border-radius: 0.4em;
+	border-radius: 0.4em;
+	font-size: 0.9em;
+}
+.field-items .date-display-start, .field-items .date-display-end
+{
+	background-color: transparent;
+	font-size: 1em;
+}
+/*
+IMMAGINE DI APERTURA*/
+.content-opening-image
+{
+	float: right;
+	margin: 0.5em 0 0.5em 1em;
+}
+.content-opening-image IMG
+{
+}
+/*
+STATISTICHE LETTURA*/
+.content-stats
+{
+	font-size: 0.9em;
+	color: #7F7D77;
+	text-align: right;
+	margin: 0.3em;
+}
+/*
+LINKS*/
+.node FOOTER .links
+{
+	display: block;
+	font-size: 0.85em;
+	line-height: 1.4em;
+	color: #6F6F62;
+	font-family: "Droid Sans";
+	text-align: right;
+	margin: 0.5em;
+}
+/*
+ARGOMENTI (TASSONOMIE)*/
+.content__arguments-label, .content__arguments-terms, .content__arguments-term
+{
+	margin: 0px;
+	padding: 0px;
+	line-height: 1.5em;
+}
+.content__arguments-label
+{
+	height: 1.7em;
+	line-height: 1.7em;
+	width: 30%;
+	float: left;
+	text-align: right;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.content__arguments-terms
+{
+	width: 69%;
+	float: right;
+}
+.content__arguments-term
+{
+	display: inline-block;
+	list-style-type: none;
+	padding: 0 0.3em 0.3em;
+}
+.content__arguments-term A
+{
+	border-width: 0;
+}
+.content__arguments-term A:hover
+{
+	color: #991515;
+}
+/*
+USER PROFILE FILEDS*/
+.user-profile .field-name-ds-code-ruolo
+{
+}
+.user-profile .field-name-ds-code-ruolo .field-items
+{
+	font-weight: bold;
+	position: relative;
+	color: #004785;
+}
+.user-profile .field-name-ds-code-ruolo .field-items .icon
+{
+	display: inline;
+	zoom: 1;
+	float: none;
+	display: inline-block;
+	margin-right: 0.3em;
+	margin-bottom: -3px;
+}
+.user-profile .field-name-field-profile-site A, .user-profile .field-name-ds-code-blog-link A
+{
+	font-weight: bold;
+}
+.user-profile .field-name-field-profile-summary
+{
+	margin-top: 1em;
+}
+/*-- temi di interesse*/
+.user-profile .user-profile-details-arguments
+{
+	margin: 0.5em 0 1em;
+}
+.user-profile .user-profile-details-arguments UL
+{
+	margin: 0;
+	list-style: none none;
+}
+.user-profile .user-profile-details-arguments UL LI
+{
+	display: inline-block;
+	margin-right: 1em;
+}
+.user-profile-datails-socials .field .label-inline
+{
+	display: inline-block;
+	width: 110px;
+	text-align: right;
+}
+.user-profile-datails-socials .field .field-items
+{
+	/*[disabled]padding-right:20px;*/
+	/*[disabled]background:no-repeat left center;*/
+}
+/*
+USER PROFILE TEASER*/
+.view-mode-teaser_profile .teaser-profile-item-image
+{
+	padding: 0;
+	margin: 0;
+	float: left;
+	width: 25%;
+	border: 1px solid #E9E9E2;
+}
+.view-mode-teaser_profile .teaser-profile-item-image A
+{
+	margin: 0;
+	padding: 0;
+	font-size: 0;
+	line-height: 0;
+	border-width: 0;
+	float: left;
+	max-width: 100%;
+}
+.view-mode-teaser_profile .content
+{
+	margin-left: 30%;
+}
+.view-mode-teaser_profile .content .content-title H2
+{
+	line-height: 1.1em;
+	margin: 0 0 0.5em;
+	font-size: 1.05em;
+	overflow: hidden;
+}
+.view-mode-teaser_profile .content .content-title H3
+{
+	font-size: 0.9em;
+	padding: 0;
+	margin: 0;
+	color: #747474;
+}
+.view-mode-teaser_profile .teaser-profile-item-text
+{
+	height: 5.6em;
+	line-height: 1.4em;
+	margin: 0.5em 0;
+	font-size: 0.9em;
+	overflow: hidden;
+}
+.view-mode-teaser_profile .teaser-profile-item-text P
+{
+	margin: 0;
+	padding: 0;
+}
+/*
+Bottone iscrizione comunità / gruppo*/
+.community-subscribe.subscribe-text-message, .group-subscribe.subscribe-text-message
+{
+	line-height: 32px;
+	padding-left: 10px !important;
+}
+.button.community-subscribe A .icon, .button.group-subscribe A .icon
+{
+	background-image: url(../images/icons/user_comment.png);
+	margin-top: 2px;
+	margin-right: 4px;
+}
+/*
+flag button*/
+.flag
+{
+	font-size: 13px !important;
+}
+.flag .icon
+{
+	background-image: url(../images/icons/email_add.png);
+	margin: 3px 5px 0 0;
+}
+.flag-message
+{
+	margin-top: -50px;
+	padding: 0.2em 1em;
+	margin-left: 0px;
+	/*[disabled]display:block;*/
+	text-align: center;
+	background-color: #E6E6DD;
+	background-color: rgba(255, 255, 255, 0.7);
+	width: auto;
+	min-width: 130px;
+	/*+border-radius:3px;*/
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+.flag-throbber
+{
+}
+/*
+flag friend*/
+.flag-friend .icon
+{
+	background-image: url(../images/icons/user_add.png);
+	margin: 3px 5px 0 -3px;
+}
+.flag-friend .flag-message
+{
+	/*block*/
+	/*[disabled]display:block;*/
+	padding: 0px;
+	margin-left: 100%;
+	margin-top: 2px;
+	width: 200px;
+	height: 28px;
+	line-height: 28px;
+	top: -8px;
+	left: 0;
+}
+.flag-friend .flagged .icon
+{
+	background-image: url(../images/icons/user_delete.png);
+}
+/*
+follow button*/
+.flag-innovatoripa-follow-og .icon, .flag-innovatoripa-follow-node .icon, .flag-innovatoripa-follow-term .icon, .flag-innovatoripa-follow-gruppo .icon
+{
+	background-image: url(../images/icons/email_add.png);
+}
+.flag-innovatoripa-follow-og .unflag-action .icon, .flag-innovatoripa-follow-node .unflag-action .icon, .flag-innovatoripa-follow-term .unflag-action .icon, .flag-innovatoripa-follow-gruppo .unflag-action .icon
+{
+	background-image: url(../images/icons/email_delete.png);
+}
+/*
+POLLS*/
+.poll .choices
+{
+	width: 100%;
+}
+.poll .text
+{
+}
+.poll .bar
+{
+	width: 97%;
+	background-color: #CCCCBF;
+}
+.poll .bar .foreground
+{
+	background-color: #3F3F3B;
+}
+.poll .percent
+{
+	height: 26px;
+	line-height: 23px;
+	float: right;
+	margin-top: -22px;
+	width: 120px;
+	text-align: center;
+	background-color: #FFF;
+	/*+border-radius:13px;*/
+	-moz-border-radius: 13px;
+	-webkit-border-radius: 13px;
+	-khtml-border-radius: 13px;
+	border-radius: 13px;
+	color: #3F3F3B;
+}
+.poll .bar .foreground
+{
+}
+.poll .total
+{
+	clear: both;
+	margin-top: 1em;
+}
+/*-- form*/
+.poll .choices > .form-item-choice
+{
+	padding: 0 0.6em;
+}
+/*[clearfix]*/.poll .choices .form-type-radio
+{
+	line-height: 22px;
+	height: 24px;
+	margin: 0.5em 0;
+	font-family: Abel, sans-serif;
+}
+/*
+iCHECK FIELDS*/
+DIV[class*=icheckbox], DIV[class*=iradio]
+{
+	float: left;
+	clear: left;
+	margin-right: 5px;
+}
+/*
+RATE WIDGET
+-- il field rate compare solo nei commenti (risposte) alle domande*/
+.comment-rate-avatar-wr
+{
+	float: left;
+	width: 60px;
+}
+.comment-rate-avatar-wr .rate-widget
+{
+	width: 60px;
+}
+.rate-widget
+{
+	position: relative;
+	clear: both;
+	padding-top: 8px;
+	margin-top: 70px;
+}
+.rate-button
+{
+	background-color: #E3E3D5;
+	background-repeat: no-repeat;
+	background-position: center;
+	/*+border-radius:3px;*/
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	padding: 0.3em;
+	/*+box-shadow:inset -1px -1px 3px rgba(0, 0, 0, 0.2);*/
+	-moz-box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.2);
+	-o-box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: inset -1px -1px 3px rgba(0, 0, 0, 0.2);
+	position: absolute;
+	top: 40px;
+	left: 0;
+}
+.rate-button.rate-number-up-down-btn-down
+{
+	left: auto;
+	right: 0;
+}
+.rate-button:hover
+{
+	border-color: #7F7E7A;
+}
+.rate-button.rate-voted
+{
+	/*+box-shadow:inset 3px 3px 3px rgba(0, 0, 0, 0.2);*/
+	-moz-box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.2);
+	-o-box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+.rate-number-up-down-rating
+{
+	font-size: 1.5em;
+	line-height: 28px;
+	height: 28px;
+	border: 1px solid #CCCCBF;
+	padding: 0;
+	margin: 0;
+	display: block;
+	width: 58px;
+	/*+border-radius:5px;*/
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+}
+.rate-info
+{
+	margin-top: 62px;
+	font-family: Abel, sans-serif;
+	text-align: center;
+}
+/*
+ADDTHIS TOOLBOX - SOCIAL SHARE BUTTONS*/
+.addthis_toolbox
+{
+	margin: 1em 0;
+}
+.addthis_toolbox A
+{
+	border-bottom-width: 0;
+	min-height: 30px;
+	float: right;
+}
+.addthis_toolbox A.addthis_counter
+{
+	min-height: 20px;
+}

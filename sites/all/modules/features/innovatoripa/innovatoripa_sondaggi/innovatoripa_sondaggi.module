@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA Sondaggi feature.
+ */
+
+include_once 'innovatoripa_sondaggi.features.inc';

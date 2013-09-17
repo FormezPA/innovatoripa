@@ -1,0 +1,110 @@
+@import "sassy-buttons";
+
+/*
+Full sassy button mixin with argument descriptions.
+@include sassy-button(gradient-style, border-radius, font-size, first-color, second-color, text-color, text-style, auto-states)
+@include sassy-button-structure(border-radius, font-size, padding);
+@include sassy-button-gradient(gradient-style, first-color, second-color, text-color, text-style, auto-states);
+*/
+
+$sb-base-color:      #7F7D77;      // Base color of your button
+$sb-second-color:    false;        // Optional second color of button gradient
+$sb-border-radius:   5px;          // Button border radius
+$sb-border-width:    1px;          // Button border width
+$sb-padding:         0.5em 1.5em;  // Button padding
+$sb-font-size:       1em;          // Button font-size
+$sb-line-height:     1em;          // Button line-height
+$sb-text-color:      white;        // Button text color
+$sb-text-style:      "inset";      // Button text shadow style: false - inset - raised -
+$sb-gradient-style:  "matte";      // Button gradient style: simple - matte - shiny - glass - flat
+$sb-auto-states:     true;         // Automatically create pseudo style
+
+// Custom vars
+$dark-text-color:   #3F3F3B;
+
+/* BUTTONS STYLES */
+.button a {
+    @include sassy-button;
+}
+.button-a a { /* desatured yellow brown */
+    @include sassy-button-gradient($sb-gradient-style, #BFBF9B, false, $sb-text-color, $sb-text-style);
+}
+.button-b a { /* desatured bluish cyan */
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+}
+.button-c a { /* desatured blue violet */
+    @include sassy-button-gradient($sb-gradient-style, #A490B2, false, $sb-text-color, $sb-text-style);
+}
+.button-d a { /* desatured brown */
+    @include sassy-button-gradient($sb-gradient-style, #BFA99B, false, $sb-text-color, $sb-text-style);
+}
+.button.flat a {
+    @include sassy-button-gradient('flat', #7F7D77, #7F7D77);
+}
+
+/* RATE BUTTONS 
+.rate-button {
+    $sb-padding: 0.2em;
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+}
+.rate-button.rate-voted {
+    $sb-padding: 0.2em;
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+    @include sassy-button-style("inset", #7F7D77)
+}
+*/
+
+/* MENU BUTTON */
+/* Visibile solo a risoluzioni inferiori ai 480px */
+/* Vedi navigation.css */
+#mobile-menu-button {
+    margin: 0;
+}
+#mobile-menu-button a {
+    $sb-padding: 0.3em 1.5em;
+    @include sassy-button;
+}
+
+/* flag */
+.community-subscribe a,
+.group-subscribe a {
+    $sb-padding: 0.3em 1.5em;
+    @include sassy-button;
+    @include sassy-button-gradient($sb-gradient-style, #A490B2, false, $sb-text-color, $sb-text-style);
+}
+a.flag.flag-action {
+    $sb-padding: 0.3em 1.5em;
+    @include sassy-button;
+    @include sassy-button-gradient($sb-gradient-style, #94B0B7, false, $sb-text-color, $sb-text-style);
+}
+a.flag.unflag-action {
+    $sb-padding: 0.3em 1.5em;
+    @include sassy-button;
+    @include sassy-button-gradient($sb-gradient-style, #BFA99B, false, $sb-text-color, $sb-text-style);
+    /* @include sassy-button-style("inset"); */
+}
+
+#block-innovatoripa-og-innovatori-og-create-content .block-title, #login-form-button a {
+    $sb-padding: 0.3em 1.5em;
+    @include sassy-button;
+}
+
+#login-form-button.is-pushed a {
+    @include sassy-button-style("inset", #7F7D77)
+}
+
+/* PRIMARY TABS */
+
+$pt-gradient-style:  "matte";      // Button gradient style: simple - matte - shiny - glass - flat
+.tabs.primary LI A {
+    @include sassy-button;
+    @include sassy-button-gradient($sb-gradient-style, #BFBF9B, false, $sb-text-color, $sb-text-style);
+}
+.tabs.primary LI A.active {
+    $sb-text-style: "raised";      // Button text shadow style: false - inset - raised -
+    @include sassy-button;
+    @include sassy-button-gradient($sb-gradient-style, #BFBF9B, false, $sb-text-color, $sb-text-style);
+    @include sassy-button-style("inset", #BFBF9B);
+    font-weight: bold;
+    color: #3F3F3B;
+}

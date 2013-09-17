@@ -1,0 +1,13 @@
+diff --git a/sites/all/modules/contrib/mailcomment/mailcomment.module b/sites/all/modules/contrib/mailcomment/mailcomment.module
+index ab80dd6..6dd61f0 100644
+--- a/sites/all/modules/contrib/mailcomment/mailcomment.module
++++ b/sites/all/modules/contrib/mailcomment/mailcomment.module
+@@ -170,7 +170,7 @@ function mailcomment_mail_alter(&$message) {
+     $message['body'][0] = $body;
+   }
+   $messageid_params['uid'] = $recipient->uid;
+-  $message['body'][0] .=  'View original post: ' . url('mailcomment/redirect/' . mailcomment_build_messageid($messageid_params), array('absolute' => TRUE));
++  //$message['body'][0] .=  'View original post: ' . url('mailcomment/redirect/' . mailcomment_build_messageid($messageid_params), array('absolute' => TRUE));
+ }
+ 
+ /**

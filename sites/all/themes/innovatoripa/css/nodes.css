@@ -1,0 +1,581 @@
+/**
+* @file
+* Node Styling
+*
+* Style anything that isn't in the $content variable.
+
+NODE TITLE
+*/
+.node H1
+{
+	font-size: 1.9em;
+	margin-top: 0.5em;
+}
+.node H1 .icon
+{
+	margin-top: 10px;
+}
+/*
+NODE HEADER
+NODE CONTENT
+*/
+.node .content
+{
+	margin-left: 90px;
+}
+.node .content-text
+{
+	font-family: Georgia, serif;
+	font-size: 1.1em;
+	line-height: 1.5em;
+}
+.node .content-text P
+{
+	margin-bottom: 0;
+}
+.node .content-bottom
+{
+	font-size: 0.85em;
+	line-height: 1.4em;
+	color: #6F6F62;
+	font-family: "Droid Sans";
+	text-align: right;
+	margin: 0.5em;
+}
+.node .content-attachments
+{
+	background-color: #EBEFE9;
+	padding: 0.5em;
+	margin: 0.8em 0;
+	border: 1px solid #DBE8D2;
+}
+.node .content-attachments H3
+{
+	margin: 0.5em 0;
+	font-variant: small-caps;
+}
+.node FOOTER
+{
+	margin: 2em 0px 2em 0;
+	border-top: 3px solid #B6AFBB;
+	border-bottom: 3px solid #B6AFBB;
+	padding: 1em;
+}
+/*-- node che non hanno le info utente, quindi niente margine sx*/
+.node.node-poll .content, .node.node-webform .content, .node.node-page .content
+{
+	margin-left: 0;
+}
+/*-- Discussioni nei gruppi: nascondo il contenuto del teaser con le informazioni di pubblicaiazione del forum (è sempre forum generale)*/
+.og-context-node-gruppo .node-discussione.view-mode-full FOOTER
+{
+	padding: 0;
+	border-top-width: 0;
+}
+.og-context-node-gruppo .node-discussione.view-mode-full FOOTER DIV
+{
+	display: none;
+}
+/*
+POST TEASER (FORUM / BLOG)*/
+.node-teaser
+{
+	padding: 1em 0 2.5em;
+	/*[disabled]border-top:1px solid #E3E3D5;*/
+}
+.views-row-first .node-teaser
+{
+	border-top-width: 0;
+}
+.node-teaser .content-title H2
+{
+	margin: 0 0 0.5em;
+	font-size: 1.2em;
+	line-height: 1.1em;
+}
+.node-teaser .content-text
+{
+	font-family: "Droid Sans", Helvetica, Arial, Verdana, sans-serif;
+	font-size: 1em;
+}
+.node-teaser .content-text DIV, .node-teaser .content-text P, .node-teaser .content-text P + A
+{
+	display: inline;
+}
+.node-teaser .content-text > A
+{
+	/*dovrebbe intercettare il link "continua"*/
+	margin-left: 0.3em;
+}
+/*
+SIMPLIFIED TEASER (pagina profilo pubblico, elenco contenuti pubblicati dall'utente)*/
+.view-mode-teaser_simplified
+{
+	padding: 1em 0 2.5em;
+}
+.view-mode-teaser_simplified .content
+{
+	margin-left: 0;
+}
+.view-mode-teaser_simplified .content A
+{
+	color: #007893;
+}
+.view-mode-teaser_simplified .content-title H2
+{
+	margin: 0 0 0.5em;
+	font-size: 1.2em;
+	line-height: 1.1em;
+}
+.view-mode-teaser_simplified .content-title H2 A
+{
+	color: #005CAA;
+}
+.view-mode-teaser_simplified .content-text
+{
+	font-family: "Droid Sans", Helvetica, Arial, Verdana, sans-serif;
+	font-size: 1em;
+}
+.view-mode-teaser_simplified .content-text DIV, .view-mode-teaser_simplified .content-text P, .view-mode-teaser_simplified .content-text P + A
+{
+	display: inline;
+}
+.view-mode-teaser_simplified .content-text > A
+{
+	/*dovrebbe intercettare il link "continua"*/
+	margin-left: 0.3em;
+}
+/*
+USER PROFILE*/
+.user-profile
+{
+	font-size: 0.9em;
+}
+.user-profile-top
+{
+	margin: 0;
+	padding: 1em 1em 1em 0;
+	border: 1px solid #CCCCBC;
+	background-color: #E6E6DD;
+	overflow: hidden;
+	/*+box-shadow:0px 1px 1px rgba(0, 0, 0, 0.1);*/
+	-moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+/*annullo il clearfix solo in user profile top*/
+.user-profile-top .field-label-inline.clearfix:after
+{
+	display: none;
+}
+.user-profile-top-avatar
+{
+	float: left;
+	width: 25%;
+}
+.user-profile-top-main
+{
+	margin-left: 27%;
+}
+.user-profile-top-main H1
+{
+	margin: 0 0 0.3em;
+}
+.user-profile-top-main H3
+{
+	margin: 0.4em 0;
+	font-weight: normal;
+}
+.user-profile-details
+{
+	background-color: #F9F9F9;
+	clear: both;
+	border: 1px solid #CCCCBC;
+	overflow: hidden;
+	border-width: 0 1px 1px;
+	/*+box-shadow:inset 0px 1px 1px rgba(0, 0, 0, 0.1);*/
+	-moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-transition: height 1s ease;
+	-moz-transition: height 1s ease;
+	-o-transition: height 1s ease;
+	transition: height 1s ease;
+}
+.user-profile-details-inner-wr
+{
+	padding: 1em;
+}
+.user-profile-datails-socials
+{
+	margin-top: 1.5em;
+	border-top: 1px solid #D8D8D8;
+}
+.user-profile-datails-socials-inner
+{
+	padding: 1em 0;
+}
+.user-profile-footer
+{
+	position: relative;
+	margin: 0 0 1em;
+	padding: 0 0 0 0.7em;
+	height: 2.5em;
+	font-family: Abel, sans-serif;
+	border: 1px solid #C3C3AE;
+	border-top: 1px solid #EFEFE9;
+	background-color: #E0E0D4;
+	/*+box-shadow:0px 1px rgba(0, 0, 0, 0.1);*/
+	-moz-box-shadow: 0px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 0px 1px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 0px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 0px 1px rgba(0, 0, 0, 0.1);
+}
+.user-profile-footer .icon
+{
+	margin-right: 5px;
+}
+/*CON JS DISPONIBILE:
+-- elemento aggiunto via JS (controlla l'apertua della sezione dettagli)*/
+.user-profile-details-switcher SPAN
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 11em;
+	height: 1.5em;
+	padding: 0.5em;
+	border-left: 1px solid #CCCCBC;
+	background-color: #D0D0BF;
+	cursor: pointer;
+}
+/*
+IN EVIDENZA*/
+.flexslider
+{
+	border: 1px solid #C1CCBF;
+	background-color: #D2DED1;
+	height: auto;
+	padding: 1em;
+	font-family: "Droid Sans", sans-serif;
+	font-size: 1em;
+	line-height: 1.8em;
+	/*+box-shadow:0px 1px 1px rgba(0, 0, 0, 0.1);*/
+	-moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+	/*+border-radius:0;*/
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-khtml-border-radius: 0;
+	border-radius: 0;
+	height: 210px;
+}
+.featured-image
+{
+	float: left;
+	margin-right: 1em;
+	margin-left: 2px;
+	width: 200px;
+	height: auto;
+}
+@media all and (max-width: 959px)
+{
+	.featured-image
+	{
+		display: none;
+	}
+}
+.featured-image A
+{
+	border-width: 0;
+	float: left;
+	font-size: 0;
+	line-height: 0;
+}
+.featured-image IMG
+{
+}
+.featured-title H2
+{
+	font-size: 1.2em;
+	margin: 0;
+}
+.featured-pubinfo
+{
+	margin: 0.4em 0;
+	font-family: "Droid Sans", sans-serif;
+	font-size: 0.8em;
+}
+.featured-text P
+{
+	margin: 0;
+	font-size: 1em;
+}
+/*
+* All nodes are given a node-FOO class that describes the type of content that
+* it is. If you create a new content type called "my-custom-type", it will
+* receive a "node-my-custom-type" class.
+ */
+.node-unpublished
+{
+	/*Unpublished nodes
+background-color: #fff4f4;
+Drupal core uses a #fff4f4 background*/
+}
+.node-unpublished P.unpublished
+{
+	/*The word "Unpublished" displayed underneath the content.*/
+	height: 0;
+	overflow: visible;
+	color: #D8D8D8;
+	font-size: 75px;
+	line-height: 1;
+	font-family: Impact, "Arial Narrow", Helvetica, sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	word-wrap: break-word;
+}
+/*
+WIKI (BOOKS)*/
+.node-book
+{
+}
+.node-book FOOTER
+{
+	background-color: #F5F5F5;
+}
+.node-book .book-navigation
+{
+}
+.node-book .book-navigation .menu
+{
+	padding: 0;
+	border-width: 0;
+}
+.node-book .book-navigation .page-links
+{
+	margin-top: 1.5em;
+	border-width: 0;
+	border: 1px solid #A3A3A3;
+	font-size: 0.8em;
+	/*+box-shadow:inset 0px 1px 3px rgba(0, 0, 0, 0.2);*/
+	-moz-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+	-o-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+	background-color: #FFF;
+}
+.node-book .book-navigation .page-links A
+{
+	border-width: 0;
+	/*+box-sizing:border-box;*/
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	line-height: 1.2em;
+	background: transparent no-repeat center;
+	padding: 0.2em 0;
+}
+.node-book .book-navigation .page-links A:hover
+{
+	text-decoration: underline;
+}
+.node-book .book-navigation .page-links A.page-next
+{
+	background-image: url(../images/icons/book_next.png);
+	background-position: 100% 50%;
+	float: right;
+	padding-right: 22px;
+}
+.node-book .book-navigation .page-links A.page-previous
+{
+	background-image: url(../images/icons/book_previous.png);
+	background-position: 0% 50%;
+	float: left;
+	padding-left: 22px;
+}
+/*
+PRIVATE MESSAGES*/
+.page-messages #page-title
+{
+	font-size: 1.4em;
+}
+.privatemsg-message-participants
+{
+	font-family: Abel, sans-serif;
+	border: 1px solid #D4D4BE;
+	padding: 0.2em;
+	background-color: #EFEFE7;
+}
+/*-- filters*/
+#privatemsg-filter-tags
+{
+	line-height: 30px;
+}
+#privatemsg-filter-tags A
+{
+	border-bottom-width: 0;
+}
+#privatemsg-filter-form
+{
+	padding: 1em 0;
+}
+#privatemsg-filter-form .form-item
+{
+	margin: 4px;
+}
+/*-- content*/
+.privatemsg-message
+{
+	margin-bottom: 2em;
+	padding: 0.5em;
+	width: auto;
+}
+.privatemsg-message.is-my-message
+{
+	background-color: #F7F7F1;
+}
+.privatemsg-author-avatar
+{
+	text-align: left;
+	max-width: 100px;
+}
+.privatemsg-author-avatar A
+{
+	border-width: 0;
+}
+.privatemsg-message-column
+{
+	float: none;
+	margin-left: 115px;
+	width: auto;
+	position: relative;
+}
+.privatemsg-message-information
+{
+	position: relative;
+}
+.privatemsg-message-actions
+{
+	top: 0;
+	margin: 0;
+	font-family: Abel, sans-serif;
+}
+.privatemsg-message-actions A:hover
+{
+	text-decoration: underline;
+}
+.privatemsg-message-information SPAN
+{
+	font-size: 14px;
+}
+.privatemsg-message-information A
+{
+	border-bottom-width: 0;
+}
+.privatemsg-message-body
+{
+	margin: 0.7em 0 0;
+	padding: 0;
+	font-size: 0.9em;
+	letter-spacing: 0.02em;
+}
+/*-- form
+-- list form*/
+#privatemsg-list
+{
+}
+#privatemsg-list #privatemsg-list-form
+{
+}
+#privatemsg-list .container-inline
+{
+	margin: 1em 0;
+}
+/*-- reply form*/
+#privatemsg-form-reply
+{
+	padding: 1em;
+	background-color: #EFEFE7;
+	/*+box-shadow:inset 0px 0px 2px rgba(0, 0, 0, 0.5);*/
+	-moz-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	-o-box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+#privatemsg-form-reply H2
+{
+	margin: 0.2em 0;
+	font-size: 1.2em;
+}
+#privatemsg-form-reply LABEL
+{
+	font-family: Abel, sans-serif;
+}
+#privatemsg-form-reply A
+{
+}
+#privatemsg-form-reply A:hover
+{
+	text-decoration: underline;
+}
+#privatemsg-form-reply A.fieldset-title
+{
+	border-bottom-width: 0;
+}
+/*
+DRUPAL ADMINS
+
+### MESSAGES*/
+.messages
+{
+}
+.close-message
+{
+	border-width: 0;
+}
+/*### CONTEXTUAL LINKS*/
+.contextual-links-wrapper
+{
+}
+.contextual-links-wrapper .contextual-links
+{
+	font-size: 10px;
+}
+.contextual-links-wrapper .contextual-links A
+{
+	border-width: 0;
+}
+/*ACTION LINKS*/
+.page-blog .action-links
+{
+	/*[disabled]display:none;*/
+}
+/*### File upload in comments*/
+.form-managed-file SPAN, .form-managed-file SPAN A
+{
+	display: inline;
+	background: transparent !important;
+}
+.form-managed-file .file-size
+{
+	margin-left: 10px;
+	font-size: 0.9em;
+}
+A.tabledrag-handle
+{
+	padding: 5px;
+	width: auto;
+	border-width: 0;
+}
+/*CKEDITOR LINKS*/
+A#switch_edit-body-value, #edit-body-format-help A
+{
+	border-width: 0;
+}

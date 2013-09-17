@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Move the module weighter than others (500)
+ */
+function innovatoripa_notify_subscriptions_update_7001() {
+  db_query("UPDATE {system} SET weight = :weight WHERE type = 'module' AND name = 'innovatoripa_notify_subscriptions'", array(':weight' => 500));
+}

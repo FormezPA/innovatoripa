@@ -1,0 +1,13 @@
+diff --git a/plugins/notifier/email/MessageNotifierEmail.class.php b/plugins/notifier/email/MessageNotifierEmail.class.php
+index b0e5da4..2a4386b 100644
+--- a/plugins/notifier/email/MessageNotifierEmail.class.php
++++ b/plugins/notifier/email/MessageNotifierEmail.class.php
+@@ -23,7 +23,7 @@ class MessageNotifierEmail extends MessageNotifierBase {
+     }
+ 
+     // The subject in an email can't be with HTML, so strip it.
+-    $output['message_notify_email_subject'] = strip_tags($output['message_notify_email_subject']);
++    $output['message_notify_email_subject'] = strip_tags(htmlspecialchars_decode($output['message_notify_email_subject']));
+ 
+     // Pass the message entity along to hook_drupal_mail().
+     $output['message_entity'] = $message;

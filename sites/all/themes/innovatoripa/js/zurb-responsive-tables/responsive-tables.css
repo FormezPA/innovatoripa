@@ -1,0 +1,129 @@
+/*Foundation v2.1.4 http://foundation.zurb.com
+Artfully masterminded by ZURB
+--------------------------------------------------
+Table of Contents
+-----------------------------------------------------
+:: Shared Styles
+:: Page Name 1
+:: Page Name 2
+
+-----------------------------------------
+Shared Styles
+-----------------------------------------*/
+TABLE
+{
+	font-size: 0.9em;
+	width: 100%;
+}
+TABLE TH
+{
+	font-weight: bold;
+}
+TABLE TH A
+{
+	border-bottom-width: 0;
+}
+TABLE TH A:hover
+{
+	text-decoration: underline;
+}
+TABLE THEAD TR
+{
+	border-bottom: 2px solid #CCCCBC;
+	-webkit-transition: background 0.3s ease;
+	-moz-transition: background 0.3s ease;
+	-o-transition: background 0.3s ease;
+	transition: background 0.3s ease;
+}
+TABLE THEAD TR:hover
+{
+	background-color: transparent;
+}
+TABLE TR, TABLE TR.even, TABLE TR.odd
+{
+	background-color: transparent;
+	border-bottom: 1px solid #CCCCBC;
+}
+TABLE TR:hover
+{
+	background-color: #E6E6DD;
+}
+TABLE TR.selected TD
+{
+	background-color: #DFDCE2;
+}
+TABLE TD, TABLE TH
+{
+	padding: 9px 10px;
+	text-align: left;
+}
+TABLE TD.active
+{
+	background-color: #E6E6DD;
+	background-color: rgba(204, 204, 188, 0.5);
+}
+TABLE TD A
+{
+	border-bottom-width: 0;
+}
+TABLE TD A:hover
+{
+	text-decoration: underline;
+}
+/*Mobile*/
+@media only screen and (max-width: 767px)
+{
+	TABLE.responsive
+	{
+		margin-bottom: 0;
+	}
+	.pinned
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		background: #FFF;
+		width: 35%;
+		overflow: hidden;
+		overflow-x: scroll;
+		border-right: 1px solid #CCC;
+		border-left: 1px solid #CCC;
+	}
+	.pinned TABLE
+	{
+		border-right: none;
+		border-left: none;
+		width: 100%;
+	}
+	.pinned TABLE TH, .pinned TABLE TD
+	{
+		white-space: nowrap;
+	}
+	.pinned TD:last-child
+	{
+		border-bottom: 0;
+	}
+	DIV.table-wrapper
+	{
+		position: relative;
+		margin-bottom: 20px;
+		overflow: hidden;
+		border-right: 1px solid #CCC;
+	}
+	DIV.table-wrapper DIV.scrollable
+	{
+		margin-left: 35%;
+		overflow: scroll;
+		overflow-y: hidden;
+	}
+	TABLE.responsive TD, TABLE.responsive TH
+	{
+		position: relative;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	TABLE.responsive TH:first-child, TABLE.responsive TD:first-child, TABLE.responsive TD:first-child, TABLE.responsive.pinned TD
+	{
+		display: none;
+	}
+}

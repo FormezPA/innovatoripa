@@ -1,0 +1,178 @@
+/*
+ICONE
+ */
+.icon
+{
+	float: left;
+	height: 16px;
+	width: 16px;
+	background: transparent no-repeat center center;
+}
+.icon.add-content
+{
+	background-image: url(../images/icons/page_add.png);
+}
+.icon.list
+{
+	background-image: url(../images/icons/text_list_bullets.png);
+}
+.icon.map
+{
+	background-image: url(../images/icons/map.png);
+}
+/*- content type*/
+.icon[class*="content-type"]
+{
+	margin-top: 1px;
+	margin-right: 3px;
+}
+.icon.content-type-blog
+{
+	background-image: url(../images/icons/page_world.png);
+}
+.icon.content-type-discussione
+{
+	background-image: url(../images/icons/comments.png);
+}
+.icon.content-type-page
+{
+	background-image: url(../images/icons/page.png);
+}
+.icon.content-type-evento
+{
+	background-image: url(../images/icons/calendar_view_day.png);
+}
+.icon.content-type-domanda
+{
+	background-image: url(../images/icons/help.png);
+}
+.icon.content-type-segnalazione
+{
+	background-image: url(../images/icons/note.png);
+}
+.icon.content-type-webform
+{
+	background-image: url(../images/icons/application_form.png);
+}
+/*- icon content type in featured content*/
+.featured-title .icon
+{
+	margin-top: 3px;
+}
+/*- ruoli vicino all'avatar*/
+.user-info .icon[class*=role-]
+{
+	width: 20px;
+	height: 20px;
+	/*+border-radius:5px;*/
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	position: absolute;
+	float: none;
+	top: 59px;
+	left: 3px;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+/*- innovatore*/
+.icon.role-innovatore
+{
+	background-image: url(../images/icons/user_green.png);
+}
+/*- innovatore attivo*/
+.icon.role-innovatore-attivo
+{
+	background-image: url(../images/icons/user_orange.png);
+}
+/*- innovatore esperto*/
+.icon.role-innovatore-esperto
+{
+	background-image: url(../images/icons/user_red.png);
+}
+/*- dettagli utente*/
+.icon.user-details
+{
+	background-image: url(../images/icons/report_user.png);
+	margin-right: 5px;
+	margin-top: 2px;
+}
+/*--*/
+.feed-icon
+{
+	display: none;
+}
+/*- icone forum di discussione*/
+.icon.is-normal
+{
+	background-image: url(../images/forum/topic_list_default.png);
+	width: 24px;
+	height: 24px;
+}
+.icon.is-sticky
+{
+	background-image: url(../images/forum/topic_list_sticky.png);
+	width: 24px;
+	height: 24px;
+}
+.icon.add-topic
+{
+	background-image: url(../images/icons/comments_add.png);
+}
+/*- icone utilizzate nel menu comunità*/
+.icon.community
+{
+	background-image: url(../images/icons/layout_content.png);
+}
+.icon.groups
+{
+	background-image: url(../images/icons/groups.png);
+}
+.icon.discussions
+{
+	background-image: url(../images/icons/comments.png);
+}
+.icon.wiki, .icon.content-type-book
+{
+	background-image: url(../images/icons/book_open.png);
+}
+.icon.questions
+{
+	background-image: url(../images/icons/help.png);
+}
+.icon.files
+{
+	background-image: url(../images/icons/attach.png);
+}
+.icon.blog
+{
+	background-image: url(../images/icons/page_world.png);
+}
+.icon.appointments
+{
+	background-image: url(../images/icons/calendar_view_day.png);
+}
+.icon.reports
+{
+	background-image: url(../images/icons/note.png);
+}
+.icon.polls
+{
+	background-image: url(../images/icons/text_list_numbers.png);
+}
+.icon.webforms
+{
+	background-image: url(../images/icons/application_form.png);
+}
+.icon.more
+{
+	background-image: url(../images/icons/application_put.png);
+}
+.icon.less
+{
+	background-image: url(../images/icons/application_get.png);
+}
+.icon.stats
+{
+	background-image: url(../images/icons/chart_line.png);
+}

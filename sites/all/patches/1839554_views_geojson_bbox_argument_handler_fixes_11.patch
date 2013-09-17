@@ -1,0 +1,152 @@
+diff --git a/README.txt b/README.txt
+index b3b2b78..500954a 100644
+--- a/README.txt
++++ b/README.txt
+@@ -63,7 +63,7 @@ points within that box.
+ 
+ It has been tested with OpenLayers' Bounding Box Strategy but should work
+ with any mapping tool that requests bounding box coordinates as
+-"?BBOX=left,bottom,right,top" in the query string. Argument ID "BBOX" is
++"?bbox=left,bottom,right,top" in the query string. Argument ID "bbox" is
+ default for OpenLayers but can be changed.
+ 
+ OpenLayers 7.x-2.x-dev is currently required for OpenLayers BBOX integration.
+@@ -80,7 +80,7 @@ the GeoJSON layer type".
+ 4. In the Contextual Filter settings, under "When the filter value is NOT in
+    the URL as a normal Drupal argument", choose: "Provide default value".
+ 5. In the "Type" dropdown, choose: "Bounding box from query string".
+-6. For OpenLayers, leave "Query argument ID" as "BBOX" and click Apply.
++6. For OpenLayers, leave "Query argument ID" as "bbox" and click Apply.
+ 
+ 
+ TO DO
+diff --git a/views/views_geojson_bbox_argument.inc b/views/views_geojson_bbox_argument.inc
+index e45a685..565b97d 100644
+--- a/views/views_geojson_bbox_argument.inc
++++ b/views/views_geojson_bbox_argument.inc
+@@ -15,7 +15,6 @@ class views_geojson_bbox_argument extends views_handler_argument {
+    */
+   function option_definition() {
+     $options = parent::option_definition();
+-    $options['arg_id'] = array('default' => 'bbox');
+     return $options;
+   }
+ 
+@@ -30,48 +29,9 @@ class views_geojson_bbox_argument extends views_handler_argument {
+   }
+ 
+   /*
+-   * Figure out which fields are being used so we can filter on them.
+-   */
+-  function _get_fields($data_source) {
+-    $field_ids = array();
+-    switch ($data_source['value']) {
+-      case 'latlon':
+-        $field_ids[] = $data_source['latitude'];
+-        $field_ids[] = $data_source['longitude'];
+-        break;
+-      case 'geofield':
+-        $field_ids[] = $data_source['geofield'];
+-        break;
+-      case 'wkt':
+-        $field_ids[] = $data_source['wkt'];
+-        break;
+-    }
+-
+-    return $field_ids;
+-  }
+-
+-  /*
+-   * Pull BBOX string from URL to get coordinates
+-   *
+-   * ?bbox=x,x,x,x
+-   */
+-  function _get_bbox_coords() {
+-    if (isset($_GET[$this->options['arg_id']])) {
+-      $this->argument = $_GET[$this->options['arg_id']];
+-    }
+-    return $this->_explode_bbox_coords($this->argument);
+-  }
+-
+-  /*
+    * Split BBOX string into {left, bottom, right, top}
+    */
+   function _explode_bbox_coords($bbox_coords_str) {
+-    // If the GET prefix is still in there (like "?bbox="), remove it.
+-    // @TODO: this might just handle what we've broken into a special case as
+-    // the "query string" default arg
+-    $arg_get_prefix = '?' . $this->options['arg_id'] . '=';
+-    $bbox_coords_str = str_ireplace($arg_get_prefix, '', $bbox_coords_str);
+-
+     $bbox_coords = explode(',', $bbox_coords_str);
+     if (count($bbox_coords) == 4) {
+       $bbox = array(
+@@ -88,16 +48,15 @@ class views_geojson_bbox_argument extends views_handler_argument {
+    * Use the filter to modify the query.
+    */
+   function query() {
+-    $this->ensure_my_table();
+     // TODO: this argument should be set in
+     // views_plugin_argument_default_bboxquery::get_argument
+     // unfortunately that seems broken.
+     // @see http://drupal.org/node/1884214
+-    if (!empty($this->argument) && ($this->argument !== TRUE)) {
+-      $bbox = $this->_explode_bbox_coords($this->argument);
+-    } else {
+-      $bbox = $this->_get_bbox_coords();
+-    }
++    if (empty($this->argument)) {
++      return;
++     }
++    $this->ensure_my_table();
++    $bbox = $this->_explode_bbox_coords($this->argument);
+ 
+     // If bbox not set properly, don't edit the query.
+     // @TODO: Move this into argument validation?
+@@ -139,18 +98,18 @@ class views_geojson_bbox_argument extends views_handler_argument {
+       // @TODO: Maybe the field name can really just be "${lat_field_obj}_lat"?
+       $lat_field_name = $lat_field_obj->field_info['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$lat_field_table]['lat'];
+     } else {
+-      $lat_field_name = $lat_field_obj->field;
++      $lat_field_name = $lat_field_obj->real_field;
+     }
+     if (isset($lon_field_obj->field_info) && $lon_field_obj->field_info['type'] == 'geofield') {
+       $lon_field_name = $lon_field_obj->field_info['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$lon_field_table]['lon'];
+     } else {
+-      $lon_field_name = $lon_field_obj->field;
++      $lon_field_name = $lon_field_obj->real_field;
+     }
+ 
+     // Add JOIN(s) to query.
+-    $this->query->add_table($lat_field_table);
+-    if ($lon_field_table != $lat_field_table) {
+-      $this->query->add_table($lon_field_table);
++    $this->query->ensure_table($lat_field_table);
++     if ($lon_field_table != $lat_field_table) {
++      $this->query->ensure_table($lon_field_table);
+     }
+ 
+     // Add WHERE(s) to query.
+diff --git a/views/views_plugin_argument_default_bboxquery.inc b/views/views_plugin_argument_default_bboxquery.inc
+index 298dd38..7ac39c6 100644
+--- a/views/views_plugin_argument_default_bboxquery.inc
++++ b/views/views_plugin_argument_default_bboxquery.inc
+@@ -11,6 +11,7 @@ class views_plugin_argument_default_bboxquery extends views_plugin_argument_defa
+   function option_definition() {
+     $options = parent::option_definition();
+     $options['argument'] = array('default' => '');
++    $options['arg_id'] = array('default' => 'bbox');
+ 
+     return $options;
+   }
+@@ -28,8 +29,8 @@ class views_plugin_argument_default_bboxquery extends views_plugin_argument_defa
+       '#title'  => t('Query argument ID'),
+       '#size' => 60,
+       '#maxlength' => 64,
+-      '#default_value'  => $this->options['arg_id'] ? $this->options['arg_id'] : t('BBOX'),
+-      '#description'  => t('The ID of the query argument.<br />For OpenLayers use <em>BBOX</em>, (as in "<em>?BBOX=left,bottom,right,top</em>".)'),
++      '#default_value'  => $this->options['arg_id'] ? $this->options['arg_id'] : t('bbox'),
++      '#description'  => t('The ID of the query argument.<br />For OpenLayers use <em>bbox</em>, (as in "<em>?bbox=left,bottom,right,top</em>".)'),
+     );
+   }
+ 

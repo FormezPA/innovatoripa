@@ -1,0 +1,558 @@
+/**
+* @file
+* Form Styling
+
+-----------------------------------------------
+FOLLOWING: ZEN DEFAULTS
+-----------------------------------------------*/
+/*+clearfix {*/
+#user-login-form .form-item:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	font-size: 0;
+}
+#user-login-form .form-item
+{
+	display: inline-block;
+}
+#user-login-form .form-item
+{
+	/*\*/
+	display: block;
+	/**/
+	-height: 1px;
+}
+/*+}*/
+.form-item
+{
+	/*Wrapper for a form element (or group of form elements) and its label*/
+	margin: 1.5em 0;
+}
+.form-item INPUT.error, .form-item TEXTAREA.error, .form-item SELECT.error
+{
+	/*Highlight the form elements that caused a form submission error*/
+	border: 1px solid #C00;
+}
+.form-item LABEL
+{
+	/*The label for a form element*/
+	display: block;
+	font-weight: bold;
+}
+.form-item LABEL.option
+{
+	/*The label for a radio button or checkbox*/
+	display: inline;
+	font-weight: normal;
+}
+.form-item .form-required
+{
+	/*The part of the label that indicates a required field*/
+	color: #C00;
+}
+.form-item .description
+{
+	/*The descriptive help text (separate from the label)*/
+	font-size: 0.85em;
+}
+.form-checkboxes .form-item, .form-radios .form-item
+{
+	/*Pack groups of checkboxes and radio buttons closer together*/
+	margin: 0;
+	/*Drupal core uses "0.4em 0"*/
+}
+INPUT.form-submit
+{
+	padding: 0.5em 2em;
+	margin: 0 0.5em;
+	/*The submit button*/
+}
+A#edit-cancel
+{
+	margin: 0.5em 1em;
+	line-height: 26px;
+}
+.container-inline DIV, .container-inline LABEL
+{
+	/*Inline labels and form divs*/
+	display: inline;
+}
+.tips
+{
+	/*Tips for Drupal's input formats*/
+}
+A.button
+{
+	/*Buttons used by contrib modules like Media*/
+	-webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
+}
+.form-item .form-text
+{
+	height: 26px;
+	background-position: 100% 6px !important;
+}
+/*
+* Password confirmation
+ */
+.password-parent, .confirm-parent
+{
+	margin: 0;
+}
+/*
+* Search (search-block-form.tpl.php)
+ */
+#block-search-form
+{
+	/*Wrapper for the search form*/
+	float: right;
+}
+#block-search-form INPUT.form-search
+{
+	max-width: 190px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 24px;
+}
+#search-block-form LABEL
+{
+	display: none;
+}
+#search-block-form #edit-custom-search-paths
+{
+	font-size: 0.8em;
+	padding: 5px;
+	height: 30px;
+}
+/*
+USER LOGIN FORM*/
+#user-login-form
+{
+	width: 35%;
+	margin: 0 auto;
+	min-width: 320px;
+}
+/*[clearfix]*/#user-login-form .form-item
+{
+	margin: 0;
+	padding: 0.5em 0;
+}
+#user-login-form LABEL
+{
+	float: left;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	font-family: Abel, sans-serif;
+	line-height: 36px;
+	height: 36px;
+	text-align: right;
+	min-width: 80px;
+	width: 25%;
+	color: #FFFFFF;
+}
+#user-login-form INPUT
+{
+	width: 70%;
+	float: right;
+	clear: none;
+	height: 36px;
+	line-height: 36px;
+	min-width: 220px;
+	padding: 0 25px 0 5px;
+	/*+box-sizing:border-box;*/
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+#user-login-form INPUT#edit-name
+{
+	background: #FFF url(../images/icons/user_go.png) no-repeat 98% 51% !important;
+}
+#user-login-form INPUT#edit-pass
+{
+	background: #FFF url(../images/icons/lock.png) no-repeat 98% 51% !important;
+}
+#user-login-form UL
+{
+	clear: both;
+	font-family: Abel, sans-serif;
+	margin: -5px 0 0 30%;
+	padding: 0;
+	width: 150px;
+	float: left;
+	list-style-type: none;
+	font-size: 12px;
+}
+#user-login-form UL LI
+{
+	float: left;
+	margin-right: 10px;
+}
+#user-login-form UL LI A
+{
+	color: #FFFFFF;
+	border-width: 0;
+	text-decoration: underline;
+}
+#user-login-form .form-actions
+{
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+#user-login-form .form-actions INPUT.form-submit
+{
+	width: 70px;
+	min-width: 31px;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 1em;
+	margin: 0;
+}
+HTML.js #user-login-form LI.openid-link, #user-login-form LI.openid-link
+{
+	/*The "Log in using OpenID" link.*/
+	/*[disabled]margin-top:1.5em;*/
+	/*[disabled]margin-left:-20px;*/
+	/*LTR
+Un-do some of the padding on the ul list.*/
+}
+#user-login-form LI.user-link
+{
+	/*The "Cancel OpenID login" link.*/
+	/*[disabled]margin-top:1.5em;*/
+}
+/*### USER LOGIN*/
+#user-login
+{
+	margin: 1em;
+}
+#user-login UL
+{
+	margin: 1.5em 0;
+}
+/*
+* Drupal admin tables
+*
+* We overrode these styles in normalize.css, but restore them for the admin
+* section of the site.
+ */
+FORM TH
+{
+	text-align: left;
+	/*LTR*/
+	padding-right: 1em;
+	/*LTR*/
+	border-bottom: 3px solid #CCC;
+}
+FORM TBODY
+{
+	border-top: 1px solid #CCC;
+}
+FORM TR.even
+{
+	background-color: #FFF;
+}
+FORM TABLE .item-list UL
+{
+	margin: 0;
+}
+/*
+* Drupal core wrongly puts this in system.menus.css. Since we override that, add it back.
+ */
+TD.menu-disabled
+{
+	background: #CCC;
+}
+/*
+FILTRI ESPOSTI
+*/
+.views-exposed-form
+{
+	position: relative;
+	min-height: 65px;
+}
+.views-exposed-form .views-exposed-widget
+{
+	height: 50px;
+	font-family: Abel, sans-serif;
+}
+.views-exposed-form .views-exposed-widget .form-item SELECT
+{
+	font-family: Abel, sans-serif;
+}
+/*- date selection widget*/
+.views-exposed-form .views-exposed-widgets .views-widget-filter-date_filter
+{
+	height: auto;
+	margin-top: -1.3em;
+}
+.views-exposed-form .views-exposed-widgets .views-widget-filter-date_filter .views-widget > DIV
+{
+	float: left;
+	clear: none;
+}
+.views-exposed-form .views-exposed-widgets .views-widget-filter-date_filter .views-widget LABEL
+{
+	font-weight: normal;
+}
+/*FILTRI ESPOSTI IN PANNELLI (PAGINE DI RICERCA)
+## ELEMENTI COMUNI*/
+.panel .views-exposed-form
+{
+	position: relative;
+	height: 80px;
+	margin-top: 1.5em;
+}
+.panel .views-exposed-form .views-submit-button
+{
+	margin: 0;
+	padding: 0;
+	float: right;
+}
+.panel .views-exposed-form .views-submit-button .form-submit
+{
+	margin: 0;
+}
+/*-- voci per pagina*/
+.panel .views-exposed-form .views-widget-per-page
+{
+	padding: 0;
+}
+.panel .views-exposed-form .views-widget-per-page LABEL
+{
+	float: left;
+	font-size: 0.9em;
+	font-family: Abel, sans-serif;
+	font-weight: normal;
+	margin-right: 5px;
+}
+.panel .views-exposed-widgets .views-widget-per-page SELECT
+{
+	font-size: 0.8em;
+	float: left;
+}
+/*-- submit button*/
+.panel .views-exposed-form .views-submit-button, .panel .views-exposed-form .views-reset-button
+{
+	position: absolute;
+	left: 52%;
+	margin: 0;
+	padding: 0;
+}
+.panel .views-exposed-form .views-reset-button
+{
+	margin-left: 130px;
+}
+.panel .ctools-auto-submit-full-form .views-exposed-form .views-reset-button
+{
+	/*[disabled]margin-left:0;*/
+}
+.panel .views-exposed-form .views-submit-button INPUT
+{
+	margin: 0 !important;
+	padding-left: 3em;
+	padding-right: 3em;
+}
+.panel .views-exposed-form .views-reset-button INPUT
+{
+	margin: 0 !important;
+}
+/*
+-- ricerca libera tutto testo*/
+.panel .views-exposed-form [class*=views_fulltext]
+{
+	width: 50%;
+	margin: 0;
+	padding: 0;
+}
+.panel .views-exposed-form [class*=views_fulltext] LABEL
+{
+	position: absolute;
+	right: 75%;
+	top: 0;
+	font-size: 1.3em;
+	height: 28px;
+	line-height: 28px;
+	text-align: right;
+	padding-right: 2%;
+}
+.panel .views-exposed-form [class*=views_fulltext] INPUT
+{
+	position: absolute;
+	left: 25%;
+	top: 0;
+	height: 30px;
+	width: 25%;
+}
+/*-- filtri di ordinamento dei risultati*/
+.panel .views-exposed-form .views-widget-sort-by, .panel .views-exposed-form .views-widget-sort-order
+{
+	/*la larghezza complessiva di questi elementi deve essere del 75%*/
+	background-color: #D2DDE0;
+	margin: 0;
+	padding: 5px 0 0;
+	position: absolute;
+	top: 50px;
+	right: 0;
+	height: 30px;
+	text-align: right;
+	font-size: 0.9em;
+	font-family: Abel, sans-serif;
+	/*+box-sizing:border-box;*/
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.panel .views-exposed-form .views-widget-sort-by
+{
+	padding-right: 140px;
+	width: 75%;
+}
+.panel.no-sidebars .views-exposed-form .views-widget-sort-by
+{
+	width: 100%;
+}
+.panel .views-exposed-form .views-widget-sort-by
+{
+}
+.panel .views-exposed-form .views-widget-sort-by LABEL
+{
+	position: absolute;
+	right: 305px;
+}
+.panel .views-exposed-form .views-widget-sort-by SELECT
+{
+	font-family: Abel, sans-serif;
+	position: absolute;
+	right: 160px;
+	top: 3px;
+}
+.panel .views-exposed-form .views-widget-sort-order
+{
+	text-align: left;
+	width: 140px;
+}
+.panel .views-exposed-form .views-widget-sort-order LABEL
+{
+	position: absolute;
+	right: 70px;
+}
+.panel .views-exposed-form .views-widget-sort-order SELECT
+{
+	font-family: Abel, sans-serif;
+	position: absolute;
+	right: 5px;
+	top: 3px;
+}
+/*
+FILTRI ESPOSTI PAGINA PERSONE*/
+.page-persone .views-exposed-form
+{
+	height: 110px;
+}
+.page-persone .views-exposed-form .views-widget-sort-by, .page-persone .views-exposed-form .views-widget-sort-order
+{
+	/*lascio spazio per il menu di switch*/
+	top: 80px;
+}
+/*
+FILTRI ESPOSTI PAGINA PERSONE / MAPPA
+
+FILTRI ESPOSTI - PAGINA STATISTICHE
+
+NODE POLLS*/
+#poll-cancel-form
+{
+	text-align: right;
+}
+/*
+MESSAGGI PRIVATI*/
+TABLE.privatemsg-list
+{
+}
+TABLE.privatemsg-list A
+{
+	border-width: 0;
+}
+TABLE.privatemsg-list THEAD TH
+{
+	background-color: #EFEFE7;
+	padding: 0.3em;
+	text-transform: uppercase;
+}
+TABLE.privatemsg-list .privatemsg-header-lastupdated
+{
+	text-align: center;
+}
+TABLE.privatemsg-list .select-all
+{
+}
+TABLE.privatemsg-list TD
+{
+	padding: 0.3em;
+}
+TABLE.privatemsg-list .privatemsg-list-participants
+{
+	font-family: Abel, sans-serif;
+}
+TABLE.privatemsg-list .privatemsg-list-subject
+{
+	font-size: 0.9em;
+}
+TABLE.privatemsg-list .privatemsg-list-date
+{
+	font-family: Abel, sans-serif;
+	text-align: center;
+}
+/*
+FORM NOTIFICHE*/
+#innovatoripa-notify-subscriptions-notification-settings-form
+{
+}
+/*- help message*/
+#innovatoripa-notify-subscriptions-notification-settings-form .notification-help
+{
+	padding: 1em;
+	border: 1px solid #E1E1DE;
+	background-color: #FAFDF3;
+}
+#innovatoripa-notify-subscriptions-notification-settings-form .notification-help P
+{
+	margin: 0.5em 0;
+}
+/*- auto follow*/
+#innovatoripa-notify-subscriptions-notification-settings-form .form-item-message-subscribe-auto-follow
+{
+	padding: 1em;
+	border: 3px solid #E4E4E1;
+}
+/*- counter nelle tabs*/
+#innovatoripa-notify-subscriptions-notification-settings-form .user-follow-count
+{
+	position: relative;
+	top: -5px;
+	margin-left: 5px;
+	padding: 0em 0.3em;
+	font-size: 1.2em;
+	/*+border-radius:3px;*/
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #BFBFB3;
+	background-color: #BFBFB3;
+}
+/*- link nel contenuto delle tabs*/
+#quicktabs-tabpage-innovatoripa_follow_ui-innovatoripa_follow_node .views-field-title A
+{
+	border-bottom-width: 0;
+}

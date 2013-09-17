@@ -1,0 +1,1603 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA OG feature.
+ */
+
+include_once 'innovatoripa_og.features.inc';
+include_once 'innovatoripa_og.utils.inc';
+include_once 'innovatoripa_og.discussioni.inc';
+
+
+/**
+ * Implements hook_menu().
+ */
+function innovatoripa_og_menu() {
+  $items['node/%node/discussioni'] = array(
+    'title' => 'Discussioni',
+    'page callback' => 'innovatoripa_og_discussioni_page',
+    'page arguments' => array(1, 3),
+    'access callback' => '_innovatoripa_og_discussioni_page_access',
+    'access arguments' => array(1),
+  );
+  $items['node/%node/files'] = array(
+    'title' => 'Files',
+    'page callback' => 'innovatoripa_og_files',
+    'page arguments' => array(1),
+    'access callback' => '_innovatoripa_og_discussioni_page_access',
+    'access arguments' => array(1),
+    'file' => 'innovatoripa_og.pages.inc',
+  );
+  $items['og/gruppo/user/autocomplete/%node/%node'] = array(
+    'title' => 'User autocomplete',
+    'page callback' => 'innovatoripa_og_user_autocomplete',
+    'page arguments' => array(4, 5, 6),
+    'access callback' => 'node_access',
+    'access arguments' => array('view', 5),
+    'type' => MENU_CALLBACK,
+    'file' => 'innovatoripa_og.pages.inc',
+  );
+
+    
+  $items['admin/innovatoripa_og/resetpermissions'] = array(
+    'title'            => 'Resetta i permessi delle comunità',
+    'page callback'    => '_innovatoripa_og_reset_og_role_permission',
+    'access arguments' => array('administer content'),
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function innovatoripa_og_menu_alter(&$items) {
+  if (!empty($items['node/%/group'])) {
+      $items['node/%/group']['title'] = 'Impostazioni';
+  }
+}
+
+
+/**
+ * Check if user is able to access (view) to this group
+ */
+function _innovatoripa_og_discussioni_page_access($node) {
+  $types = array('comunita', 'gruppo');
+  if (!in_array($node->type, $types)) { 
+    return false;
+  }
+  if (node_access('view', $node)) {
+    return true;
+  }
+}
+
+/**
+ * OG Forum general page 
+ */
+function innovatoripa_og_discussioni_page($node, $tid = false)  {
+  $output = '';
+  if (!$tid) {
+    // first check if views has results (issue #1867)
+    $res = views_get_view_result('discussioni_comunita', 'block_forum_container');
+    if (!$res) {
+      $output = views_embed_view('discussioni_comunita', 'block_topic_container_empty');
+    }
+    else {
+      $output = views_embed_view('discussioni_comunita', 'block_forum_container');
+    }
+  }
+  else {
+    $context = og_context();
+    // give access to this link just to user members or super powered administrators.
+    if (og_user_access($context['group_type'], $context['gid'], "create discussione content")) {
+      $output .= '<p class="discussions-create-topic">' . 
+            l('<i class="icon add-topic"></i>' . t('Inizia una nuova discussione'), 'node/add/discussione', 
+                     array(
+                       'query' => array('og_group_ref' => $context['gid'], 'forum' => $tid),
+                       'html' => TRUE,
+                       )
+                ) . 
+           '</p>';
+    }
+    $output .= views_embed_view('discussioni_comunita', 'block_forum_discussions');
+  }
+  return $output;
+}
+
+
+/**
+ * Implements hook_og_context_negotiation_info().
+ *
+ * We are adding a new way to set the group context, based on a path like 'group/%/whatever',
+ * so group views and custom pages retain the group context.
+ */
+function innovatoripa_og_og_context_negotiation_info() {
+  $providers = array();
+  $providers['innovatoripa_og'] = array(
+    'name' => t('InnovatoriOG Group url'),
+    'description' => t("Select group context for any url that starts with 'node/%/path'. Make sure that all views and custom pages use paths that start with this value in order for the context to be recognized when viewing those pages, and that nothing that is not a group uses that path."),
+    'callback' => 'innovatoripa_og_context_handler_url',
+  );
+  return $providers;
+}
+
+/**
+ *  Return true if node/%/path is a group path
+ */
+function innovatoripa_og_context_handler_url() {
+  $item = menu_get_item();
+  if ((arg(0) == 'node') && (is_numeric(arg(1))) && (arg(2))) {
+    $node = node_load(arg(1));
+    // this can be false, example after (node/%node/delete)
+    if ($node) {
+      if (og_is_group('node', $node)) {
+        return _group_context_handler_entity('node', $node);
+      }
+    }
+  }
+}
+
+/*
+ * resetta le role delle comunità presenti a quelle di default
+ */
+function _innovatoripa_og_reset_og_role_permission() {
+
+    
+    $og_roles = og_roles('node', 'comunita', 0);
+    
+    $perms = og_role_permissions($og_roles);
+    
+    $comunita = db_select('node', 'n')->fields('n', array('nid'))->condition('type', 'comunita')->execute();
+    
+    $modules = array();
+    foreach (og_get_permissions() as $module_name => $value) {
+        $modules[$module_name] = $value['module'];
+    }
+    
+    $count = 0;
+    $count_comunita = 0;
+    foreach ($comunita as $c) {
+        $og_roles_gid = og_roles('node', 'comunita', $c->nid);
+
+
+        
+        foreach ($og_roles_gid as $rid => $role_name) {
+            
+            if ($role_name == 'non-member') {
+                $new_permissions = $perms[1];
+            }
+            elseif ($role_name == 'member') {
+                $new_permissions = $perms[2];
+            }
+            elseif ($role_name == 'administrator member') {
+                $new_permissions = $perms[3];
+            }
+            
+            if (!empty($new_permissions) && !empty($rid)) {
+                db_delete('og_role_permission')
+                    ->condition('rid', $rid)
+                    ->execute();
+
+                og_invalidate_cache();
+                
+                //og_role_grant_permissions($rid, $new_permissions);
+                // Grant new permissions for the role.
+                foreach ($new_permissions as $permission_name => $permission_value) {
+                    // Prevent WSOD, if the permission name is wrong, and we can't find its
+                    // module.
+                    if (!empty($modules[$permission_name])) {
+                        db_insert('og_role_permission')->fields(array('rid', 'permission','module'))->values(array(
+                            'rid' => $rid,
+                            'permission' => $permission_name,
+                            'module' => $modules[$permission_name],
+                        ))->execute();
+                        $count++;
+                    }
+                    else {
+                        watchdog('reset og permissions', 'empty ' . $permission_name);
+                    }
+                }
+                og_invalidate_cache();
+            }
+            
+        }
+        $count_comunita++;
+    }
+    $message = t('Resettati !count permessi in !communities comunità',array('!count' => $count, '!communities' => $count_comunita));
+    
+    return $message;
+}
+
+/**
+ * Rebuild an active breadcrumb trail for "gruppo" content type, rebuilding the tree
+ * Issue: #1899
+ */
+function _innovatoripa_og_gruppo_breadcrumb_rebuild($active_trail, $entity) {
+  $community = node_load($entity->og_group_ref[LANGUAGE_NONE][0]['target_id']);
+  $new_trail = array();
+  $new_trail[] = $active_trail[0]; 
+  $new_trail[] = array('title' => $community->title,
+                       'href'  => "node/{$community->nid}",
+                       'localized_options' => array()
+                       );  
+  $active_trail_last = array_slice($active_trail, 1);
+  if ($active_trail_last) {
+    $new_trail = array_merge($new_trail, $active_trail_last);
+  }
+  $active_trail = $new_trail;
+
+  return $active_trail;
+}
+
+/**
+ * Implements hook_menu_breadcrumb_alter().
+ * Issue: #1821
+ */
+function innovatoripa_og_menu_breadcrumb_alter(&$active_trail, $item) {
+  $cat_path = array('node/*/discussioni', 'node/*/files');
+  if (drupal_match_path($item['path'], implode("\n", $cat_path))) {
+    $context = og_context();
+    if ($context) {
+      $gid = $context['gid'];
+
+      // rebuild trail for "gruppo" content type
+      // issue #1899
+      $entity = entity_load_single($context['group_type'], $context['gid']);
+      if ($entity->type == 'gruppo') {
+        $active_trail = _innovatoripa_og_gruppo_breadcrumb_rebuild($active_trail, $entity);
+      }
+
+      $terms = array();
+      if (arg(3)) {
+        $tid = arg(3);
+        $parents = array_reverse(taxonomy_get_parents_all($tid));
+        foreach ($parents as $term) {
+          $uri = entity_uri('taxonomy_term', $term);
+          $active_trail[] = array('title' => $term->name, 
+                                  'href'  => $uri['path'],
+                                  'localized_options' => array());  
+        }
+      }
+    }
+  }
+
+  // group nodes breadcrumb
+  if (($item['page_callback'] == 'node_page_view') || ($item['page_callback'] == 'page_manager_node_view_page')) {
+    if ($context = og_context()) {
+      $node = menu_get_object();
+      // skip breadcrumb alter for groups (we don't redundancy)
+      if (og_is_group('node', $node)) {
+        return;
+      }
+
+       // Load the entity.
+      $group_type = $context['group_type'];
+      $gid = $context['gid'];
+
+      // code taken from og_set_breadcrumb
+      $entity = entity_load_single($group_type, $gid);
+      $label = entity_label($group_type, $entity);
+      $uri = entity_uri($group_type, $entity);
+
+      // rebuild trail
+      $new_trails = array();
+      $new_trails[] = $active_trail[0];
+
+      // add "comunita" if we are 
+      if ($entity->type == 'gruppo') {
+        $new_trails = _innovatoripa_og_gruppo_breadcrumb_rebuild($new_trails, $entity);
+      }
+
+      // set group context
+      $new_trails[] = array('title' => $label, 
+                            'href'  => $uri['path'],
+                            'localized_options' => array());  
+
+      // discussioni case, load all forum taxonomy tree
+      // build this breadcrumb hieararchy just for "comunita" og type
+      if (($node->type == 'discussione') && ($entity->type == 'comunita')) {
+        // first set "Discussioni views page"
+        $new_trails[] = array('title' => t('Discussioni'), 
+                              'href'  => "node/{$gid}/discussioni",
+                              'localized_options' => array());  
+
+        // now set all taxonomy tree terms
+        $tid = $node->og_vocabulary[LANGUAGE_NONE][0]['target_id'];
+        $parents = array_reverse(taxonomy_get_parents_all($tid));
+        foreach ($parents as $term) {
+          $uri = entity_uri('taxonomy_term', $term);
+          $new_trails[] = array('title' => $term->name, 
+                                'href'  => $uri['path'],
+                                'localized_options' => array());  
+        }
+      }
+
+      //var_dump
+      $active_trail_last = array_slice($active_trail, 1);
+      if ($active_trail_last) {
+        $new_trails = array_merge($new_trails, $active_trail_last);
+      }
+      $active_trail = $new_trails;
+
+      // this will be used to active og menu navigation block
+      // examples:
+      /*
+        console.log(Drupal.settings.active_entity);
+        >  Object {type: "blog", id: "3479", og_type: "comunita", og_id: "1816"}
+      */
+      drupal_add_js(array('active_entity' => array('type' => $node->type, 
+                                                   'id' =>  $node->nid,
+                                                   'og_type' => ($entity ? $entity->type : ''),
+                                                   'og_id' => ($entity ? $entity->nid : ''))), 
+                          'setting');
+    }
+  }
+}
+
+
+/**
+ * Issue #1819
+ * Change the vid filter according to og_context
+ */
+function innovatoripa_og_views_pre_build(&$view) {
+  if ($view->name == 'discussioni_comunita') {
+    $group = og_context();
+    if ($group) {
+      $group_vid = innovatoripa_og_get_vid_by_gid($group['gid']);
+      $vocab = taxonomy_vocabulary_load($group_vid);
+      if (($view->current_display == 'block_forum_container') || ($view->current_display == 'block_topic_container_empty')) {
+        // alter machine name according to group vocab
+        if ($vocab) {
+          $option = array($vocab->machine_name => $vocab->machine_name);;
+          $view->filter['machine_name']->value = $option;
+          $view->filter['machine_name']->options['value'] = $option;
+        }
+      }
+
+      // change tid
+      if ($view->current_display == 'block_forum_discussions') {
+        $tid = (is_numeric(arg(3)) ? check_plain(arg(3)) : false);
+        
+        // try to load here default og term if exists (must exists)
+        if (!$tid) {
+          $term = innovatoripa_og_get_default_forum_term($group['gid']);
+          if ($term) {
+            $tid = $term->tid;
+          }
+        }
+        
+        if ($tid) {
+          $view->filter['tid_raw']->value['value'] = $tid;
+          $view->filter['tid_raw']->options['value']['value'] = $tid;
+        }
+      }
+    }
+  }
+  // issue #1864#note-8
+  /*
+  if ($view->name == 'home_page_blocks') {
+    $group = og_context();
+    
+    if ($group) {
+      $gid = $group['gid'];
+      //dsm($gid);
+      if ($view->current_display == 'segnalazioni') {
+        //dsm($view->display_handler);
+        //dsm($view);
+        //<div class="total-count">Sono presenti <a href="/segnalazioni"><span>@total</span> segnalazioni</a></div>
+        $view->display_handler->set_option('link_display', 'custom_url');
+        $view->display_handler->set_option('link_url', "node/{$gid}/segnalazioni");
+      }
+    }
+  }
+  */
+} 
+
+function innovatoripa_og_views_pre_render(&$view) {
+  if ($view->name == 'home_page_blocks') {
+      if ($view->current_display == 'segnalazioni') {
+          $group = og_context();
+          if (!empty($group)) {
+              $gid = $group['gid'];
+              $view->footer['result']->options['content'] = 
+                      '<div class="total-count">Sono presenti ' .
+                      l('<span>@total</span> segnalazioni', 'node/' . $gid . '/segnalazioni', array('@total' => $view->total_rows, 'html' => TRUE)).
+                      '</div>';
+          }
+      }
+  }
+  /*
+  elseif ($view->name == 'comments_in_teaser') {
+      if ($view->current_display == 'block_1') {
+          $group = og_context();
+          if (!empty($group)) {
+              $gid = $group['gid'];
+              $view->footer['result']->options['content'] = 
+                      '<div class="total-count">Sono presenti ' .
+                      l('<span>@total</span> segnalazioni', 'node/' . $gid . '/segnalazioni', array('@total' => $view->total_rows, 'html' => TRUE)).
+                      '</div>';
+          }
+      }
+  
+  }
+   * 
+   */
+}
+/**
+ * Implemenets hook_form_FORM_ID_alter()
+ * issue #1854
+ */
+function innovatoripa_og_form_og_ui_add_users_alter(&$form, &$form_state) {
+  $context = og_context();
+  $gid = $context['gid'];
+  $og = node_load($gid);
+  if ($og->type == 'gruppo') {
+    $community_gid = $og->og_group_ref[LANGUAGE_NONE][0]['target_id'];
+    $community = node_load($community_gid);
+    $path = "og/gruppo/user/autocomplete/{$community_gid}/{$og->nid}";
+    $form['og_user']['name']['#autocomplete_path'] = $path;
+    $form['og_user']['name']['#description'] = t('Da qui puoi cercare gli utenti della comunità "%nome" da inserire nel gruppo', 
+                                                 array('%nome' => $community->title));
+  }
+}
+
+
+/**
+ * Implemenets hook_form_FORM_ID_alter()
+ * issue #1854
+ */
+function innovatoripa_og_form_discussione_node_form_alter(&$form, &$form_state, $form_id) {
+  $og_vocab_field = &$form['og_vocabulary'];
+  if (isset($_GET['og_group_ref'])) {
+    $gid = check_plain($_GET['og_group_ref']);
+    $vid = innovatoripa_og_get_vid_by_gid($gid);
+    foreach ($og_vocab_field[LANGUAGE_NONE][0] as $key => $item) {
+      $external = false;
+      if (is_numeric($key)) {
+        if ($key == $vid) {
+          $options = $og_vocab_field[LANGUAGE_NONE][0][$vid]['#options'];
+          // set the requested forum as default
+          if (isset($_GET['forum'])) {
+            $tid = check_plain($_GET['forum']);
+            $external = true;
+          }
+          // if we have just one forum set as default
+          else if (count($options) == 2) {
+            foreach ($options as $id => $value) {
+              if (is_numeric($id)) {
+                $tid = $id;
+                break;
+              }
+            }
+          }
+          // only permitted value enter here
+          if ((!empty($tid)) && (array_key_exists($tid, $options))) {
+            $og_vocab_field[LANGUAGE_NONE][0][$vid]['#default_value'] = $tid;
+            if ($external) {
+              $og_vocab_field[LANGUAGE_NONE][0][$vid]['#attributes'] = array('disabled' => 'disabled');
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function innovatoripa_og_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'og_ui_confirm_unsubscribe') {
+      $form['actions']['submit']['#value'] = t('Abbandona !gruppo', array('!gruppo' => t($form['group']['#value']->type)));
+  }
+  if (isset($form['#node']) && substr($form_id, -10) == '_node_form') {
+    $node = $form['#node'];
+    
+    $og_context = og_context(); 
+    
+    if (empty($og_context) && !user_access('administer nodes')) {
+        if (isset($form[OG_CONTENT_ACCESS_FIELD])) unset($form[OG_CONTENT_ACCESS_FIELD]);
+        if (isset($form[OG_AUDIENCE_FIELD])) unset($form[OG_AUDIENCE_FIELD]);
+    }
+    elseif (og_is_group_content_type('node', $node->type) && ! empty($og_context)) {
+      // alter "group_content_access" #title globally
+      if (isset($form[OG_CONTENT_ACCESS_FIELD])) {
+        // change label and remove first option (just public or private)
+        $form[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE]['#title'] = t('Visibilità del contenuto');
+        unset($form[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE]['#options'][0]); 
+
+        // alter label
+        
+        $group_in_context = node_load($og_context['gid']);
+        if ($group_in_context->type == 'comunita') {
+            $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE]['#title'] = t('Seleziona la comunità');
+        }
+        elseif ($group_in_context->type == 'gruppo') {
+            $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE]['#title'] = t('Seleziona il gruppo');
+        }
+        $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['default']['#title'] = t('Le tue comunità/gruppi');
+        $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['default']['#description'] = t('Associa il contenuto con i comunità/gruppi a cui sei iscritto.');
+        $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['admin']['#title'] = t('Altre comunità/gruppi');
+        // se l'utente non ha permessi di sistema per creare questo contenuto
+        // controllo se li ha per questo gruppo ed in tal caso metto OG_AUDIENCE_FIELD
+        // obbligatorio
+        
+        $bundle = $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['#bundle'];
+        //var_dump($bundle);
+        //var_dump(user_access("create $bundle content"));
+        if (!empty($bundle) && !user_access("create $bundle content")) {
+            $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['#required'] = TRUE;
+            $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['default']['#required'] = TRUE;
+            $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE]['#required'] = TRUE;
+            $form['#validate'][] = '_innovatoripa_og_node_form_validate';
+        }
+        
+        //var_dump($form[OG_AUDIENCE_FIELD][LANGUAGE_NONE]);
+        // set value group default (if a group is present in URL, just for new nodes)
+        if (isset($_GET['og_group_ref']) && (is_numeric($_GET['og_group_ref'])) && (!isset($node->nid))) {
+          $gid = check_plain($_GET['og_group_ref']);
+          $group = node_load($gid);
+          $wrapper = entity_metadata_wrapper('node', $group);     
+
+          // group_content_access: 1 - pubblico, 2 - privato
+          // OG_ACCESS_FIELD: "true" private - "false" pubblico
+          $visibility = (($wrapper->{OG_ACCESS_FIELD}->value() == TRUE) ? 2 : 1);
+          $form[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE]['#default_value'] = $visibility;
+        }
+        
+        
+        if ( empty($form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['default']['#default_value']) && !empty($form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['#entity']->og_group_ref)) {
+            $default_values = array();
+            foreach ($form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['#entity']->og_group_ref[LANGUAGE_NONE] as $t) {
+                $default_values[] = $t['target_id'];
+            }
+            
+            if (!empty($default_values)) {
+                $form[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['default']['#default_value'] = $default_values;
+            }
+        }
+        // wrap og fields inside a container
+        // This cause an horrible bug on node update, disabled 
+        // Issue: #2021
+        /*
+        $form['og_fields'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Gruppo'),
+          '#weight' => 20,
+        );
+        $form['og_fields'][OG_AUDIENCE_FIELD] = $form[OG_AUDIENCE_FIELD];
+        $form['og_fields'][OG_CONTENT_ACCESS_FIELD] = $form[OG_CONTENT_ACCESS_FIELD];
+        unset($form[OG_AUDIENCE_FIELD]);
+        unset($form[OG_CONTENT_ACCESS_FIELD]);
+        */
+      }
+      //var_dump($form[OG_AUDIENCE_FIELD]);
+      
+    }
+  }
+}
+/*
+ * node form validate, usata solo nel caso OG_AUDIENCE_FIELD debba essere valorizzato
+ */
+function _innovatoripa_og_node_form_validate($form, &$form_state) {
+    
+  if(empty($form_state['values'][OG_AUDIENCE_FIELD][LANGUAGE_NONE])) {
+      form_set_error(OG_AUDIENCE_FIELD, t('è necessario specificare un gruppo o una comunità per questo contenuto.'));
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter()
+ * 
+ * Issue: #2137
+ */
+function innovatoripa_og_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['field']['field_name'] == 'og_group_ref') {
+    if (isset($element['#type'])) {
+      if ($element['#type'] == 'select') {
+        $disable = false;
+        $element['#use_select2'] = true;
+
+        // hide "Gruppo" options if we are outside a Gruppo context
+        $context = og_context();
+        if (!$context) {
+          if ($element['#options']['Gruppo']) {
+            $disable = true;
+          }
+        }
+        else {
+          $group = node_load($context['gid']);
+          if ($group->type != 'gruppo') {
+            $disable = true;
+          }
+        }
+        if ($disable) {
+          unset($element['#options']['Gruppo']);
+        }
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter the privacy settings fields.
+ * Issue #1877
+ */
+function innovatoripa_og_form_comunita_node_form_alter(&$form, $form_state) {
+  $node = $form['#node'];
+  $group_access_field = &$form['group_access'][LANGUAGE_NONE];
+  $field_og_list_group_directory = &$form['field_og_list_group_directory'][LANGUAGE_NONE];
+
+  // group_access: 0 = public, 1 = private
+  $state = array(
+    'checked' => array(
+        ':input[name="group_access[und]"]' => array('value' => '0'),
+     ),
+    'invisible' => array(
+        ':input[name="group_access[und]"]' => array('value' => '1'),
+     ),
+    'disabled' => array(
+        ':input[name="group_access[und]"]' => array('value' => '1'),
+     ),
+    'unchecked' => array(
+        ':input[name="group_access[und]"]' => array('value' => '1'),
+     )
+  );
+  $field_og_list_group_directory['#states'] = $state;
+  $form['#after_build'] = array('innovatori_og_form_comunita_node_after_build');
+}
+
+// this needs to alter "field_og_impostazioni_privacy" radios as separate form fields
+function innovatori_og_form_comunita_node_after_build($form, $form_state) {
+  $field_og_impostazioni_privacy = &$form['field_og_impostazioni_privacy'][LANGUAGE_NONE];
+
+  // when the group is "private" shows just "chiuso" and "invito" (if they exists)
+  $state = array('visible' => array(
+        ':input[name="group_access[und]"]' => array('value' => '0'),
+  ));
+
+  if (isset($field_og_impostazioni_privacy['aperto'])) {
+    $field_og_impostazioni_privacy['aperto']['#states'] = $state;
+  }
+  if (isset($field_og_impostazioni_privacy['moderato'])) {
+    $field_og_impostazioni_privacy['moderato']['#states'] = $state;
+  }
+
+  // chiuso default when group_access is 1 = private
+  /* disabled not working
+  if (isset($field_og_impostazioni_privacy['chiuso'])) {
+    $state = array(
+      'checked' => array(
+          ':input[name="group_access[und]"]' => array('value' => '1'),
+      ),
+      // keep checked if already available
+      'checked' => array(
+          ':input[name="field_og_impostazioni_privacy[und]"]' => array('value' => 'chiuso')
+      ),
+    );
+    $field_og_impostazioni_privacy['chiuso']['#states'] = $state;
+  }
+  */
+  return $form;
+}
+
+/**
+ * Implements hook_field_access().
+ * Hide "og_roles_permissions" field (code taken from commons)
+ * Issue: #1877
+ */
+function innovatoripa_og_field_access($op, $field, $entity_type, $entity, $account) {
+  $field_name = $field['field_name'];  
+  switch ($field_name) {
+    case 'og_roles_permissions':
+      return FALSE;
+  }
+
+  if ($op != 'view') {
+    switch ($field_name) {
+      case 'field_og_user_count': 
+        return FALSE;
+      case 'field_og_post_count':
+        return FALSE; 
+      case 'field_og_stats_last_post_date':
+        return FALSE; 
+      case 'field_og_stats_last_post_nid':
+        return FALSE; 
+    }
+  }
+  
+  if ($field_name == 'field_comunita_formez' && ! in_array('amministratore', $account->roles) && $account->uid != '1') {
+      return FALSE; 
+  }
+  
+  // hide content access field (we handle public/private on innovatoripa_og_node_presave()
+  if (module_exists('og_access') && in_array($field_name, array(OG_CONTENT_ACCESS_FIELD))) {
+    // not disabled anymore, they want to have this options in node form
+    //return FALSE;
+  }
+}
+
+
+
+/**
+ * Implements of hook_views_api_alter()
+ * 
+ */
+function innovatoripa_og_views_api_alter(&$list) {
+  $list['views']['template path'] = drupal_get_path('module', 'innovatoripa_og') . '/theme/views';
+}
+
+
+/**
+ * Entity uri callback for taxonomy terms. 
+ * Override standard term_path for "user_topics" vocab 
+ * issue #1819 (handle also og_vocab)
+ */
+function innovatoripa_og_taxonomy_term_uri($term, $gid) {
+  $path = "node/{$gid}/discussioni/$term->tid";
+  return array('path' => $path);
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+function innovatoripa_og_theme($existing, $type, $theme, $path) {
+  return array(
+    'innovatori_og_create_content' => array(
+      'variables' => array('items' => array()),
+      'template' => 'theme/innovatori_og_create_content'
+    ),
+    'innovatori_og_comunita_navigazione' => array(
+      'variables' => array('items' => array()),
+      'template' => 'theme/innovatori_og_comunita_navigazione'
+    ),
+    'innovatori_og_gruppo_navigazione' => array(
+      'variables' => array('items' => array()),
+      'template' => 'theme/innovatori_og_gruppo_navigazione'
+    ),
+    'innovatori_og_admin_user_list' => array(
+      'variables' => array('users' => array()),
+      'template' => 'theme/innovatori_og_admin_user_list'
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_innovatori_og_comunita_navigazione()
+ */
+function template_preprocess_innovatori_og_comunita_navigazione(&$vars) {
+  $context = og_context();
+  $gid = (isset($context['gid']) ? $context['gid'] : false);
+  $vars['gid'] = $gid;
+  
+  if ($gid) {
+    $community = node_load($gid);
+
+    $vars['is_group'] = false;
+    
+    // if we are in a "gruppo" context, we have to load his parent
+    if ($community->type == 'gruppo') {
+      $community = node_load($community->og_group_ref[LANGUAGE_NONE][0]['target_id']);
+      $vars['is_group'] = true;
+    }
+
+    $vars['gid'] = $community->nid;
+    $vars['community_name'] = $community->title;
+    $vars['community_url'] = url("node/{$gid}");
+
+    // render image (or default one if present)
+
+    // se non passo la lingua, field_get_items prende la lingua del nodo (è opzionale, la tengo giusto per referenza)
+    $lang = ($community->language ? $community->language : null);
+    $logo = field_view_field('node', $community, 'field_image');
+
+    if (isset($logo[0])) {
+      // Lo stile immagine si differenzia a seconda che il blocco sia visualizzato nella sidebar o come menu della comunità
+      if ($vars['is_group']) {
+        $image_style = 'community_thumb';
+      } else {
+        $image_style = 'community_menu';
+      }
+      $logo[0]['#image_style'] = $image_style;
+      $output = render($logo[0]);
+      $vars['community_logo_small'] = $output;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_innovatori_og_comunita_navigazione()
+ */
+function template_preprocess_innovatori_og_gruppo_navigazione(&$vars) {
+  $context = og_context();
+  $gid = (isset($context['gid']) ? $context['gid'] : false);
+  $vars['gid'] = $gid;
+  
+  if ($gid) {
+    $group = node_load($gid);
+    // Siamo all'interno di un gruppo, quindi il type sarà di tipo gruppo
+    // dsm($group, 'GRUPPO');
+    $vars['gid'] = $group->nid;
+    $vars['group_name'] = $group->title;
+    $vars['group_url'] = url("node/{$gid}");
+
+    // render image (or default one if present)
+
+    // se non passo la lingua, field_get_items prende la lingua del nodo (è opzionale, la tengo giusto per referenza)
+    $lang = ($group->language ? $group->language : null);
+    $logo = field_view_field('node', $group, 'field_image', array(
+        'type' => 'image',
+        'settings' => array('image_style' => 'community_menu'),
+     ));
+    if (isset($logo[0])) {
+      $output = render($logo[0]);
+      $vars['group_logo_small'] = $output;
+    }    
+  }
+}
+
+/**
+ * Implements hook_preprocess_innovatori_og_create_content()
+ */
+function template_preprocess_innovatori_og_create_content(&$vars) {  
+  $vars['rendered_list'] = theme('item_list', array('items' => $vars['items']));
+}
+
+/**
+ * Implements hook_block_info()
+ * Issue: #1798
+ */
+function innovatoripa_og_block_info() {
+  $blocks['innovatori_og_create_content'] = array(
+    'info' => t('Innovatori: Crea contenuto (og + general site)'),
+  );
+  $blocks['innovatori_og_comunita_nav'] = array(
+    'info' => t('Innovatori: Menu navigazione comunità'),
+  );
+  $blocks['innovatori_og_gruppo_nav'] = array(
+    'info' => t('Innovatori: Menu navigazione gruppo'),
+  );
+  $blocks['innovatori_og_admin_user_list'] = array(
+    'info' => t('Innovatori: Lista utenti amministratori gruppo (referenti)'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ * Issue: #1798
+ */
+function innovatoripa_og_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'innovatori_og_create_content':
+      $items = innovatori_og_get_og_ctypes_list();
+      $block['subject'] = '<i class="icon add-content"></i>' . t('Crea contenuto');
+      $block['content'] = theme('innovatori_og_create_content', array('items' => $items));
+      break;
+    case 'innovatori_og_comunita_nav': 
+      $block['subject'] = '';
+      $block['content'] = theme('innovatori_og_comunita_navigazione');
+      break;
+    case 'innovatori_og_gruppo_nav': 
+      $block['subject'] = '';
+      $block['content'] = theme('innovatori_og_gruppo_navigazione');
+      break;
+    case 'innovatori_og_admin_user_list':
+      $members = innovatori_og_get_admin_user_list();
+      $block['subject'] = t('Referenti');
+      $block['content'] = theme('innovatori_og_admin_user_list', array('users' => ($members ? $members : array())));
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Retrieve group administrators
+ * Issue: #1870
+ */
+function innovatori_og_get_admin_user_list() {
+  $context = og_context();
+  if (!$context) {
+    return false;
+  }
+  $gid = $context['gid'];
+  if ($gid) {
+    $accounts = array();
+    $query = db_select('users', 'u');
+    $query->fields('u', array('uid', 'name'));
+    $query->fields('rn', array('realname'));
+    $query->leftJoin('og_users_roles', 'ogr', 'u.uid = ogr.uid');
+    $query->leftJoin('realname', 'rn', 'u.uid = rn.uid');
+    $query->leftJoin('og_role', 'ogr_name', 'ogr_name.rid = ogr.rid');
+    $query->condition('ogr_name.name', OG_ADMINISTRATOR_ROLE);
+    $query->condition('ogr.gid', $gid);
+    $res = $query->execute();
+
+    foreach ($res as $account) {
+      $profile = profile2_load_by_user($account->uid);
+      $avatar = field_view_field('profile2', $profile['main'], 'field_profile_avatar', array(
+        'type' => 'image',
+        'settings' => array('image_style' => 'user_thumb'),
+      ));
+      $output = render($avatar[0]);
+      $accounts[] = array(
+        'uid' => $account->uid,
+        // 'realname' => l($account->realname, "user/{$account->uid}"),
+        'avatar' => l($output . '<span>' . $account->realname . '</span>', "user/{$account->uid}", array('attributes' => array('class' => 'referent-avatar'), 'html' => TRUE)),
+      );
+    }
+    $output = ($accounts ? $accounts : false);
+    return $output;    
+  }
+}
+
+
+/**
+ * Get all OG content types
+ */
+function innovatori_og_get_og_ctypes_list() {
+  global $user;  
+  $og_context = og_context();
+  $items = array();
+  
+  /*
+  var_dump('$og_context');
+  var_dump($og_context);
+   * 
+   */
+   /*
+   * se è un amministratore listo tutti i permessi impostati da og
+   * se è un membro filtro per user_access
+   * se da sistema ho il permesso di creare un nodo fuori dal gruppo lo lascio uguale 
+   * altrimenti rendo obbligatorio tramite form_alter il campo gruppo
+   */
+
+  // it works just on og_context()
+  if ($og_context) {
+    // resuse the obscure function "og_node_create_links()"
+    $links = innovatoripa_og_node_create_links($og_context['group_type'], $og_context['gid'], 'og_group_ref', null);
+    /*
+    var_dump('$links og');
+    var_dump($links);
+     * 
+     */
+    
+    if (isset($links['og_node_create_links'])) {
+      if (count($links['og_node_create_links']['#items'])) {
+        foreach ($links['og_node_create_links']['#items'] as $link) {
+          //var_dump($link);  
+          $items[] = $link['data'];
+        }
+      }
+    } 
+  }
+  else {
+   /*
+   * se da sistema ho un permesso di postare lascio la voce nel menu 
+   * altrimenti la filtro
+   * 
+   */
+    $links = system_admin_menu_block(array('path'=>'node/add', 'tab_root' => 'node/add'));
+    //var_dump('$links');
+    //var_dump($links);
+    // remove ctypes that we want just on og (it is quite safe because we are using entityreference_prepopulate to redirect the form)
+    /*
+     * TODO: mettere i ctype editabili solo nel gruppo in una configurazione del modulo oppure leggere l'impostazione del field entity prepopulate
+     */
+    $exclude = array('node/add/poll', 'node/add/discussione', 'node/add/book', 'node/add/evento', 'node/add/sondaggio', 'node/add/gruppo', 'node/add/domanda');
+    
+    $other_ctypes = array('page', 'blog', 'segnalazione', 'comunita', 'webform');
+    foreach ($other_ctypes as $other_ctype) {
+        if(!user_access("create $other_ctype content")) {
+            $exclude[] = 'node/add/' . $other_ctype;
+        }
+    }
+    
+    foreach ($links as $link) {
+        
+      if (in_array($link['link_path'], $exclude)) {
+        continue;
+      }
+      $items[] =  l($link['title'], $link['href'], $link['localized_options']);
+    }
+  }
+  
+  if (empty($items) && !empty($user->uid)) {
+      $items[] =  l(t('Nessun contenuto'), 'home');
+  }
+  
+  return $items;
+}
+
+
+/**
+ * Implements of hook_node_update()
+ * Issue: #1818
+ */
+function innovatoripa_og_node_update($node) {
+  if (og_is_group('node', $node)) {
+    $params = array('node' => $node);
+    innovatoripa_og_create_default_forum_vocab(array(), $params);
+
+    // configure permissions
+    // alter permissions just for "comunita" content type
+    if ($node->type == 'comunita') {
+      innovatoripa_og_set_group_permissions($node);
+    }
+  }
+}
+
+/**
+ * 
+ * Implements of hook_node_insert()
+ */
+function innovatoripa_og_node_insert($node) {
+  if (og_is_group('node', $node)) {
+    $params = array('node' => $node);
+    innovatoripa_og_create_default_forum_vocab(array(), $params);
+
+    // alter permissions just for "comunita" content type
+    if ($node->type == 'comunita') {
+      // When creating a new group, this hook happens before OG creates the
+      // group specific roles. Therefore we create the roles here before altering
+      // them in innovatoripa_og_set_group_permissions().
+      og_roles_override('node', $node->type, $node->nid);
+      innovatoripa_og_set_group_permissions($node);
+    }
+  }
+}
+
+
+/**
+ * Implements hook_node_presave().
+ *
+ * When the node's group is private, force the group content to be private.
+ * Code taken from commons_group (3.x-dev)
+ * Disabled, see issue: #1877 (users can decide public/private despite the group permissions) we keep the code just for reference
+ */
+function innovatoripa_og_node_presave($node) {
+  if (og_is_group('node', $node)) {
+    if ($node->type == 'comunita') {
+      // default value on comunita creations
+      // issue #1810
+      if (!$node->nid) {
+        $node->field_og_user_count[LANGUAGE_NONE][0]['value'] = 1;
+      }
+    }
+  }
+}
+
+
+
+
+/**
+ * Set the group's permissions according to field_og_subscribe_settings.
+ *
+ * @param $node
+ *   A group node.
+ */
+function innovatoripa_og_set_group_permissions($node) {
+  // Avoid updating a group subscription twice on the same request.
+  $updated_nodes = &drupal_static(__FUNCTION__);
+  if (!empty($updated_nodes[$node->nid])) {
+    return;
+  }
+  $updated_nodes[$node->nid] = TRUE;
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $permission = $wrapper->field_og_impostazioni_privacy->value();
+  $og_roles = og_roles('node', $node->type, $node->nid);
+  $anon_rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
+
+  $permissions = array(
+    'subscribe' => $permission == 'moderato',
+    'subscribe without approval' => $permission == 'aperto',
+  );
+
+  // Check if the permissions needs to be changed.
+  $changed = FALSE;
+  $old_permissions = og_role_permissions(array($anon_rid => OG_ANONYMOUS_ROLE));
+  foreach ($permissions as $permission => $value) {
+    if (empty($old_permissions[$anon_rid][$permission]) || $old_permissions[$anon_rid][$permission] != $value) {
+      $changed = TRUE;
+    }
+  }
+
+  // Only change the permissions when necessary.
+  if ($changed) {
+    og_role_change_permissions($anon_rid, $permissions);
+  }
+}
+
+/**
+ * Implements of hook_form_FORM_ID_alter()
+ */
+function innovatoripa_og_form_og_ui_admin_permissions_alter(&$form, $form_state) {
+  $form['actions']['submit']['#submit'][] = 'innovatoripa_og_role_change_permissions';
+}
+
+
+/**
+ * We use this to update community node
+ */
+function innovatoripa_og_role_change_permissions($form, &$form_state) {
+  foreach ($form_state['values']['role_names'] as $rid => $name) {
+    if ($name == OG_ANONYMOUS_ROLE) {
+      $permissions = og_role_permissions(array($rid => $name));
+      $role = og_role_load($rid);
+      _innovatoripa_og_update_group_permissions($role, $permissions[$rid]);
+    }
+  }
+}
+
+/**
+ * Update the group permission field.
+ *
+ * @param $role
+ *   The OG role object of which the permissions are being changed.
+ * @param $permissions
+ *   The anonymous user permissions of the group.
+ */
+function _innovatoripa_og_update_group_permissions($role, $permissions) {
+  $updated_roles = &drupal_static(__FUNCTION__);
+  if (!empty($updated_roles[$role->rid])) {
+    // Avoid updating a group subscription twice on the same request.
+    return;
+  }
+
+  if (!empty($permissions['subscribe without approval'])) {
+    $subscribe_type = 'aperto';
+  }
+  elseif (!empty($permissions['subscribe'])) {
+    $subscribe_type = 'moderato';
+  }
+  else {
+    $subscribe_type = 'chiuso';
+  }
+  $wrapper = entity_metadata_wrapper($role->group_type, $role->gid);
+  if (isset($wrapper->field_og_impostazioni_privacy)) {
+    if ($wrapper->field_og_impostazioni_privacy->value() != $subscribe_type) {
+      // Mark that the group's permissions were already handled on this request,
+      // to avoid saving the group entity more than once.
+      $updated_roles[$role->rid] = TRUE;
+      $wrapper->field_og_impostazioni_privacy->set($subscribe_type);
+      $wrapper->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_og_role_change_permissions().
+ *
+ * Update the subscription settings field on a group when the relevant
+ * permissions are changed.
+ */
+/*
+function innovatoripa_og_og_role_change_permissions($role, $grant, $revoke) {
+  if (!$role->gid || $role->name != OG_ANONYMOUS_ROLE) {
+    return;
+  }
+
+  // Get all non members permissions.
+  $permissions = og_role_permissions(array($role->rid => $role->name));
+  _innovatoripa_og_update_group_permissions($role, $permissions[$role->rid]);
+}
+*/
+
+/**
+ * 
+ * Create vocab programmatically with all needed fields 
+ * Tips: https://gist.github.com/JustAdam/3235992
+ * Issue #1818
+ *
+ */
+function innovatoripa_og_create_default_forum_vocab($form, &$form_state) {
+  $nid = $form_state['node']->nid;
+
+  if ($nid) {
+    // check if forum vocab already exists
+    $res = (bool) db_query('SELECT 1 FROM {og_vocab_relation} WHERE gid = :gid', array(':gid' => $nid))->fetchField();
+    if ($res) {
+      return;
+    }
+  }
+  // create vocab
+  ctools_include('cleanstring');;
+  module_load_include('inc', 'innovatoripa_og', 'innovatoripa_og.features.taxonomy');
+  module_load_include('inc', 'innovatoripa_og', 'innovatoripa_og.features.field_instance');
+
+  // default values (taken from the exported taxonomy)
+  $def_vocab = innovatoripa_og_taxonomy_default_vocabularies();
+  $vocab = $def_vocab['forum_gruppo_standard'];
+
+  // prepare vocab (machinename max length 200 (varchar(255)))
+  $machine_name = $vocab['machine_name'] . ctools_cleanstring($form_state['node']->title, array('lower case' => true, 
+                                                                                                'transliterate' => true,
+                                                                                                 'separator' => '_',
+                                                                                                 'max length' => '200'));
+  // try to generate a very unique vocab name (code taken by og_vocab)
+  if (taxonomy_vocabulary_machine_name_load($machine_name)) {
+    $i = 1;
+    while (taxonomy_vocabulary_machine_name_load($machine_name)) {
+     $machine_name = substr($machine_name, 0, 32 - strlen($i)) . $i;
+     ++$i;
+    }
+  }
+  $vocab['machine_name'] = $machine_name;
+
+  // change vocabulary name (using og name)
+  $name = 'Forum' . ' ' . $form_state['node']->title;
+  $vocab['name'] = $name;
+  $vocab['description'] = $name;
+
+  // save vocab
+  $vocab = (object) $vocab;
+  taxonomy_vocabulary_save($vocab);
+
+  // create default term
+  $term = new stdClass();
+  $term->name = variable_get('innovatoripa_og_forum_default_term_name', 'Forum generale');
+  $term->vid = $vocab->vid;
+  taxonomy_term_save($term);
+
+  // now attach field to vocab
+  /*
+  $instances = innovatoripa_og_field_default_field_instances();
+  foreach ($instances as $instance) {
+    if ($instance['entity_type'] == 'taxonomy_term') {
+      // change the "bundle name" (machine_name)
+      $instance['bundle'] = $machine_name;
+      field_create_instance($instance);
+    }
+  }*/
+
+  // save the og_vocab relation
+  og_vocab_relation_save($vocab->vid, 'node', $nid);
+
+  // save the og_vocab entity
+  $vid = $vocab->vid;
+  $entity_type = 'node';
+  $bundle = 'discussione';
+  $field_name = 'og_vocabulary';
+
+  // support single cardinality
+  $settings = 'a:3:{s:8:"required";i:1;s:11:"widget_type";s:14:"options_select";s:11:"cardinality";s:1:"1";}';
+  db_insert('og_vocab')
+    ->fields(array(
+      'vid'          => $vid,
+      'entity_type'  => $entity_type,
+      'bundle'       => $bundle,
+      'settings'     => $settings,
+      'field_name'   => $field_name
+    ))
+    ->execute();
+}
+
+/**
+ * Implements hook_node_delete().
+ * Issue: #1818
+ */
+/*
+function caleffi_country_node_delete($node) {
+  $group_vid = innovatoripa_og_get_vid_by_gid($node->nid);
+  if ($group_vid) {
+    taxonomy_vocabulary_delete($group_vid);
+    drupal_set_message(t('Group Vocabulary deleted.'));
+  }
+}
+*/
+
+
+
+/**
+ * Implements hook_entity_view().
+ * Breadcrumb HP Gruppo: issue #1899
+ */
+function innovatoripa_og_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($view_mode == 'full' && !empty($entity->og_group_ref[LANGUAGE_NONE][0]['target_id']) && $type != 'user' && ($entity->type == 'gruppo')) {
+    $breadcrumb = array();
+    $breadcrumb[] = l(t('Home'), NULL);
+    $group = node_load($entity->og_group_ref[LANGUAGE_NONE][0]['target_id']);
+    if (node_access('view', $group)) {
+      $breadcrumb[] = l($group->title, 'node/' . $group->nid);
+    }
+    drupal_set_breadcrumb($breadcrumb);
+  }
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ * Inspiration taken from eva module.
+ * Issue #1900 
+ */
+function innovatoripa_og_entity_view_alter(&$build, $type) {
+  $view_mode = $build['#view_mode'];
+  $language = $build['#language'];
+
+  $entity_data = entity_get_info($type);
+  $entity = _eva_extract_entity_from_build($build);
+
+  $entity_ids = entity_extract_ids($type, $entity);
+  $settings = field_view_mode_settings($type, $entity_ids[2]);
+  $fields = field_extra_fields_get_display($type, $entity_ids[2], $view_mode);
+
+  // render
+  if ((isset($entity->nid)) && (isset($fields['gruppo_discussioni_hp']))) {
+    $term = innovatoripa_og_get_default_forum_term($entity->nid);
+    if ($term) {
+      $output = innovatoripa_og_discussioni_page($entity, $term->tid);
+      $build['gruppo_discussioni_hp'] = array('#markup' => $output,
+                                              '#weight' => $fields['gruppo_discussioni_hp']['weight']);
+    }    
+  }
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ * Issue #1900 
+ */
+function innovatoripa_og_field_extra_fields() {
+  $extras = array();
+  $extras['node']['gruppo']['display']['gruppo_discussioni_hp'] = array(
+    'label' => 'Gruppo: Discussioni HP',
+    'description' => 'Tabella discussioni embedded',
+    'weight' => 10,
+  );
+  return $extras;
+}
+
+
+/* 
+ * OG Comunita static counters 
+ * Issue: #2060
+*/
+
+/**
+* Implements of hook_og_membership_insert()
+*/
+function innovatoripa_og_og_membership_insert(OgMembership $og_membership) {  
+  
+  // in caso stia eseguendo la migrazione non eseguo questa funzione
+  if (arg(0) == 'home' || arg(0) == 'admin') return;
+  
+  $mapping = array('node' => 'field_og_post_count', 'user' => 'field_og_user_count');
+  $gid = $og_membership->gid;
+  //$type = db_query("SELECT type FROM {node} WHERE nid = :nid", array(':nid' => $gid))->fetchCol();
+  // load group (statically cached till here)
+  $group = node_load($gid);
+  if ($group->type == 'comunita') {
+    // avoid looping - issue #1810
+    // http://projects.twinbitlabs.com/issues/1810
+    if ((arg(0) == 'node') && (arg(1) == 'add')) {
+      return;
+    }
+    $wrapper = entity_metadata_wrapper('node', $group);
+    $type = $og_membership->entity_type;
+    if (isset($mapping[$type])) {
+      $field = $mapping[$type];
+      $count = $wrapper->{$field}->value();
+      if (!$count) {
+        // static set to 1 
+        $count = 1;
+      }
+      else {
+        ++$count;
+      }
+      $wrapper->{$field}->set($count);
+
+      // handle last post stats
+      // issue #2062
+      if ($type == 'node') {
+        $node = node_load($og_membership->etid);
+        $wrapper->field_og_stats_last_post_date->set($node->changed);
+        $wrapper->field_og_stats_last_post_nid->set($node->nid);
+      }
+      $wrapper->save();
+    }
+  }
+}
+
+/**
+* Implements of hook_og_membership_delete()
+*/
+function innovatoripa_og_og_membership_delete(OgMembership $og_membership) {
+  
+  // in caso stia eseguendo la migrazione non eseguo questa funzione
+  if (arg(0) == 'home' || arg(0) == 'admin') return;
+  
+  $mapping = array('node' => 'field_og_post_count', 'user' => 'field_og_user_count');
+  $gid = $og_membership->gid;
+  //$type = db_query("SELECT type FROM {node} WHERE nid = :nid", array(':nid' => $gid))->fetchCol();
+  // load group (statically cached till here)
+  $group = node_load($gid);
+  if ($group->type == 'comunita') {
+    // not execute if we are deleting the group
+    if (arg(2) == 'delete') {
+      return;
+    }
+    $wrapper = entity_metadata_wrapper('node', $group);
+    $type = $og_membership->entity_type;
+    if (isset($mapping[$type])) {
+      $field = $mapping[$type];
+      $count = $wrapper->{$field}->value();
+      // decrease the counter by 1
+      --$count;
+      // counter can't be less than 0
+      if ($counter >= 0) {
+        $wrapper->{$field}->set($count);
+      }
+    }
+    // handle last post stats
+    // issue #2062
+    if ($type == 'node') {
+      // test it!
+      //$node = node_load($og_membership->etid);
+      // find last post
+      $nid = db_query("SELECT etid FROM {og_membership} WHERE state = 1 AND entity_type = 'node' AND gid = :gid ORDER BY etid DESC", array(':gid' => $gid))->fetchField();
+      if ($nid) {
+        $node = node_load($nid);
+        $wrapper->field_og_stats_last_post_date->set($node->changed);
+        $wrapper->field_og_stats_last_post_nid->set($node->nid);   
+      }
+    }
+    $wrapper->save();
+  }
+}
+
+/**
+ * Batch update group counters
+ */
+function _innovatoripa_og_batch_update_og_counters() {
+  $nids = db_query("SELECT nid FROM {node} WHERE type = 'comunita' AND status = 1");
+  foreach ($nids as $nid) {
+    $nid = $nid->nid;
+    $group = node_load($nid);
+    $wrapper = entity_metadata_wrapper('node', $group);
+    $user_count = db_query("SELECT COUNT(id) FROM {og_membership} WHERE state = 1 AND gid = :gid AND entity_type = :type", 
+                  array(':gid' => $group->nid, ':type' => 'user'))->fetchField();
+    $node_count = db_query("SELECT COUNT(id) FROM {og_membership} WHERE state = 1 AND gid = :gid AND entity_type = :type", 
+                  array(':gid' => $group->nid, ':type' => 'node'))->fetchField();
+
+    // set last group post
+    $last_nid = db_query("SELECT etid FROM {og_membership} WHERE state = 1 AND entity_type = 'node' AND gid = :gid ORDER BY etid DESC", 
+                     array(':gid' => $group->nid))->fetchField();
+    if ($last_nid) {
+      $last_node = node_load($last_nid);
+      $wrapper->field_og_stats_last_post_date->set($last_node->changed);
+      $wrapper->field_og_stats_last_post_nid->set($last_node->nid);   
+    }
+
+    // update node
+    $wrapper->field_og_user_count->set($user_count);
+    $wrapper->field_og_post_count->set($node_count);
+    $wrapper->save();
+  }
+}
+
+/**
+ * Implement hook_field_formatter_info().
+ */
+function innovatoripa_og_field_formatter_info() {
+  return array(
+    'innovatoripa_og_group_subscribe' => array(
+      'label' => t('IPA OG subscribe link'),
+      'field types' => array('list_boolean'),
+      'settings' => array(
+        'field_name' => FALSE,
+      ),
+    ),
+  );
+}
+/**
+ * Implements hook_field_formatter_view().
+ */
+function innovatoripa_og_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  global $user;
+
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'innovatoripa_og_group_subscribe':
+      $account = clone $user;
+      if (!og_is_group($entity_type, $entity)) {
+        return;
+      }
+
+      if (!empty($entity->uid) && ($entity->uid == $account->uid)) {
+        // User is the group manager.
+        $element[0] = array('#markup' => t('You are the group manager'));
+        return $element;
+      }
+      list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+      
+      if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_ACTIVE))) {
+        if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
+          $links['title'] = t('Unsubscribe from group');
+          $links['href'] = "group/$entity_type/$id/unsubscribe";
+        }
+      }
+      elseif (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_PENDING))) {
+          $links['title'] = t('Richiesta in approvazione');
+          $links['href'] = "group/$entity_type/$id/unsubscribe";
+      }
+      else {
+        if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_BLOCKED))) {
+          // If user is blocked, they should not be able to apply for
+          // membership.
+          return;
+        }
+
+        // Check if user can subscribe to the field.
+        if (empty($settings['field_name']) && $audience_field_name = og_get_best_group_audience_field('user', $account, $entity_type, $bundle)) {
+          $settings['field_name'] = $audience_field_name;
+        }
+        if (!$settings['field_name']) {
+          return;
+        }
+
+        $field_info = field_info_field($settings['field_name']);
+
+        // Check if entity is referencable.
+        if ($field_info['settings']['target_type'] != $entity_type) {
+          // Group type doesn't match.
+          return;
+        }
+        if (!empty($field_info['settings']['handler_settings']['target_bundles']) && !in_array($bundle, $field_info['settings']['handler_settings']['target_bundles'])) {
+          // Bundles don't match.
+          return;
+        }
+
+        if (!og_check_field_cardinality('user', $account, $settings['field_name'])) {
+          $element[0] = array('#markup' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'));
+          return $element;
+        }
+
+        $url = "group/$entity_type/$id/subscribe";
+        if ($settings['field_name']) {
+          $url .= '/' . $settings['field_name'];
+        }
+
+        if (og_user_access($entity_type, $id, 'subscribe without approval', $account)) {
+          $links['title'] = t('Subscribe to group');
+          if ($account->uid) {
+            $links['href'] = $url;
+          }
+          else {
+            $links['href'] = 'user/login';
+            $links['options'] = array('query' => array('destination' => $url));
+          }
+        }
+        elseif (og_user_access($entity_type, $id, 'subscribe')) {
+          $links['title'] = t('Request group membership');
+          if ($account->uid) {
+            $links['href'] = $url;
+          }
+          else {
+            $links['href'] = 'user/login';
+            $links['options'] = array('query' => array('destination' => $url));
+          }
+        }
+        else {
+          $element[0] =  array('#markup' => t('This is a closed group. Only a group administrator can add you.'));
+          return $element;
+        }
+      }
+
+      if (!empty($links['title'])) {
+        $links += array('options' => array());
+        $element[0] = array(
+          '#type' => 'link',
+          '#title' => $links['title'],
+          '#href' => $links['href'],
+          '#options' => $links['options'],
+        );
+        return $element;
+      }
+  }
+}
+

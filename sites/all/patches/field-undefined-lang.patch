@@ -1,0 +1,12 @@
+diff --git a/includes/message.admin.inc b/includes/message.admin.inc
+index 1327214..2dde132 100644
+--- a/includes/message.admin.inc
++++ b/includes/message.admin.inc
+@@ -266,6 +266,7 @@ function message_type_form($form, &$form_state, $message_type, $op = 'edit') {
+   $field_language = NULL;
+   if (module_exists('locale')) {
+     $options = array();
++    $options[LANGUAGE_NONE] = t('Language neutral');
+     foreach (language_list() as $key => $value) {
+       $options[$key] = $value->name;
+     }

@@ -1,0 +1,18 @@
+diff --git a/sites/all/modules/contrib/mailcomment/plugins/authenticate_plugin/MailcommentAuthenticate.class.php b/sites/all/modules/contrib/mailcomment/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
+index c289a65..8403d70 100644
+--- a/sites/all/modules/contrib/mailcomment/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
++++ b/sites/all/modules/contrib/mailcomment/plugins/authenticate_plugin/MailcommentAuthenticate.class.php
+@@ -34,11 +34,11 @@ class MailcommentAuthenticate extends MailhandlerAuthenticate {
+       // get uid from email address because we are using the header information to load the params
+       // these contain the uid of the person who's post you are responding to
+       $sender = $message['header']->from[0]->mailbox . '@' . $message['header']->from[0]->host;
+-      $params['uid'] =  user_load(array('mail' => $sender))->uid;
++      $account = user_load_by_mail($sender);
++      $params['uid'] = $account->uid;
+     }
+ 
+     if ($params['uid']) {
+-      $account = user_load($params['uid']);
+       $message['authenticated_uid'] = $account->uid;
+     }
+     else {

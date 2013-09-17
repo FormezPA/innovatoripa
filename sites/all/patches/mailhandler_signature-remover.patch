@@ -1,0 +1,13 @@
+diff --git a/mailhandler.module b/mailhandler.module
+index a2663bf..504163e 100644
+--- a/mailhandler.module
++++ b/mailhandler.module
+@@ -185,7 +185,7 @@ function mailhandler_mailbox_load_all($show_disabled = TRUE) {
+  * Filter callback.
+  */
+ function _mailhandler_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+-  $strip_body_regex = $filter->settings['sig_separator'] . "\n";
++  $strip_body_regex = trim($filter->settings['sig_separator']) . "\n";
+   $sig_index = strpos($text, $strip_body_regex);
+   if ($sig_index !== FALSE) {
+     $text = drupal_substr($text, 0, $sig_index);

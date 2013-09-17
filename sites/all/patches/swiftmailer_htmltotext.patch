@@ -1,0 +1,20 @@
+diff --git a/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc b/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
+index ad4bd94..a609288 100644
+--- a/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
++++ b/sites/all/modules/contrib/swiftmailer/includes/classes/SWIFTMailSystem.inc
+@@ -40,8 +40,13 @@ class SWIFTMailSystem implements MailSystemInterface {
+ 
+         if (variable_get('swiftmailer_convert_mode', SWIFTMAILER_VARIABLE_CONVERT_MODE_DEFAULT) ||
+             !empty($message['params']['convert'])) {
+-          $converter = new html2text($message['body']);
+-          $message['plain'] = $converter->get_text();
++          //$converter = new html2text($message['body']);
++          //$message['plain'] = $converter->get_text();
++
++          // strip style tag
++          $body = preg_replace('/<\s*style.+?<\s*\/\s*style.*?>/si', ' ', $message['body']);
++          // convert to text
++          $message['plain'] = drupal_html_to_text($body);
+         }
+       }
+ 

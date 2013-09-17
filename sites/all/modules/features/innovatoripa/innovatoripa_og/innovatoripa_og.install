@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Set og vocab forum default term name
+ */ 
+function innovatoripa_og_update_7001() {
+  variable_set('innovatoripa_og_forum_default_term_name', 'Forum generale');
+}
+
+/**
+ * Update OG counters
+ */ 
+function innovatoripa_og_update_7002() {
+  _innovatoripa_og_batch_update_og_counters();
+}
+
+/**
+ * Update OG counters with last post
+ */ 
+function innovatoripa_og_update_7003() {
+  _innovatoripa_og_batch_update_og_counters();
+}
+
+/**
+ * Move the module weighter than other (5000)
+ */
+function innovatoripa_og_update_7004() {
+  db_query("UPDATE {system} SET weight = :weight WHERE type = 'module' AND name = 'innovatoripa_og'", array(':weight' => 5000));
+}
+
+/**
+ * Update OG counters with last post
+ */
+function innovatoripa_og_update_7006() {
+  _innovatoripa_og_batch_update_og_counters();
+}

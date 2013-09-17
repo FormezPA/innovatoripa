@@ -1,0 +1,126 @@
+/**
+ * @file
+ * Positioning for responsive layout .
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+/*
+ * Containers for grid items and flow items.
+ */
+/* line 52, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:before, .panel:after {
+  content: "";
+  display: table;
+}
+/* line 56, ../../../sass-extensions/zen-grids/stylesheets/zen/_grids.scss */
+.panel:after {
+  clear: both;
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+/* line 55, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+.panel-head,
+.panel-column,
+.panel-sidebar-first,
+.panel-sidebar-second {
+  padding-left: 10px;
+  padding-right: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* line 63, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+.panel-head,
+.panel-highlighted,
+.panel-content,
+.panel-sidebar-first,
+.panel-sidebar-second {
+  margin-bottom: 20px;
+}
+
+/* line 67, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+.panel-head {
+  float: left;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: -100%;
+}
+
+/* line 71, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+.panel-column {
+  clear: left;
+}
+
+/* 
+ * ZEN GRID ITEM:
+ * zen-grid-item( $column-span, $column-position )
+ * zen-grid-item( $column-span, $column-position, $float-direction )
+ */
+@media all and (min-width: 480px) and (max-width: 959px) {
+  /*
+   * Use 3 grid columns for smaller screens.
+   */
+  /*
+   * The layout when there are two sidebars: both sidebars are to the right side.
+   */
+  /* line 90, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-column {
+    float: left;
+    width: 66.66667%;
+    margin-left: 0%;
+    margin-right: -66.66667%;
+  }
+  /* line 94, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-sidebar-first {
+    float: right;
+    width: 33.33333%;
+    margin-right: 0%;
+    margin-left: -33.33333%;
+  }
+  /* line 98, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-sidebar-second {
+    clear: right;
+    float: right;
+    width: 33.33333%;
+    margin-right: 0%;
+    margin-left: -33.33333%;
+  }
+}
+@media all and (min-width: 960px) {
+  /*
+   * Use 5 grid columns for larger screens.
+   */
+  /*
+   * The layout when there are two sidebars.
+   */
+  /* line 115, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-column {
+    float: left;
+    width: 60%;
+    margin-left: 20%;
+    margin-right: -80%;
+  }
+  /* line 118, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-sidebar-first {
+    float: left;
+    width: 20%;
+    margin-left: 0%;
+    margin-right: -20%;
+  }
+  /* line 121, ../../../sass/layouts/responsive-default/responsive-default-admin.scss */
+  .panel.two-sidebars .panel-sidebar-second {
+    float: left;
+    width: 20%;
+    margin-left: 80%;
+    margin-right: -100%;
+  }
+}

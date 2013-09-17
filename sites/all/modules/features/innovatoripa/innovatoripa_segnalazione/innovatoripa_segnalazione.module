@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA Segnalazione feature.
+ */
+
+include_once 'innovatoripa_segnalazione.features.inc';

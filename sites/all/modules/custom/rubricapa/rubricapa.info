@@ -1,0 +1,7 @@
+; $Id$
+ 
+name = RubricaPA 
+description = Integrazione di RubricaPA con EventiPA
+package = Eventi P.A.
+core = 7.x
+files[] = rubricapa.module

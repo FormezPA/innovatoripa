@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA Blog feature.
+ */
+
+include_once 'innovatoripa_blog.features.inc';

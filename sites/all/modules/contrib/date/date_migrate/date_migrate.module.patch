@@ -1,0 +1,14 @@
+diff --git a/sites/all/modules/contrib/date/date_migrate/date_migrate.module b/sites/all/modules/contrib/date/date_migrate/date_migrate.module
+index accdcf8..c990673 100644
+--- a/sites/all/modules/contrib/date/date_migrate/date_migrate.module
++++ b/sites/all/modules/contrib/date/date_migrate/date_migrate.module
+@@ -11,6 +11,9 @@
+ function date_migrate_migrate_api() {
+   $api = array(
+     'api' => 2,
++    'field handlers' => array(
++      'DateMigrateFieldHandler',
++    )
+   );
+   return $api;
+ }

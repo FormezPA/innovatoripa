@@ -1,0 +1,17 @@
+name = InnovatoriPA Maps
+description = OpenLayers conf + custom styles and other
+core = 7.x
+package = InnovatoriPA
+php = 5.2.4
+version = 7.x-1.4
+project = innovatoripa_maps
+dependencies[] = ctools
+dependencies[] = openlayers
+dependencies[] = openlayers_ui
+dependencies[] = openlayers_views
+features[ctools][] = openlayers:openlayers_maps:1
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[openlayers_maps][] = persone_map
+features[variable][] = openlayers_ui_version_check
+features_exclude[dependencies][strongarm] = strongarm

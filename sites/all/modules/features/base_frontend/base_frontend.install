@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Set context_layouts higher than context_og (1 is enough)
+ */ 
+function base_frontend_update_7001() {
+  db_query("UPDATE {system} SET weight = :weight WHERE type = 'module' AND name = 'context_layouts'", array(':weight' => 1));
+  cache_clear_all();
+}
+
+/**
+ * Move admin_theme weighter than other (10000)
+ */
+function base_frontend_update_7002() {
+  db_query("UPDATE {system} SET weight = :weight WHERE type = 'module' AND name = 'admin_theme'", array(':weight' => 10000));
+}

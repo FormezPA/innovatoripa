@@ -1,0 +1,31 @@
+diff --git a/pcp.module b/pcp.module
+index e129399..63c3f4e 100755
+--- a/pcp.module
++++ b/pcp.module
+@@ -7,6 +7,8 @@
+  * users profile to be considered complete.
+  */
+ 
++module_load_include('inc', 'pcp', 'includes/pcp.admin');
++
+ /**
+  * Implements hook_theme().
+  */
+@@ -401,8 +403,6 @@ function pcp_get_user_additional_values($uid, $entity_type, $bundle = NULL) {
+  * Form builder; Configure PCP fields for profile2 profile types.
+  */
+ function pcp_form_profile2_type_form_alter(&$form, &$form_state, $form_id) {
+-  module_load_include('inc', 'pcp', 'includes/pcp.admin');
+-
+   $bundle = $form['type']['#default_value'];
+ 
+   $form['profile_complete'] = array(
+@@ -458,8 +458,6 @@ function pcp_form_user_admin_settings_alter(&$form, &$form_state) {
+  * Implements hook_form_FORM_ID_alter().
+  */
+ function pcp_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+-  module_load_include('inc', 'pcp', 'includes/pcp.admin');
+-
+   // @todo do we need user access check here?
+ 
+   if ($form['#instance']['entity_type'] == 'profile2') {

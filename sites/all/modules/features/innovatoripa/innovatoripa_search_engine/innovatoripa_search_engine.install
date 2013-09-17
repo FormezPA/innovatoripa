@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Move the module weighter than other (5000)
+ */
+function innovatoripa_search_engine_update_7001() {
+  db_query("UPDATE {system} SET weight = :weight WHERE type = 'module' AND name = 'innovatoripa_search_engine'", array(':weight' => 5000));
+}

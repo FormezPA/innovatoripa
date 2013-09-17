@@ -1,0 +1,14 @@
+name = Administration menu Adminimal Theme
+description = Clean and minimal theme for the administration menu module.
+stylesheets[screen][] = admin_menu_adminimal.css
+scripts[] = admin_menu_adminimal.js
+package = Administration
+core = 7.x
+dependencies[] = admin_menu
+
+; Information added by drupal.org packaging script on 2013-03-04
+version = "7.x-1.0+1-dev"
+core = "7.x"
+project = "adminimal_admin_menu"
+datestamp = "1362357059"
+

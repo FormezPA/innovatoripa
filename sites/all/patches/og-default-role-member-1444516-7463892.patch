@@ -1,0 +1,68 @@
+diff --git a/contrib/og/og.module b/contrib/og/og.module
+index e6ebeae..70a7586 100644
+--- a/contrib/og/og.module
++++ b/contrib/og/og.module
+@@ -797,21 +797,34 @@ function og_entity_insert($entity, $entity_type) {
+     return;
+   }
+   list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
++  if (!og_is_group_default_access($entity_type, $entity)) {
++    // Override default roles.
++    og_roles_override($entity_type, $bundle, $id);
++    $og_overridden_roles = og_roles($entity_type, $bundle, $id);
++  }
+   if (!empty($entity->uid)) {
+     // Subscribe the group manager.
+     og_group($entity_type, $id, array('entity' => $entity->uid));
+     // Assign roles to group manager.
+     $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle;
+     if ($rids = variable_get($name)) {
++      // get og default roles
++      $og_default_roles = og_roles($entity_type, $bundle, 0, FALSE, FALSE);
+       foreach ($rids as $rid) {
++        // overriden roles, find ovverridden rid by name
++        if ($og_overridden_roles) {
++          $role_name = $og_default_roles[$rid];
++          foreach ($og_overridden_roles as $overridden_rid => $overridden_role) {
++            if ($overridden_role == $role_name) {
++              $rid = $overridden_rid;
++            }
++          }
++        }
+         og_role_grant($entity_type, $id, $entity->uid, $rid);
+       }
+     }
+   }
+-  if (!og_is_group_default_access($entity_type, $entity)) {
+-    // Override default roles.
+-    og_roles_override($entity_type, $bundle, $id);
+-  }
++
+ }
+ 
+ /**
+@@ -829,7 +842,24 @@ function og_entity_update($entity, $entity_type) {
+     // Assign roles to group manager.
+     $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle;
+     if ($rids = variable_get($name)) {
++      if (!og_is_group_default_access($entity_type, $entity)) {
++        // Get overridden roles.
++        $og_overridden_roles = og_roles($entity_type, $bundle, $id);
++      }
++      // get og default roles
++      $og_default_roles = og_roles($entity_type, $bundle, 0, FALSE, FALSE);
++      
+       foreach ($rids as $rid) {
++        // overriden roles, find ovverridden rid by name
++        if ($og_overridden_roles) {
++          $role_name = $og_default_roles[$rid];
++          foreach ($og_overridden_roles as $overridden_rid => $overridden_role) {
++            if ($overridden_role == $role_name) {
++              $rid = $overridden_rid;
++              break;
++            }
++          }
++        }
+         og_role_grant($entity_type, $id, $entity->uid, $rid);
+       }
+     }

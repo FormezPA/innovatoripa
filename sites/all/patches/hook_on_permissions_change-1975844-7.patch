@@ -1,0 +1,53 @@
+diff --git a/og.api.php b/og.api.php
+index d6d73fd..5396830 100644
+--- a/og.api.php
++++ b/og.api.php
+@@ -123,6 +123,22 @@ function hook_og_role_revoke($entity_type, $gid, $uid, $rid) {
+ }
+ 
+ /**
++ * Give a notification about OG role permissions change.
++ *
++ * @param $role
++ *   The role object of the changed role.
++ * @param $grant
++ *   A list of granted permission names.
++ * @param $revoke
++ *   A list of revoked permission names.
++ */
++function hook_og_role_change_permissions($role, $grant, $revoke) {
++  if (!$role->gid) {
++    drupal_set_message(t('Global group permissions granted for @role users: @permissions', array('@role' => $role->name, '@permissions' => implode(', ', $grant))));
++  }
++}
++
++/**
+  * Provide information about fields that are related to Organic groups.
+  *
+  * Using this info, Organic groups is aware of the fields, and allows adding
+diff --git a/og.module b/og.module
+index e6ebeae..7abf30d 100644
+--- a/og.module
++++ b/og.module
+@@ -2816,7 +2816,7 @@ function og_permissions_delete_by_module($modules = array()) {
+  *   FALSE if no roles were created.
+  */
+ function og_roles_override($group_type, $bundle, $gid) {
+-  // Check if roles aren't already overriden. We can't use
++  // Check if roles aren't already overridden. We can't use
+   // og_is_group_default_access() as the field is already set, so we
+   // check to see if there are new roles in the database by setting
+   // "force group" parameter to TRUE.
+@@ -2953,6 +2953,12 @@ function og_role_change_permissions($rid, array $permissions = array()) {
+   if (!empty($revoke)) {
+     og_role_revoke_permissions($rid, array_keys($revoke));
+   }
++
++  if (!empty($grant) || !empty($revoke)) {
++    // Allow modules to be notified on permission changes.
++    $role = og_role_load($rid);
++    module_invoke_all('og_role_change_permissions', $role, $grant, $revoke);
++  }
+ }
+ 
+ /**

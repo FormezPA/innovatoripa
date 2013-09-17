@@ -1,0 +1,17 @@
+name = Profile Complete Percentage
+description = Configure user fields to be tagged as required for a profile to be complete. Display the percent of profile completion to the user via a block.
+package = Profile
+version = 7.x-1.x
+core = 7.x
+configure = admin/config/people/pcp
+
+files[] = includes/pcp.rules.inc
+files[] = includes/views_handler_field_pcp.inc
+files[] = includes/views_handler_filter_pcp.inc
+files[] = includes/views_handler_sort_pcp.inc
+; Information added by drupal.org packaging script on 2013-03-31
+version = "7.x-1.4"
+core = "7.x"
+project = "pcp"
+datestamp = "1364724616"
+

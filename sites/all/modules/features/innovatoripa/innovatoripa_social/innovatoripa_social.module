@@ -1,0 +1,43 @@
+<?php
+/**
+ * @file
+ * Code for the InnovatoriPA Social feature.
+ */
+
+include_once 'innovatoripa_social.features.inc';
+
+/**
+ * Implements of hook_views_api_alter()
+ * 
+ *
+function innovatoripa_social_views_api_alter(&$list) {
+  $list['views']['template path'] = drupal_get_path('module', 'innovatoripa_social') . '/theme/views';
+}
+ * 
+ */
+
+
+function innovatoripa_social_views_post_execute(&$view) {
+  // Scramble the order of the rows shown on this result page.
+  // Note that this could be done earlier, but not later in the view execution
+  // process.
+    
+  if (arg(0) == 'admin' || arg(1) == 'admin') {
+        return;
+  }
+
+  if ($view->name != 'test_tag_cloud') {
+        return;
+  }
+  
+  
+  usort($view->result, '_innovatoripa_social_my_sort_function');
+  
+}
+
+
+
+function _innovatoripa_social_my_sort_function($a, $b)
+{
+    return $a->taxonomy_term_data_name  > $b->taxonomy_term_data_name;
+}

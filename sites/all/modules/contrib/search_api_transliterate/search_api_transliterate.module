@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_search_api_processor_info().
+ */
+function search_api_transliterate_search_api_processor_info() {
+  $processors = array();
+
+  $processors['search_api_transliterate'] = array(
+    'name'        => t('Transliterate'),
+    'description' => t('This processor will make searches insensitive to accents'),
+    'class'       => 'SearchApiTransliterate',
+  );
+
+  return $processors;
+}
